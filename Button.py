@@ -6,25 +6,18 @@ class Button():
         self.image = image
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x,y)
-    
+        self.clicked = False
+
     def draw(self):
         # Draws a Button
+        DISPLAY.blit(self.image, self.rect)
+    def IsPressed(self):
+        action = False
         pos = pygame.mouse.get_pos() #Get mouse position
         if self.rect.collidepoint(pos):
-            print("Mouse Over")
-        DISPLAY.blit(self.image, self.rect)
-TILESIZE = 40
-MAPWIDTH = 45
-MAPHEIGHT = 24
-btn = pygame.image.load("tiles/2.png")
-
-pygame.init()
-DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
-BtnCheck = Button((MAPWIDTH * TILESIZE) // 2 - 50, (MAPHEIGHT * TILESIZE) // 2 + 100,btn)
-while True:
-    BtnCheck.draw()
-    for event in pygame.event.get():
-        #Quit
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                action = True
+                self.clicked = True
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        return action
