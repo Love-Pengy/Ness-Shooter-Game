@@ -18,9 +18,8 @@ class screen(TileProperties):
         for row in range(MAPHEIGHT + 1):
             r = [0] * MAPWIDTH
             self.screen.append(r)
-            print(self.screen)
 
-        with open('map/Screen00.csv', newline='') as csvfile:
+        with open('map/Screen0.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
