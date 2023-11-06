@@ -1,0 +1,6 @@
+Pitfall 0
+Wall 1
+Grass 0
+FGrass 0
+Mushroom 1
+Trees 1
