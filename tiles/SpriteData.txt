@@ -1,0 +1,19 @@
+Pitfall 
+Collision: no
+BulletCollision: no
+Fall: Yes
+
+Wall
+Collision: Yes
+BulletCollision: Yes
+Fall: no
+
+Grass
+Collision: no
+BulletCollision: no
+Fall: no
+
+ForestGrass
+Collision: no
+BulletCollision: no
+Fall: no

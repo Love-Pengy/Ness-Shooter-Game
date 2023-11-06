@@ -1,52 +1,40 @@
-import pygame, sys
+import pygame
+import sys
+import csv
 
-class screen:
-    def __init__(self):
-        W = 0 #Water
-        C = 1 #Cliff
-        G = 2 #Grass
-        F = 3 #ForestGrass
+class TileProperties:
+    def __init__(self, TILETYPES):
+        self.tile_list = []
+        for x in range(TILETYPES):
+            tile = pygame.image.load(f"tiles/{x}.png")
+            self.tile_list.append(tile)
+        #def TileProperties(self, ):
+class screen(TileProperties):
+    def __init__(self, Tile, MAPWIDTH, MAPHEIGHT):
 
-        BLUE = (0,0,255)
-        BROWN = (150,75,0)
-        GRASSGREEN = (124,252,0)
-        FORESTGREEN = (0,100,0)
+        self.TileColor = Tile.tile_list
 
-        self.TileColor = {W : pygame.image.load("Sprites LMAO/Pitfall.png"),
-                          C : pygame.image.load("Sprites LMAO/Valley_Wall.png"),
-                          G : pygame.image.load("Sprites LMAO/Grass.png"),
-                          F : pygame.image.load("Sprites LMAO/Forest_Grass.png")
-                        }
+        self.screen = []
+        for row in range(MAPHEIGHT + 1):
+            r = [0] * MAPWIDTH
+            self.screen.append(r)
+            print(self.screen)
 
-        self.map1 = [[C,C,C,C,C,C,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,C,C,C,C,C,C,C,C,C,C,C,C,C],
-                     [C,G,G,G,G,G,G,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,F,F,F,F,F,F,F,F,F,F,F,F,F,C],
-                     [C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C]]
+        with open('map/Screen00.csv', newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter = ',')
+            for x, row in enumerate(reader):
+                for y, tile in enumerate(row):
+                    self.screen[x][y] = int(tile)
 
 TILESIZE = 40
+TILETYPES = 4
 MAPWIDTH = 45
 MAPHEIGHT = 24
-TestScreen = screen()
+tiles = TileProperties(TILETYPES)
+screens = []
+
+TestScreen = screen(tiles, MAPWIDTH, MAPHEIGHT)
+
 
 #Create Display
 pygame.init()
@@ -55,13 +43,14 @@ DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
 #User Interface
 while True:
     for event in pygame.event.get():
-        "Quit"
+        #Quit
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
     for row in range(MAPHEIGHT): #Rows
         for col in range(MAPWIDTH): #Columns
+
             #pygame.draw.rect(DISPLAY,TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE,TILESIZE,TILESIZE))
-            DISPLAY.blit(TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE))
+            DISPLAY.blit(TestScreen.TileColor[TestScreen.screen[row][col]],(col*TILESIZE,row*TILESIZE))
     #Update Display
     pygame.display.update()
