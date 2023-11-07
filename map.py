@@ -69,7 +69,6 @@ while True:
  
 
     mouse_pos = pygame.mouse.get_pos()
-    print(mouse_pos)
     keys = pygame.key.get_pressed()
     #Change player position based off input
     player.processInput(keys)
