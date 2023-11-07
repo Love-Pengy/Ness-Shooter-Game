@@ -13,7 +13,7 @@ inventoryBind = 'tab'
 class UIHandler:
     #build all of respective UI's
     def __init__(self, weapons, items, stats, score=0):
-        self.iUI = build(InventoryUI(weapons, items)
+        self.iUI = build(InventoryUI(weapons, items))
         self.stHUD = build(StatHUD(stats))
         self.scHUD = build(ScoreHUD(score))
         return(self)
@@ -27,18 +27,58 @@ class UIHandler:
     """
     #update stat UI with new stats based off of Player class values
     def updateStatHUD(self):
-        pass
+        update(self.stHUD)
     #bring up pause menu, execute appropriate action based off of button hit
     def showPauseMenu(self):
+        '''unhide pause menu somehow'''
         pass
     #update score HUD
-    def updateScoreHUD(self):
+    def updateScoreHUD(self, newScore):
+        self.scHUD.udpate(score, newScore)
+                         
+
+#destroys will just hide the UI's if that's an option maybe just don't draw?
+class InventoryUI:
+    def __init__(self): 
+        self.weapons = defaultWeapons
+        self.items = None
+        return(self)
+
+    def build(self): 
+        '''
+        draws the UI to the screen 
+        '''
         pass
 
-class InventoryUI: 
-    pass
-class StatHUD: 
-    pass
-class ScoreHUD: 
-    pass
+    def update(self, weapons=None, items=None): 
+        '''
+        updates values 
+        '''
+        pass
 
+class StatHUD: 
+    def __init__(self): 
+        self.attk = 0
+        self.defense = 0
+        self.speed = 10
+        self.hp = 100
+        return(self)
+    
+    def build(self): 
+        pass
+    
+    def update(self, attk = None, defense = None, speed = None, hp = None): 
+        #update values
+        pass 
+
+class ScoreHUD: 
+    def __init__(self): 
+        self.score = 0
+        return(self)
+    
+    def build(self): 
+        pass
+
+    def update(self, score = None): 
+        #update score
+        pass
