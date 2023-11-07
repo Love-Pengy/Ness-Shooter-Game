@@ -71,21 +71,21 @@ class Player(Entity):
          window.blit(self.image, self.rect)
     
 
-    def setDirection(self,mouse_x,mouse_y):
+    def setDirection(self,mouse_pos):
         """
         Function to determine mouse position
         relative to the player in order to determine 
         correct sprite and direction for aiming
         """
 
-        x = mouse_x - self.rect.x
-        y = mouse_y - self.rect.y
+        x = mouse_pos[0] - self.rect.centerx
+        y = mouse_pos[0] - self.rect.centery
 
-        #Direction player is aiming in degrees
-        player_dir = math.atan2(y,x) *  (180.0 / math.pi) 
+        #Direction player is aiming in degrees 
+        player_dir = (math.degrees(math.atan2(y,x)) + 360.0) % 360.0
      
         #print("TEST")
-        #print(player_dir)
+        print(player_dir)
 
         #Sets sprite according to position of the mouse
         if player_dir < 180:
@@ -100,6 +100,9 @@ class Player(Entity):
 
 
     def processInput(self, pressed):
+
+        
+
         if pressed[pygame.K_LEFT]: 
             self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_RIGHT]:

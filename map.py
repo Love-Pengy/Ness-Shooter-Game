@@ -61,16 +61,21 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
     for row in range(MAPHEIGHT): #Rows
         for col in range(MAPWIDTH): #Columns
             #pygame.draw.rect(DISPLAY,TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE,TILESIZE,TILESIZE))
             DISPLAY.blit(TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE))
  
 
+    mouse_pos = pygame.mouse.get_pos()
+    print(mouse_pos)
     keys = pygame.key.get_pressed()
     #Change player position based off input
     player.processInput(keys)
+    player.setDirection(mouse_pos)
     player.update(DISPLAY)
+    pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
 
     #Update Display
     pygame.display.update()
