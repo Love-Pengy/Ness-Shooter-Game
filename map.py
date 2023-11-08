@@ -1,5 +1,6 @@
 import pygame, sys, csv
-import GraphicDesign
+import Classes.GraphicDesign as GraphicDesign
+from Entity import *
 
 class TileProperties:
     def __init__(self, TILETYPES):
@@ -37,7 +38,6 @@ class screen(TileProperties):
                 for y, tile in enumerate(row):
                     self.screen[x][y] = int(tile)
         print("Load Complete!")
-
 class CollisionLayer():
     def __init__(self, DISPLAY, Currentscreen, width, height,TILESIZE):
         self.display = DISPLAY
@@ -45,8 +45,8 @@ class CollisionLayer():
         self.width = width
         self.height = height
         self.Tilesize = TILESIZE
-        self.collision = []
-    def UpdateCollision(self):
+    def DrawCollision(self):
+        collideRect = self.screen.Tiles[CurrentScreen.screen[0][0]].get_rect()
         for row in range(self.height): #Rows
             for col in range(self.width): #Columns
                 if self.screen.IsCollider[self.screen.screen[row][col]]:
@@ -54,6 +54,40 @@ class CollisionLayer():
                     collideRect.x = col * TILESIZE
                     collideRect.y = row * TILESIZE
                     pygame.draw.rect(self.display, color.RED, collideRect,2)
+    def update(self, player, keys):
+        collideRect = self.screen.Tiles[self.screen.screen[0][0]].get_rect()
+        for row in range(self.height):
+            for col in range(self.width):
+                    if self.screen.IsCollider[self.screen.screen[row][col]]:
+                        collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
+                        collideRect.x = col * TILESIZE
+                        collideRect.y = row * TILESIZE 
+                    if collideRect.colliderect(player.rect.x + player.vel_x, player.rect.y, player.rect.width, player.rect.height):
+                        player.vel_x = 0
+                    if collideRect.colliderect(player.rect.x, player.rect.y + player.vel_y, player.rect.width, player.rect.height):
+                        player.vel_y = 0
+def transition(player, screen, PlayerScreen, MAPWIDTH, MAPHEIGHT,TILESIZE):
+    if player.rect.centerx < 0:
+        PlayerScreen[0] = PlayerScreen[0] - 1
+        screen.load(PlayerScreen[0],PlayerScreen[1])#Transitions Left
+        player.rect.x = 43 * TILESIZE
+        player.rect.y = 12 * TILESIZE
+    elif player.rect.centerx > (MAPWIDTH * TILESIZE):
+        PlayerScreen[0] = PlayerScreen[0] + 1
+        screen.load(PlayerScreen[0],PlayerScreen[1])#Transitions Right
+        player.rect.x = 2 * TILESIZE
+        player.rect.y = 12 * TILESIZE
+    if player.rect.centery < 0:
+        PlayerScreen[1] = PlayerScreen[1] + 1
+        screen.load(PlayerScreen[0],PlayerScreen[1])#Transitions Up
+        player.rect.x = 23 * TILESIZE
+        player.rect.y = 22 * TILESIZE
+    elif player.rect.centery > (MAPHEIGHT * TILESIZE):
+        PlayerScreen[1] = PlayerScreen[1] - 1
+        screen.load(PlayerScreen[0],PlayerScreen[1])#Transitions Down
+        player.rect.x = 23 * TILESIZE
+        player.rect.y = 2 * TILESIZE
+    return PlayerScreen
 
 TILESIZE = 40
 TILETYPES = 6
@@ -62,7 +96,7 @@ MAPHEIGHT = 24
 tiles = TileProperties(TILETYPES)
 color = GraphicDesign.ColorList()
 CurrentScreen = screen(tiles, MAPWIDTH, MAPHEIGHT)
-PlayerScreen = (5,5)
+PlayerScreen = [5,5]
 CurrentScreen.load(PlayerScreen[0],PlayerScreen[1])
 
 
@@ -70,7 +104,7 @@ CurrentScreen.load(PlayerScreen[0],PlayerScreen[1])
 pygame.init()
 DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
 collision = CollisionLayer(DISPLAY,CurrentScreen,MAPWIDTH,MAPHEIGHT,TILESIZE)
-
+player = Player(23*TILESIZE,12*TILESIZE,50,50)
 #User Interface
 while True:
     for event in pygame.event.get():
@@ -81,6 +115,15 @@ while True:
     for row in range(MAPHEIGHT): #Rows
         for col in range(MAPWIDTH): #Columns
             DISPLAY.blit(CurrentScreen.Tiles[CurrentScreen.screen[row][col]],(col*TILESIZE,row*TILESIZE))
+    mouse_pos = pygame.mouse.get_pos()
+    #Change player position based off input
+    keys = pygame.key.get_pressed()
+    player.processInput(keys)
+    player.setDirection(mouse_pos)
+    pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
+
+    PlayerScreen = transition(player,CurrentScreen,PlayerScreen,MAPWIDTH,MAPHEIGHT,TILESIZE)
     #Update Display
-    collision.UpdateCollision()
+    collision.update(player, keys)
+    player.update(DISPLAY, keys)#Player.rect.center
     pygame.display.update()

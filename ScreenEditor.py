@@ -1,5 +1,5 @@
 import pygame, sys, csv
-import Button, GraphicDesign
+import Classes.Button as Button, Classes.GraphicDesign as GraphicDesign
 
 #Tracks the various images and 
 class TileProperties:
