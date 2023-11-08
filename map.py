@@ -90,7 +90,7 @@ def transition(player, screen, PlayerScreen, MAPWIDTH, MAPHEIGHT,TILESIZE):
     return PlayerScreen
 
 TILESIZE = 40
-TILETYPES = 6
+TILETYPES = 15
 MAPWIDTH = 45
 MAPHEIGHT = 24
 tiles = TileProperties(TILETYPES)
@@ -102,6 +102,7 @@ CurrentScreen.load(PlayerScreen[0],PlayerScreen[1])
 
 #Create Display
 pygame.init()
+
 DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
 collision = CollisionLayer(DISPLAY,CurrentScreen,MAPWIDTH,MAPHEIGHT,TILESIZE)
 player = Player(23*TILESIZE,12*TILESIZE,50,50)

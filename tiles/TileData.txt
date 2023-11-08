@@ -4,3 +4,12 @@ Grass 0
 FGrass 0
 Mushroom 1
 Trees 1
+Sand 0
+Water 1
+Night 0
+Lava 0
+Carpet 0
+Crate 1
+Snow 0
+Ice 0
+Tree 1

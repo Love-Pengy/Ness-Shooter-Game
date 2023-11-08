@@ -9,10 +9,11 @@ class TileProperties:
         self.tile_names = []
         self.Data = open("tiles/TileData.txt")
         for x in range(TILETYPES):
-            tile = pygame.image.load(f"tiles/{x}.png")
-            tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
-            self.tile_list.append(tiletransform)
-            self.Collision()
+                print("tiles/",x,".png")
+                tile = pygame.image.load(f'tiles/{x}.png')
+                tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
+                self.tile_list.append(tiletransform)
+                self.Collision()
         self.Data.close()
 
  #Running Collision Checks if a tiletype is supposed to have collision and stores it in IsCollider
@@ -66,7 +67,7 @@ def make_buttons(tiles):
     return button_list
 
 TILESIZE = 30
-TILETYPES = 6
+TILETYPES = 15
 MAPWIDTH = 45
 MAPHEIGHT = 24
 LOWER_MARGIN = 100
@@ -145,12 +146,16 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and CurrentX != 1:
                 CurrentX = CurrentX - 1
+                CurrentScreen.load(CurrentX,CurrentY)
             if event.key == pygame.K_RIGHT and CurrentX != 9:
                 CurrentX = CurrentX + 1
+                CurrentScreen.load(CurrentX,CurrentY)
             if event.key == pygame.K_UP and CurrentY != 9:
                 CurrentY = CurrentY + 1
+                CurrentScreen.load(CurrentX,CurrentY)
             if event.key == pygame.K_DOWN and CurrentY != 1:
                 CurrentY = CurrentY - 1
+                CurrentScreen.load(CurrentX,CurrentY)
     for row in range(MAPHEIGHT): #Rows
         for col in range(MAPWIDTH): #Columns
             #pygame.draw.rect(DISPLAY,TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE,TILESIZE,TILESIZE))
