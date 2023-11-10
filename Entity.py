@@ -147,23 +147,26 @@ class Player(Entity):
 
 
     def processInput(self, pressed):
-        if pressed[pygame.K_a]: 
-            self.vel_x = -1
+        if pressed[pygame.K_a]:
+            self.player_anims.nextAnim() 
+            self.vel_x = -5
             #self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_d]:
-            self.image = self.player_anims.frames["walk_right1"]
-            self.vel_x = 1
+            self.player_anims.nextAnim()
+            self.vel_x = 5
             #self.moveX(self.vel_x)
         if pressed[pygame.K_w]:
-            self.vel_y = -1
+            self.player_anims.nextAnim()
+            self.vel_y = -5
             #self.moveY(-1 * self.vel_y)
             #if pressed[pygame.K_RIGHT]:
                #self.moveX(self.vel_x)
            # elif pressed[pygame.K_LEFT]:
                #self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_s]:
-            self.image = self.player_anims.frames["walk_down1"]
-            self.vel_y = 1
+            #self.image = self.player_anims.frames["walk_down1"]
+            self.player_anims.nextAnim()
+            self.vel_y = 5
             #self.moveY(self.vel_y)
             #if pressed[pygame.K_RIGHT]:
                #self.moveX(self.vel_x)

@@ -9,7 +9,6 @@ class TileProperties:
         self.tile_names = []
         self.Data = open("tiles/TileData.txt")
         for x in range(TILETYPES):
-                print("tiles/",x,".png")
                 tile = pygame.image.load(f'tiles/{x}.png')
                 tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
                 self.tile_list.append(tiletransform)
@@ -65,9 +64,17 @@ def make_buttons(tiles):
             butrow += 1
             butcol = 0
     return button_list
-
+def rect_btns(RectBtns, current):
+    for x,y in enumerate(RectBtns):
+        pygame.draw.rect(DISPLAY,color.PURPLE, RectBtns[x])
+        pos = pygame.mouse.get_pos()
+        if RectBtns[x].collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1:
+                current = x
+    pygame.draw.rect(DISPLAY,color.PINK, RectBtns[current])
+    return current
 TILESIZE = 30
-TILETYPES = 15
+TILETYPES = 16
 MAPWIDTH = 45
 MAPHEIGHT = 24
 LOWER_MARGIN = 100
@@ -76,6 +83,7 @@ color = GraphicDesign.ColorList()
 current_tile = 0
 CurrentX = 5
 CurrentY = 5
+tab = 0
 #Initialize all our Tiles
 tiles = TileProperties(TILETYPES)
 
@@ -92,12 +100,20 @@ DISPLAY.fill(color.LIGHTGREEN)
 #Text init
 description = GraphicDesign.Text(DISPLAY, "ubuntumono", 30)
 tileNames = GraphicDesign.Text(DISPLAY, "ubuntumono", 15)
+#tabnames = GraphicDesign.Text(DISPLAY, "ubuntomono", )
 #Make Buttons
 save = pygame.image.load("tiles/save.png")
 load = pygame.image.load("tiles/load.png")
 savebtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-75),save)
 loadbtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2+200,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-60),load)
 button_list = make_buttons(tiles)
+RectBtns = []
+tileRect = pygame.rect.Rect((MAPWIDTH * TILESIZE) + 35, 20, 60, 25)
+RectBtns.append(tileRect)
+enemyRect = pygame.rect.Rect((MAPWIDTH * TILESIZE) + 110, 20, 60, 25)
+RectBtns.append(enemyRect)
+objectRect = pygame.rect.Rect((MAPWIDTH * TILESIZE) + 185, 20, 60, 25)
+RectBtns.append(objectRect)
 
 #User Interface
 while True:
@@ -108,6 +124,11 @@ while True:
     description.write_text("Left/Right/Up/Down to Change Screens", color.WHITE, 10, 760)
     savebtn.draw()
     loadbtn.draw()
+    tab = rect_btns(RectBtns, tab)
+    tileNames.write_text("Tiles", color.BLACK, (MAPWIDTH * TILESIZE) + 45, 25)
+    tileNames.write_text("Enemies", color.BLACK, (MAPWIDTH * TILESIZE) + 112, 25)
+    tileNames.write_text("Objects", color.BLACK, (MAPWIDTH * TILESIZE) + 187, 25)
+    
     #Save and Load Data
     if savebtn.IsPressed():
         CurrentScreen.save(CurrentX, CurrentY)
@@ -117,16 +138,21 @@ while True:
     button_count = 0
     butcol = 0
     butrow = 0
-    for button_count, i in enumerate(button_list):
-         i.draw()
-         tileNames.write_text(tiles.tile_names[button_count], color.BLACK,(MAPWIDTH*TILESIZE) + (75*butcol) + 50, (75 * butrow) + 90)
-         butcol += 1
-         if butcol == 3:
-             butcol = 0
-             butrow += 1
-         if i.IsPressed():
-            current_tile = button_count
-    pygame.draw.rect(DISPLAY,color.RED, button_list[current_tile].rect, 3)
+    if tab == 0:
+        for button_count, i in enumerate(button_list):
+             i.draw()
+             tileNames.write_text(tiles.tile_names[button_count], color.BLACK,(MAPWIDTH*TILESIZE) + (75*butcol) + 50, (75 * butrow) + 90)
+             butcol += 1
+             if butcol == 3:
+                butcol = 0
+                butrow += 1
+             if i.IsPressed():
+                current_tile = button_count
+        pygame.draw.rect(DISPLAY,color.RED, button_list[current_tile].rect, 3)
+    if tab == 1:
+        description.write_text("No Enemies Yet!!!", color.BLACK,(MAPWIDTH*TILESIZE) + 30, 90)
+    if tab == 2:
+        description.write_text("No Objects Yet!!!", color.BLACK,(MAPWIDTH*TILESIZE) + 30, 90)
     #Checks Mouse Position
     pos = pygame.mouse.get_pos()
     x = pos[0] // TILESIZE
