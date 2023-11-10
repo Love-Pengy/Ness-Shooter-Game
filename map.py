@@ -53,7 +53,8 @@ TestScreen = screen()
 #Create Display
 pygame.init()
 DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
-player = Player(100,100,50,50)
+player = Player(500,500,50,50)
+serpent = SerpentEnemy(200,200,50,50)
 #User Interface
 while True:
     for event in pygame.event.get():
@@ -61,19 +62,28 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
+  
     for row in range(MAPHEIGHT): #Rows
         for col in range(MAPWIDTH): #Columns
             #pygame.draw.rect(DISPLAY,TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE,TILESIZE,TILESIZE))
             DISPLAY.blit(TestScreen.TileColor[TestScreen.map1[row][col]],(col*TILESIZE,row*TILESIZE))
  
-
     mouse_pos = pygame.mouse.get_pos()
+    player.setDirection(mouse_pos)
+  
+
     keys = pygame.key.get_pressed()
     #Change player position based off input
     player.processInput(keys)
-    player.setDirection(mouse_pos)
+
+    
     player.update(DISPLAY)
+    serpent.update(DISPLAY)
+    
+    
+    serpent.findPlayer(player)
+   
+
     pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
 
     #Update Display

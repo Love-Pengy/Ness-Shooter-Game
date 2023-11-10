@@ -18,7 +18,7 @@ class Entity(pygame.sprite.Sprite):
 
         self.image = pygame.Surface([width, height])
         self.rect = self.image.get_rect()
-
+        self.rect.x, self.rect.y = x, y
         #Velocity of entity movement for testing
         self.vel_x = 5
         self.vel_y = 5
@@ -51,7 +51,7 @@ class Player(Entity):
         super().__init__(x,y,width,height)
       
         #Instantiate class to handle sprite animation
-        self.player_anims = SpriteAnimation("ness_spritesheet.png")
+        self.player_anims = SpriteAnimation("Entities/ness_spritesheet.png")
 
         #Load individual sprites into animation dict
         self.player_anims.registerAnim("walk_down1",self.player_anims.getFrame(0,0,64,100))
@@ -60,25 +60,27 @@ class Player(Entity):
         self.player_anims.registerAnim("walk_right2",self.player_anims.getFrame(-230,0,64,100))
         self.player_anims.registerAnim("walk_se1",self.player_anims.getFrame(-324,0,64,100))
         self.player_anims.registerAnim("walk_se2",self.player_anims.getFrame(-400,0,64,100))
-        self.player_anims.registerAnim("walk_ne1",self.player_anims.getFrame(-400,0,64,100))
-        self.player_anims.registerAnim("walk_ne2",self.player_anims.getFrame(-568,0,64,100))
+        self.player_anims.registerAnim("walk_ne1",self.player_anims.getFrame(-568,0,64,100))
+        self.player_anims.registerAnim("walk_ne2",self.player_anims.getFrame(-486,0,64,100))
         self.player_anims.registerAnim("walk_up1",self.player_anims.getFrame(0,-120,64,100))
         self.player_anims.registerAnim("walk_up2",self.player_anims.getFrame(-74,-120,64,100))
         self.player_anims.registerAnim("walk_left1",self.player_anims.getFrame(-160,-120,64,100))
         self.player_anims.registerAnim("walk_left2",self.player_anims.getFrame(-230,-120,64,100))
         self.player_anims.registerAnim("walk_sw1",self.player_anims.getFrame(-328,-120,64,100))
         self.player_anims.registerAnim("walk_sw2",self.player_anims.getFrame(-400,-120,64,100))
-        self.player_anims.registerAnim("walk_nw1",self.player_anims.getFrame(-568,-120,64,100))
+        self.player_anims.registerAnim("walk_nw1",self.player_anims.getFrame(-490,-120,64,100))
         self.player_anims.registerAnim("walk_nw2",self.player_anims.getFrame(-570,-120,64,100))
     
-        self.image = self.player_anims.getFrame(-570,-120,64,100)
+        self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.vel_x = 2.5
+        self.vel_y = 2.5
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
 
     def update(self,window):
          window.blit(self.image, self.rect)
@@ -117,36 +119,64 @@ class Player(Entity):
         elif player_facing == 7:
             self.image = self.player_anims.frames["walk_se1"] if self.player_anims.next else self.player_anims.frames["walk_se2"]
    
-
-        
-
-
-
-
-
     def processInput(self, pressed):
+        if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
+            self.player_anims.nextAnim()
 
-        if pressed[pygame.K_a]: 
-            self.player_anims.nextAnim()
-            self.moveX(-1 * self.vel_x)
-        if pressed[pygame.K_d]:
-            self.player_anims.nextAnim()
-            self.moveX(self.vel_x)
         if pressed[pygame.K_w]:
-            self.player_anims.nextAnim()
             self.moveY(self.vel_y * -1)
             if pressed[pygame.K_d]:
                self.moveX(self.vel_x)
             elif pressed[pygame.K_a]:
                self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_s]:
-            self.player_anims.nextAnim()
             self.moveY(self.vel_y)
             if pressed[pygame.K_d]:
                self.moveX(self.vel_x)
             elif pressed[pygame.K_a]:
                self.moveX(-1 * self.vel_x)
+        if pressed[pygame.K_a]: 
+            self.moveX(-1 * self.vel_x)
+        if pressed[pygame.K_d]:
+            self.moveX(self.vel_x)    
+        
 
+
+class SerpentEnemy(Entity):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
+
+        self.image = self.enemy_anim.getFrame(0,0,96,96)
+        self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
+        self.image.set_colorkey((0,0,0)) 
+        self.direction = 0
+
+        #Entity velocity 
+        self.vel_x = 2
+        self.vel_y = 2
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+
+    def findPlayer(self, player):
+        x = self.rect.x - player.rect.x
+        y = self.rect.y - player.rect.y
+        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
+  
+
+
+    def update(self,window):
+        rotated_image = pygame.transform.rotate(self.image, self.direction)
+        rotated_rect = rotated_image.get_rect()
+        rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
+        window.blit(rotated_image,rotated_rect)
         
 class SpriteAnimation:
     """
@@ -184,11 +214,11 @@ class SpriteAnimation:
         return self.frames[name]
 
     def nextAnim(self):
-        if (self.count % 60 == 0):
+        if (self.count == 10):
             self.next = not self.next
-            count = 0
-        count += 1
-        self.next = not self.next
+            self.count = 0
+        self.count += 1
+       
 
     
 
