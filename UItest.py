@@ -1,6 +1,5 @@
 import pygame
 from UI import UIManager
-
 DEBUG = 1
 #weapons binds
 weaponBinds = [1, 2, 3, 4]
@@ -24,6 +23,35 @@ defaultStats ={
         "speed" : 0,
         "hp" : 100
         }
+
+#another placeholder
+currentScore = 0
+
+def scoreGen(): 
+    val = 0
+    index = 0
+    while True: 
+        if(not (index % 3)): 
+            val += 5
+            yield val
+        else: 
+            yield val
+        index += 1
+
+def statGen(): 
+    i = 0
+    val = 0
+    while True: 
+        if(not (i % 10)): 
+            val += 1
+            defaultStats["attack"] = val
+            defaultStats["defense"] = val
+            defaultStats["speed"] = val
+            defaultStats["hp"] = val
+            yield
+        else: 
+            yield 
+        i += 1
 
 class Game:
     def __init__(self, width, height):
@@ -54,16 +82,18 @@ class Game:
         """
         self.screen.fill("black")
         UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.screen)
-
+        self.gen = statGen()
+        self.scoreGenerator = scoreGen()
+        self.score = 0
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
             keys = pygame.key.get_pressed()
             self.screen.fill("black")
-                
-            
-            UI.update(keys)
+            self.score = next(self.scoreGenerator)
+            next(self.gen)
+            UI.update(keys, defaultStats, self.score)
             pygame.display.flip()
             self.clock.tick(60)
 
