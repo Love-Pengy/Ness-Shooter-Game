@@ -1,3 +1,7 @@
+#asset sites: 
+# https://www.ludicarts.com/free-rpg-icons/
+# https://opengameart.org/content/larger-simple-heart
+
 #File David made that allows buttons to be created and checked for pressed attribute
 from Button import Button
 import pygame
@@ -9,9 +13,15 @@ myfont = pygame.font.SysFont('Comic Sans MS', 30)
 #usage: 
 #label = myfont.render("wanted text", num, color)
 
+uiBorders = pygame.image.load("Assets/UIBorders.png")
+uiBorders = pygame.transform.scale_by(uiBorders, 3)
+
 pistolSprite = pygame.image.load("Assets/Pistol.png")
+pistolSprite = pygame.transform.scale(pistolSprite, (55, 45))
 shotgunSprite = pygame.image.load("Assets/Shotgun.png")
+shotgunSprite = pygame.transform.scale(shotgunSprite, (55, 45))
 machineGunSprite = pygame.image.load("Assets/MachineGun.png")
+machineGunSprite = pygame.transform.scale(machineGunSprite, (55, 45))
 
 healthIcon = pygame.image.load("Assets/Health_Icon.png")
 healthIcon = pygame.transform.scale(healthIcon, (40, 40))
@@ -27,13 +37,15 @@ speedIcon = pygame.transform.scale(speedIcon, (50, 50))
 defenseIcon = pygame.image.load("Assets/Defense_Icon.png")
 defenseIcon = pygame.transform.scale(defenseIcon, (40, 40))
 healthItemIcon = pygame.image.load("Assets/Health_Item_Icon.png")
+healthItemIcon = pygame.transform.scale(healthItemIcon, (40, 40))
 manaIcon = pygame.image.load("Assets/Mana_Icon.png")
+manaIcon = pygame.transform.scale(manaIcon, (40, 40))
 
 class UIManager:
     #build all of respective UI's
     def __init__(self, weapons, items, stats, score, screen):
-        self.wHUD = WeaponsHUD(weapons)
-        #self.iHUD = ItemsHUD(items)
+        self.wHUD = WeaponsHUD(weapons, screen)
+        self.iHUD = ItemsHUD(items, screen)
         self.stHUD = StatHUD(stats, screen)
         self.scHUD = ScoreHUD(score, screen)
         self.pMenu = PauseMenu(screen)
@@ -58,7 +70,7 @@ class UIManager:
     def updateScoreHUD(self, newScore):
         self.scHUD.update(newScore)
     
-    def update(self, keys, stats, score):
+    def update(self, keys, stats, score, weapons, items):
         if(keys[pygame.K_ESCAPE]): 
             self.pMenu.toggle()
         if(not keys[pygame.K_ESCAPE]): 
@@ -67,6 +79,10 @@ class UIManager:
             self.pMenu.execute()
         self.updateStatHUD(stats)
         self.updateScoreHUD(score)
+        self.updateWeaponHUD(weapons)
+        self.updateItemHUD(items)
+        self.iHUD.execute()
+        self.wHUD.execute()
         self.stHUD.execute()
         self.scHUD.execute()
 
@@ -201,6 +217,18 @@ class ScoreHUD:
         if(self.active): 
             self.screen.blit(self.scoreTextSurface, (930, 15))
 
+def checkDeco(weapon, screen): 
+    '''
+    if(isInstance(weapon, FlamingDeco)):
+        screen.blit(uiBorders, (1400, 250), (145, 360, 47, 50))
+    elif(isInstance(weapon, FrostyDeco)): 
+        screen.blit(uiBorders, (1450, 250), (95, 360, 47, 50))
+    elif(isInstance(weapon, ShroomDeco)): 
+        screen.blit(uiBorders, (1500, 250), (45, 360, 50, 50))
+    else:
+    '''
+    pass
+
 
 class WeaponsHUD: 
     def __init__(self, weapons, screen):
@@ -211,11 +239,11 @@ class WeaponsHUD:
         self.machineGun = weapons["machineGun"]
         self.active = 1
         self.pistolRect = pistolSprite.get_rect()
-        self.pistolRect = self.pistolRect.move(950, 950)
+        self.pistolRect = self.pistolRect.move(1522, 935)
         self.shotgunRect = shotgunSprite.get_rect()
-        self.shotgunRect = self.shotgunRect.move(1050, 950)
+        self.shotgunRect = self.shotgunRect.move(1595, 935)
         self.machineGunRect = machineGunSprite.get_rect()
-        self.machineGunRect = self.machineGunRect.move(1150, 950)
+        self.machineGunRect = self.machineGunRect.move(1665, 935)
     def toggle(self): 
         if(self.active): 
             self.active = 0
@@ -229,12 +257,70 @@ class WeaponsHUD:
 
 
 
-    def execute(self): 
-        if(self.active): 
-            #write pistol always
-            self.screen.blit(pistolSprite, self.pistolRect)
+    def execute(self):
+        if(self.active):
+            if(DEBUG): 
+                print(f"{self.pistol=}, {self.shotgun=}, {self.machineGun=}")
+            #this is crop for weapons bar (location of blit, location of contents for crop, dimensions of crop)
+            self.screen.blit(uiBorders, (1500, 925), (2300, 150, 250, 75))
+            if(self.pistol):
+                #checks for power up, if found it blits the associated icon
+                checkDeco(self.pistol, self.screen)
+                self.screen.blit(pistolSprite, self.pistolRect)
+
             if(self.shotgun):
+                checkDeco(self.shotgun, self.screen)
                 self.screen.blit(shotgunSprite, self.shotgunRect)
+
             if(self.machineGun): 
+                checkDeco(self.machineGun, self.screen)
                 self.screen.blit(machineGunSprite, self.machineGunRect)
+
+
+
+
+class ItemsHUD:
+
+    def __init__(self, items, screen):
+        self.screen = screen
+        self.healthPots = items["healthPotions"]
+        self.manaPots = items["manaPotions"]
+        self.active = 1
+        self.hPotRect = healthItemIcon.get_rect()
+        self.hPotRect = self.hPotRect.move(1492, 843)
+        self.mPotRect = manaIcon.get_rect()
+        self.mPotRect = self.mPotRect.move(1703, 843)
+        self.hPotTextSurface = myfont.render(str(self.healthPots), False, (255, 255, 255))
+        self.mPotTextSurface = myfont.render(str(self.manaPots), False, (255, 255, 255))
+        self.emptyhPotTextSurface = myfont.render("~", False, (255, 255, 255))
+        self.emptymPotTextSurface = myfont.render("~", False, (255, 255, 255))
+    def toggle(self): 
+        if(self.active): 
+            self.active = 0
+        else: 
+            self.active = 1
+        
+    def update(self, items): 
+        self.healthPots = items["healthPotions"]
+        self.manaPots = items["manaPotions"]
+        self.hPotTextSurface = myfont.render(str(self.healthPots), False, (255, 255, 255))
+        self.mPotTextSurface = myfont.render(str(self.manaPots), False, (255, 255, 255))
+
+
+    def execute(self):
+        if(DEBUG): 
+            print(f"{self.active=}, {self.healthPots=}, {self.manaPots=}")
+
+        if(self.active): 
+            self.screen.blit(uiBorders, (1475, 825), (2125, 425, 300, 75)) 
+            if(self.healthPots): 
+                self.screen.blit(self.hPotTextSurface, (1576, 855))
+                self.screen.blit(healthItemIcon, self.hPotRect)
+            else: 
+                self.screen.blit(self.emptyhPotTextSurface, (1580, 855))
+            if(self.manaPots): 
+                self.screen.blit(self.mPotTextSurface, (1633, 855))
+                self.screen.blit(manaIcon, self.mPotRect)
+            else: 
+                self.screen.blit(self.emptymPotTextSurface, (1636, 855))
 
