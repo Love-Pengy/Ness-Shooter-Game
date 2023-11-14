@@ -1,7 +1,8 @@
 #asset sites: 
 # https://www.ludicarts.com/free-rpg-icons/
 # https://opengameart.org/content/larger-simple-heart
-
+# https://opengameart.org/content/golden-ui
+# https://opengameart.org/content/rpg-ui-icons
 #File David made that allows buttons to be created and checked for pressed attribute
 from Button import Button
 import pygame
@@ -15,6 +16,13 @@ myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
 uiBorders = pygame.image.load("Assets/UIBorders.png")
 uiBorders = pygame.transform.scale_by(uiBorders, 3)
+
+uiBorders2 = pygame.image.load("Assets/UIBorders2.png")
+uiBorders2 = pygame.transform.scale_by(uiBorders2, 1.5)
+
+
+currManaIcon = pygame.image.load("Assets/manaIcon.png")
+currManaIcon = pygame.transform.scale(currManaIcon, (55, 45))
 
 pistolSprite = pygame.image.load("Assets/Pistol.png")
 pistolSprite = pygame.transform.scale(pistolSprite, (55, 45))
@@ -127,6 +135,8 @@ class StatHUD:
         self.defense = stats.get("defense")
         self.speed = stats.get("speed")
         self.hp = stats.get("hp")
+        self.mana = stats.get("mana")
+
         self.screen = screen
         self.active = 1
         self.attackRect = baseDamageIcon.get_rect()
@@ -142,9 +152,11 @@ class StatHUD:
         self.hpRect = healthIcon.get_rect()
         self.hpRect = self.hpRect.move(350, 962)
         self.hpTextSurface = myfont.render(str(self.hp), False, (255, 255, 255))
+        self.currManaRect = manaIcon.get_rect()
+        self.currManaRect = self.currManaRect.move(440, 960)
 
         if(DEBUG): 
-            print(f"{self.attack=}, {self.defense=}, {self.speed=}, {self.hp=}")
+            print(f"{self.attack=}, {self.defense=}, {self.speed=}, {self.hp=}, {self.mana=}")
         '''
         self.defenseRect = defenseIcon.get_rect()
         self.defenseRect = self.defenseRect.move(200, 800)
@@ -166,16 +178,19 @@ class StatHUD:
         self.defense = stats["defense"]
         self.speed = stats["speed"]
         self.hp = stats["hp"]
+        self.mana = stats["mana"]
         if(DEBUG): 
             print(f"{self.attack=}")
             print(f"{self.defense=}")
             print(f"{self.speed=}")
             print(f"{self.hp=}")
+            print(f"{self.mana=}")
 
         self.defenseTextSurface = myfont.render(str(self.defense), False, (255, 255,255))
         self.attackTextSurface = myfont.render(str(self.attack), False, (255, 255, 255))
         self.speedTextSurface = myfont.render(str(self.speed), False, (255, 255, 255))
         self.hpTextSurface = myfont.render(str(self.hp), False, (255, 255, 255))
+        self.currManaTextSurface = myfont.render(str(self.mana), False, (255, 255, 255))
 
     def execute(self): 
         #draw everything to the screen if active
@@ -189,6 +204,8 @@ class StatHUD:
             self.screen.blit(self.speedTextSurface, (300, 975))
             self.screen.blit(healthIcon, self.hpRect)
             self.screen.blit(self.hpTextSurface, (400, 975))
+            self.screen.blit(self.currManaTextSurface, (500, 975))
+            self.screen.blit(currManaIcon, self.currManaRect)
             '''
             self.screen.blit(self.screen, self.defenseRect)
             self.screen.blit(self.screen, self.speedRect)
@@ -202,6 +219,7 @@ class ScoreHUD:
         self.score = score
         self.scoreTextSurface = myfont.render(str(self.score), False, (255, 255, 255))
         self.active = 1
+
     def toggle(self): 
         if(self.active): 
             self.active = 0
@@ -212,11 +230,10 @@ class ScoreHUD:
         self.score = score
         self.scoreTextSurface = myfont.render(str(self.score), False, (255, 255, 255))
 
-
     def execute(self): 
         if(self.active): 
+            self.screen.blit(uiBorders2, (857, 0), (250, 275, 165, 50)) 
             self.screen.blit(self.scoreTextSurface, (930, 15))
-
 def checkDeco(weapon, screen): 
     '''
     if(isInstance(weapon, FlamingDeco)):
@@ -244,6 +261,7 @@ class WeaponsHUD:
         self.shotgunRect = self.shotgunRect.move(1595, 935)
         self.machineGunRect = machineGunSprite.get_rect()
         self.machineGunRect = self.machineGunRect.move(1665, 935)
+
     def toggle(self): 
         if(self.active): 
             self.active = 0

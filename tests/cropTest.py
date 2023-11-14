@@ -1,5 +1,5 @@
 import pygame
-DEBUG = 1
+DEBUG = 0
 #NOTE: .convert_alpha()
 image = pygame.image.load("Assets/UIBorders.png")
 image = pygame.transform.scale_by(image, 3)

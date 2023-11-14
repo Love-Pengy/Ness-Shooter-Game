@@ -29,7 +29,8 @@ defaultStats ={
         "attack" : 0, 
         "defense" : 0, 
         "speed" : 0,
-        "hp" : 100
+        "hp" : 100, 
+        "mana" : 50
         }
 
 #another placeholder
@@ -115,6 +116,7 @@ def statGen():
             defaultStats["defense"] = val
             defaultStats["speed"] = val
             defaultStats["hp"] = val
+            defaultStats["mana"] = val
             yield
         else: 
             yield 
