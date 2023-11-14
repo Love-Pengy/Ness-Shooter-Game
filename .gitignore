@@ -1,3 +1,5 @@
 *.un~
 *.md~
 .vscode
+__pycache__/
+.pyc
