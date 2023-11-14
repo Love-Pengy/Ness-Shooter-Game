@@ -1,15 +1,15 @@
 import pygame, sys, csv
 import Classes.GraphicDesign as GraphicDesign
-from Entity import *
+from Classes.Entity import *
 
 class TileProperties:
     def __init__(self, TILETYPES):
         self.tile_list = []
         self.IsCollider = []
         self.tile_names = []
-        self.Data = open("tiles/TileData.txt")
+        self.Data = open("map/tiles/TileData.txt")
         for x in range(TILETYPES):
-            tile = pygame.image.load(f"tiles/{x}.png")
+            tile = pygame.image.load(f"map/tiles/{x}.png")
             tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
             self.tile_list.append(tiletransform)
             self.Collision()
@@ -32,7 +32,7 @@ class screen(TileProperties):
             self.screen.append(r)
     def load(self,CurrentX,CurrentY):
         print("Now Loading...")
-        with open(f'map/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+        with open(f'map/Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
