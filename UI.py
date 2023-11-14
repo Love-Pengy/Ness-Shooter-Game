@@ -6,7 +6,7 @@
 #File David made that allows buttons to be created and checked for pressed attribute
 from Button import Button
 import pygame
-DEBUG = 1
+DEBUG = 0
 
 pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 30)
@@ -14,39 +14,39 @@ myfont = pygame.font.SysFont('Comic Sans MS', 30)
 #usage: 
 #label = myfont.render("wanted text", num, color)
 
-uiBorders = pygame.image.load("Assets/UIBorders.png")
+uiBorders = pygame.image.load("UIAssets/UIBorders.png")
 uiBorders = pygame.transform.scale_by(uiBorders, 3)
 
-uiBorders2 = pygame.image.load("Assets/UIBorders2.png")
+uiBorders2 = pygame.image.load("UIAssets/UIBorders2.png")
 uiBorders2 = pygame.transform.scale_by(uiBorders2, 1.5)
 
 
-currManaIcon = pygame.image.load("Assets/manaIcon.png")
+currManaIcon = pygame.image.load("UIAssets/manaIcon.png")
 currManaIcon = pygame.transform.scale(currManaIcon, (55, 45))
 
-pistolSprite = pygame.image.load("Assets/Pistol.png")
+pistolSprite = pygame.image.load("UIAssets/Pistol.png")
 pistolSprite = pygame.transform.scale(pistolSprite, (55, 45))
-shotgunSprite = pygame.image.load("Assets/Shotgun.png")
+shotgunSprite = pygame.image.load("UIAssets/Shotgun.png")
 shotgunSprite = pygame.transform.scale(shotgunSprite, (55, 45))
-machineGunSprite = pygame.image.load("Assets/MachineGun.png")
+machineGunSprite = pygame.image.load("UIAssets/MachineGun.png")
 machineGunSprite = pygame.transform.scale(machineGunSprite, (55, 45))
 
-healthIcon = pygame.image.load("Assets/Health_Icon.png")
+healthIcon = pygame.image.load("UIAssets/Health_Icon.png")
 healthIcon = pygame.transform.scale(healthIcon, (40, 40))
-continueButton = pygame.image.load("Assets/ContinueButton.png")
-exitButton = pygame.image.load("Assets/ExitButton.png")
-baseDamageIcon = pygame.image.load("Assets/Damage_Icon_Base.png")
+continueButton = pygame.image.load("UIAssets/ContinueButton.png")
+exitButton = pygame.image.load("UIAssets/ExitButton.png")
+baseDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Base.png")
 #https://stackoverflow.com/questions/27576645/how-to-overcome-python-fonts-pygame-not-being-loaded
 baseDamageIcon = pygame.transform.scale(baseDamageIcon, (50, 50))
-frostyDamageIcon = pygame.image.load("Assets/Damage_Icon_Frosty.png")
-flamingDamageIcon = pygame.image.load("Assets/Damage_Icon_Flaming.png")
-speedIcon = pygame.image.load("Assets/Speed_Icon.png")
+frostyDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Frosty.png")
+flamingDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Flaming.png")
+speedIcon = pygame.image.load("UIAssets/Speed_Icon.png")
 speedIcon = pygame.transform.scale(speedIcon, (50, 50))
-defenseIcon = pygame.image.load("Assets/Defense_Icon.png")
+defenseIcon = pygame.image.load("UIAssets/Defense_Icon.png")
 defenseIcon = pygame.transform.scale(defenseIcon, (40, 40))
-healthItemIcon = pygame.image.load("Assets/Health_Item_Icon.png")
+healthItemIcon = pygame.image.load("UIAssets/Health_Item_Icon.png")
 healthItemIcon = pygame.transform.scale(healthItemIcon, (40, 40))
-manaIcon = pygame.image.load("Assets/Mana_Icon.png")
+manaIcon = pygame.image.load("UIAssets/Mana_Icon.png")
 manaIcon = pygame.transform.scale(manaIcon, (40, 40))
 
 class UIManager:
