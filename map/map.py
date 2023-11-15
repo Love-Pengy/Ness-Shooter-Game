@@ -1,7 +1,7 @@
 import pygame, sys, csv
-import Classes.GraphicDesign as GraphicDesign
-from Classes.Entity import *
-
+import map.Classes.GraphicDesign as GraphicDesign
+from map.Classes.Entity import *
+ 
 class TileProperties:
     def __init__(self, TILETYPES):
         self.tile_list = []
@@ -21,12 +21,13 @@ class TileProperties:
         TileData = CurrentTileProperties.split()
         self.tile_names.append(TileData[0])
         self.IsCollider.append(int(TileData[1]))
+
 class screen(TileProperties):
-    def __init__(self, Tile, MAPWIDTH, MAPHEIGHT):
+    def __init__(self, Tile, MAPWIDTH, MAPHEIGHT, DISPLAY):
         self.Tiles = Tile.tile_list
         self.IsCollider = Tile.IsCollider
         self.screen = []
-        
+        self.DISPLAY = DISPLAY
         for row in range(MAPHEIGHT + 1):
             r = [0] * MAPWIDTH
             self.screen.append(r)
@@ -38,10 +39,13 @@ class screen(TileProperties):
                 for y, tile in enumerate(row):
                     self.screen[x][y] = int(tile)
         print("Load Complete!")
-    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE):
+
+    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE, DISPLAY):
+        self.DISPLAY = DISPLAY
         for row in range(MAPHEIGHT): #Rows
             for col in range(MAPWIDTH): #Columns
-                DISPLAY.blit(self.Tiles[self.screen[row][col]],(col*TILESIZE,row*TILESIZE))
+                self.DISPLAY.blit(self.Tiles[self.screen[row][col]],(col*TILESIZE,row*TILESIZE))
+
 class CollisionLayer():
     def __init__(self, DISPLAY, Currentscreen, width, height,TILESIZE):
         self.display = DISPLAY
@@ -79,7 +83,7 @@ class Map():
         self.MAPHEIGHT = 24
         self.tiles = TileProperties(self.TILETYPES)
         self.color = GraphicDesign.ColorList()
-        self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT)
+        self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
         self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
@@ -103,7 +107,9 @@ class Map():
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Down
             self.player.rect.y = 1 * self.TILESIZE
         return self.PlayerScreen
-    def update(self):
+
+    def update(self, DISPLAY):
+        self.DISPLAY = DISPLAY
         mouse_pos = pygame.mouse.get_pos()
         keys = pygame.key.get_pressed()
         #Change player position based off input
@@ -111,11 +117,11 @@ class Map():
         self.player.setDirection(mouse_pos)
         self.PlayerScreen = self.transition()
         #update display
-        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE)
+        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY)
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
         self.player.update(self.DISPLAY,keys)
-        pygame.display.update()
+        # pygame.display.update()
 
 FPS = 60
 TILESIZE = 40
@@ -124,6 +130,7 @@ MAPHEIGHT = 24
 
 
 #Create Display
+'''
 pygame.init()
 clock = pygame.time.Clock()
 DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
@@ -138,3 +145,4 @@ while True:
             pygame.quit()
             sys.exit()
     map.update()
+'''    

@@ -141,20 +141,20 @@ class StatHUD:
         self.screen = screen
         self.active = 1
         self.attackRect = baseDamageIcon.get_rect()
-        self.attackRect = self.attackRect.move(50, 950)
+        self.attackRect = self.attackRect.move(10, 900)
         self.attackTextSurface = myfont.render(str(self.attack), False, (255,255, 255))
         #self.textSurface = self.textSurface.move(100, 950)
         self.defenseRect = defenseIcon.get_rect()
-        self.defenseRect = self.defenseRect.move(150, 960)
+        self.defenseRect = self.defenseRect.move(100, 910)
         self.defenseTextSurface = myfont.render(str(self.defense), False, (255, 255, 255))
         self.speedRect = speedIcon.get_rect()
-        self.speedRect = self.speedRect.move(250, 955)
+        self.speedRect = self.speedRect.move(185, 905)
         self.speedTextSurface = myfont.render(str(self.speed), False, (255, 255, 255))
         self.hpRect = healthIcon.get_rect()
-        self.hpRect = self.hpRect.move(350, 962)
+        self.hpRect = self.hpRect.move(265, 912)
         self.hpTextSurface = myfont.render(str(self.hp), False, (255, 255, 255))
         self.currManaRect = manaIcon.get_rect()
-        self.currManaRect = self.currManaRect.move(440, 960)
+        self.currManaRect = self.currManaRect.move(360, 910)
 
         if(DEBUG): 
             print(f"{self.attack=}, {self.defense=}, {self.speed=}, {self.hp=}, {self.mana=}")
@@ -198,14 +198,14 @@ class StatHUD:
         if(self.active): 
             #self.screen.blit(image, rectangle)
             self.screen.blit(baseDamageIcon, self.attackRect)
-            self.screen.blit(self.attackTextSurface, (100,975))
+            self.screen.blit(self.attackTextSurface, (65,920))
             self.screen.blit(defenseIcon, self.defenseRect)
-            self.screen.blit(self.defenseTextSurface, (200,975))
+            self.screen.blit(self.defenseTextSurface, (155,920))
             self.screen.blit(speedIcon, self.speedRect)
-            self.screen.blit(self.speedTextSurface, (300, 975))
+            self.screen.blit(self.speedTextSurface, (245, 920))
             self.screen.blit(healthIcon, self.hpRect)
-            self.screen.blit(self.hpTextSurface, (400, 975))
-            self.screen.blit(self.currManaTextSurface, (500, 975))
+            self.screen.blit(self.hpTextSurface, (320, 920))
+            self.screen.blit(self.currManaTextSurface, (420, 920))
             self.screen.blit(currManaIcon, self.currManaRect)
             '''
             self.screen.blit(self.screen, self.defenseRect)
@@ -233,8 +233,9 @@ class ScoreHUD:
 
     def execute(self): 
         if(self.active): 
-            self.screen.blit(uiBorders2, (857, 0), (250, 275, 165, 50)) 
-            self.screen.blit(self.scoreTextSurface, (930, 15))
+            self.screen.blit(uiBorders2, (817, 0), (250, 275, 165, 50)) 
+            self.screen.blit(self.scoreTextSurface, (900, 15))
+
 def checkDeco(weapon, screen): 
     '''
     if(isInstance(weapon, FlamingDeco)):
@@ -257,11 +258,11 @@ class WeaponsHUD:
         self.machineGun = weapons["machineGun"]
         self.active = 1
         self.pistolRect = pistolSprite.get_rect()
-        self.pistolRect = self.pistolRect.move(1522, 935)
+        self.pistolRect = self.pistolRect.move(1522, 885)
         self.shotgunRect = shotgunSprite.get_rect()
-        self.shotgunRect = self.shotgunRect.move(1595, 935)
+        self.shotgunRect = self.shotgunRect.move(1595, 885)
         self.machineGunRect = machineGunSprite.get_rect()
-        self.machineGunRect = self.machineGunRect.move(1665, 935)
+        self.machineGunRect = self.machineGunRect.move(1665, 885)
 
     def toggle(self): 
         if(self.active): 
@@ -281,7 +282,7 @@ class WeaponsHUD:
             if(DEBUG): 
                 print(f"{self.pistol=}, {self.shotgun=}, {self.machineGun=}")
             #this is crop for weapons bar (location of blit, location of contents for crop, dimensions of crop)
-            self.screen.blit(uiBorders, (1500, 925), (2300, 150, 250, 75))
+            self.screen.blit(uiBorders, (1500, 875), (2300, 150, 250, 75))
             if(self.pistol):
                 #checks for power up, if found it blits the associated icon
                 checkDeco(self.pistol, self.screen)
@@ -306,9 +307,9 @@ class ItemsHUD:
         self.manaPots = items["manaPotions"]
         self.active = 1
         self.hPotRect = healthItemIcon.get_rect()
-        self.hPotRect = self.hPotRect.move(1492, 843)
+        self.hPotRect = self.hPotRect.move(1492, 743)
         self.mPotRect = manaIcon.get_rect()
-        self.mPotRect = self.mPotRect.move(1703, 843)
+        self.mPotRect = self.mPotRect.move(1703, 743)
         self.hPotTextSurface = myfont.render(str(self.healthPots), False, (255, 255, 255))
         self.mPotTextSurface = myfont.render(str(self.manaPots), False, (255, 255, 255))
         self.emptyhPotTextSurface = myfont.render("~", False, (255, 255, 255))
@@ -331,15 +332,15 @@ class ItemsHUD:
             print(f"{self.active=}, {self.healthPots=}, {self.manaPots=}")
 
         if(self.active): 
-            self.screen.blit(uiBorders, (1475, 825), (2125, 425, 300, 75)) 
+            self.screen.blit(uiBorders, (1475, 785), (2125, 425, 300, 75)) 
             if(self.healthPots): 
-                self.screen.blit(self.hPotTextSurface, (1576, 855))
+                self.screen.blit(self.hPotTextSurface, (1576, 815))
                 self.screen.blit(healthItemIcon, self.hPotRect)
             else: 
-                self.screen.blit(self.emptyhPotTextSurface, (1580, 855))
+                self.screen.blit(self.emptyhPotTextSurface, (1580, 815))
             if(self.manaPots): 
-                self.screen.blit(self.mPotTextSurface, (1633, 855))
+                self.screen.blit(self.mPotTextSurface, (1633, 815))
                 self.screen.blit(manaIcon, self.mPotRect)
             else: 
-                self.screen.blit(self.emptymPotTextSurface, (1636, 855))
+                self.screen.blit(self.emptymPotTextSurface, (1636, 815))
 
