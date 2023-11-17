@@ -8,6 +8,13 @@
 from Button import Button
 import pygame
 DEBUG = 0
+# https://stackoverflow.com/questions/6339057/draw-a-transparent-rectangles-and-polygons-in-pygame # got function to draw semi-transparent shape from here
+# https://www.pygame.org/docs/ref/surface.html // learning what SRCALPHA is
+#color is RGBA 
+def draw_rect_alpha(screen, color, rect):
+    shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+    pygame.draw.rect(shape_surf, color, shape_surf.get_rect())
+    screen.blit(shape_surf, rect)
 
 pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 30)
@@ -98,8 +105,8 @@ class UIManager:
 class PauseMenu: 
     
     def __init__(self, screen): 
-        self.continueB = Button(screen, 100, 500, continueButton)
-        self.exitB = Button(screen, 1400, 500, exitButton)
+        self.continueB = Button(screen, 200, 480, continueButton)
+        self.exitB = Button(screen, 1300, 480, exitButton)
         #maybe instead of drawing a boring ass box I can make the bg have a gauss blur
         self.active = 0
         self.eligibleToggle = True 
@@ -154,8 +161,7 @@ class StatHUD:
         self.hpRect = self.hpRect.move(265, 912)
         self.hpTextSurface = myfont.render(str(self.hp), False, (255, 255, 255))
         self.currManaRect = manaIcon.get_rect()
-        self.currManaRect = self.currManaRect.move(360, 910)
-
+        self.currManaRect = self.currManaRect.move(360, 910) 
         if(DEBUG): 
             print(f"{self.attack=}, {self.defense=}, {self.speed=}, {self.hp=}, {self.mana=}")
         '''
@@ -196,7 +202,9 @@ class StatHUD:
     def execute(self): 
         #draw everything to the screen if active
         if(self.active): 
-            #self.screen.blit(image, rectangle)
+            # draw_rect_alpha(self.screen, (0, 0, 0), (10, 20, 30, 40))
+            #first set: RGBA ; Second set: X, Y, width, height
+            draw_rect_alpha(self.screen, (0, 0, 0, 75), (0, 900, 465, 65))
             self.screen.blit(baseDamageIcon, self.attackRect)
             self.screen.blit(self.attackTextSurface, (65,920))
             self.screen.blit(defenseIcon, self.defenseRect)
@@ -332,7 +340,7 @@ class ItemsHUD:
             print(f"{self.active=}, {self.healthPots=}, {self.manaPots=}")
 
         if(self.active): 
-            self.screen.blit(uiBorders, (1475, 785), (2125, 425, 300, 75)) 
+            self.screen.blit(uiBorders, (1475, 790), (2125, 430, 300, 70)) 
             if(self.healthPots): 
                 self.screen.blit(self.hPotTextSurface, (1576, 815))
                 self.screen.blit(healthItemIcon, self.hPotRect)
