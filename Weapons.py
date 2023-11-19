@@ -16,7 +16,7 @@ class Damage:
 
 # attackSpeed = amount of times per second character can attack
 # reloadSpeed = amount of seconds it takes to reload
-# ammunition = ammo count before reload (add one to the desired value) 
+# ammunition = ammo count before reload  
 # accuracy = max variation of bullets in degrees
 # damageMultiplier = damage multiplier
 #base class for weapons
