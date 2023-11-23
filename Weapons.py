@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from random import randint
+from random import uniform
 from time import time
 #site for learning about random library
 # https://docs.python.org/3/library/random.html#random.randrange
@@ -10,7 +10,7 @@ class Damage:
     type: str # damage type (may or may not be used) 
     amount: int # damage amount
     debuff: str # debuff AKA powerups/decos added to weapons 
-    deviation : int # degree of deviation from straight for bullet 
+    deviation : float # degree of deviation from straight for bullet 
 
 
 
@@ -22,7 +22,7 @@ class Damage:
 #base class for weapons
 
 class Weapon: 
-    def __init__(self, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: int, damageMultiplier: float): 
+    def __init__(self, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: float, damageMultiplier: float): 
         self.attackSpeed = attackSpeed
         self.reloadSpeed = reloadSpeed
         self.maxAmmo = ammunition
@@ -45,7 +45,7 @@ class Weapon:
                 self.reloading = False
                 self.currAmmo = self.maxAmmo
                 self.currAmmo -= 1
-                return(Damage("normal", (100 * self.damageMult), None, randint((self.acc * -1), self.acc)))
+                return(Damage("normal", (100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1)))
             else: 
                 return(None)
                 
@@ -55,7 +55,7 @@ class Weapon:
             return(None) 
         self.lastShotTime = time()
         self.currAmmo -= 1
-        return(Damage("normal", (100 * self.damageMult), None, randint((self.acc * -1), (self.acc))))
+        return(Damage("normal", (100 * self.damageMult), None, round(uniform((self.acc * -1), (self.acc)), 1)))
 
 
 #class for Flaming Deco
@@ -76,7 +76,7 @@ class FlamingDeco:
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return(Damage("Fire", (100 * self.weapon.damageMult), "Flaming", randint((self.weapon.acc * -1), self.weapon.acc)))
+                return(Damage("Fire", (100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1)))
             else: 
                 return(None)
                 
@@ -86,7 +86,7 @@ class FlamingDeco:
             return(None) 
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return(Damage("Fire", (100 * self.weapon.damageMult), "Flaming", randint((self.weapon.acc * -1), (self.weapon.acc))))
+        return(Damage("Fire", (100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), (self.weapon.acc)), 1)))
     
 #class for Frosty Deco 
 class FrostyDeco: 
@@ -107,7 +107,7 @@ class FrostyDeco:
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return(Damage("Ice", (100 * self.weapon.damageMult), "Frosty", randint((self.weapon.acc * -1), self.weapon.acc)))
+                return(Damage("Ice", (100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1)))
             else: 
                 return(None)
                 
@@ -117,7 +117,7 @@ class FrostyDeco:
             return(None) 
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return(Damage("Ice", (100 * self.weapon.damageMult), "Frosty", randint((self.weapon.acc * -1), (self.weapon.acc))))
+        return(Damage("Ice", (100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), (self.weapon.acc)), 1)))
     
 #class for Shroom Deco
 class ShroomDeco: 
@@ -139,7 +139,7 @@ class ShroomDeco:
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return(Damage("Earth", (100 * self.weapon.damageMult), "Shroom", randint((self.weapon.acc * -1), self.weapon.acc)))
+                return(Damage("Earth", (100 * self.weapon.damageMult), "Shroom", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1)))
             else: 
                 return(None)
                 
@@ -149,7 +149,7 @@ class ShroomDeco:
             return(None) 
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return(Damage("Earth", (100 * self.weapon.damageMult), "Shroom", randint((self.weapon.acc * -1), (self.weapon.acc))))
+        return(Damage("Earth", (100 * self.weapon.damageMult), "Shroom",round(uniform((self.weapon.acc * -1), (self.weapon.acc)), 1)))
 
 
 
