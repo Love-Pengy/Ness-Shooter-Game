@@ -177,7 +177,46 @@ class SerpentEnemy(Entity):
         rotated_rect = rotated_image.get_rect()
         rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
         window.blit(rotated_image,rotated_rect)
-        
+
+class SerpentEnemy(Entity):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
+
+        self.image = self.enemy_anim.getFrame(0,0,96,96)
+        self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
+        self.image.set_colorkey((0,0,0)) 
+        self.direction = 0
+
+        #Entity velocity 
+        self.vel_x = 2
+        self.vel_y = 2
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+
+    def findPlayer(self, player):
+        x = self.rect.x - player.rect.x
+        y = self.rect.y - player.rect.y
+        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
+  
+
+
+    def update(self,window):
+        rotated_image = pygame.transform.rotate(self.image, self.direction)
+        rotated_rect = rotated_image.get_rect()
+        rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
+        window.blit(rotated_image,rotated_rect)
+
+
+
+
 class SpriteAnimation:
     """
     Implements interface for splitting up spritesheets
@@ -214,7 +253,8 @@ class SpriteAnimation:
         return self.frames[name]
 
     def nextAnim(self):
-        if (self.count == 10):
+        #switches sprites twice a second
+        if (self.count == 30):
             self.next = not self.next
             self.count = 0
         self.count += 1

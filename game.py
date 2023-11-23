@@ -65,7 +65,7 @@ class Game:
         self.UI = UIManager(self.weapons, self.items, self.stats, self.score, self.screen)
 
         while True:
-            self.clock.tick(self.FPS)
+            #self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -75,7 +75,7 @@ class Game:
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
             pygame.display.flip()
             # pygame.display.update()
-            self.clock.tick(60)
+            self.clock.tick(self.FPS)
 
 
 if __name__ == "__main__":
