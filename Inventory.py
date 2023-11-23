@@ -74,11 +74,20 @@ class InventoryManager:
     def useItem(self, item): 
         if(isinstance(item, int)): 
             return(self.score.use(item))
-        #fix this shit its bad
         if(isinstance(item, str)): 
-            return(self.item.use(item))
+            return(self.items.use(item))
         else: 
             return(self.weapons.use(item))
+    #itemType can be passed Weapon, str (where you specify what it is. Ex. healtPots), or int (score)
+    #returns None if nonvalid itemType
+    def getItem(self, itemType): 
+        if(itemType is Weapon): 
+            return(self.weapons.get())
+        if(itemType is int): 
+            return(self.score.get())
+        if(isinstance(itemType, str)): 
+            return(self.items.get(itemType))
+        return(None)
 
 #possible instances: 
 class WeaponInventory: 
@@ -114,6 +123,9 @@ class WeaponInventory:
                 return(self.weapons[getIndexToReplace(item, self.weapons)].use())
             else: 
                 return(None)
+    def get(self): 
+        print(self.weapons)
+
 class ItemsInventory: 
     
     def __init__(self): 
@@ -121,11 +133,11 @@ class ItemsInventory:
         self.manaPots = 0
         self.powerUps = dict() 
     
-    def add(self, item: str): 
-        if(item == "healthPots"): 
+    def add(self, item: str):
+        if(item == "healthPot"): 
             self.healthPots += 1
 
-        if(item == "manaPots"): 
+        if(item == "manaPot"): 
             self.manaPots += 1
             
         else:
@@ -135,12 +147,12 @@ class ItemsInventory:
                 self.powerUps[item] = 1
     
     def use(self, item: str) -> bool: 
-        if(item == "healthPots"): 
+        if(item == "healthPot"): 
             if(self.healthPots == 0): 
                 return(False)
             self.healthPots -= 1
             return(True)
-        elif(item == "manaPots"): 
+        elif(item == "manaPot"): 
             if(self.manaPots == 0):
                 return(False)
             self.manaPots -= 1
@@ -152,6 +164,14 @@ class ItemsInventory:
             return(True)
         else: 
             print("INVALID ITME PASSED TO 'use' IN 'ItemInventory'")
+
+    def get(self, item) -> int: 
+        if(item == "healthPot"):
+            return(self.healthPots)
+        if(item == "manaPot"): 
+            return(self.manaPots)
+        if(item in self.powerUps): 
+            return(self.powerUps[item])
 
 class ScoreInventory: 
     def __init__(self): 
@@ -170,4 +190,6 @@ class ScoreInventory:
         else: 
            print("INVALID TYPE PASSED TO 'remove' IN 'ScoreInventory'")
            return(False)
-
+    
+    def get(self) -> int: 
+        return(self.score)
