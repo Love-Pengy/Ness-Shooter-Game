@@ -1,7 +1,9 @@
 import pygame
 from UI import UIManager
-
-from map.map import * 
+import projectiles
+from Weapons import Weapon
+from pygame.math import Vector2
+from map.map import * #Could just `import map.map` but ok
 
 DEBUG = 0
 #weapons that user starts game with
@@ -51,7 +53,7 @@ class Game:
 
 
 
-    def loop(self):
+    def loop(self, weapon):
         """
         Primary game loop. This should be
         run perpetually until the game is
@@ -69,6 +71,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Left mouse button clicked
+                    mouse_pos = pygame.mouse.get_pos()
+                    weapon.fire(Vector2(mouse_pos[0], mouse_pos[1]), Vector2(1,0))
             self.screen.fill("black")
             self.map.update(self.screen)
             keys = pygame.key.get_pressed()
@@ -80,4 +85,5 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    game.loop()
+    weapon = Weapon(1.0, 2.0, 10, 5, 1.0)
+    game.loop(weapon)
