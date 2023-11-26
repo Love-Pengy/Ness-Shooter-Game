@@ -200,11 +200,15 @@ class GolemEnemy(Entity):
         super().__init__(x,y,width,height)
       
         #Instantiate class to handle sprite animation
-        self.enemy_anim = SpriteAnimation("Entities/golem.png")
+        self.enemy_anims = SpriteAnimation("Entities/golem.png")
+      
+        self.enemy_anims.registerAnim("walk1",pygame.transform.scale(self.enemy_anims.getFrame(0,0,15,27), (width * 1.5, height * 1.7)))
+        self.enemy_anims.registerAnim("walk2",pygame.transform.scale(self.enemy_anims.getFrame(-20,0,15,27), (width * 1.5, height * 1.7)))
+        self.enemy_anims.registerAnim("walk3",pygame.transform.scale(self.enemy_anims.getFrame(-35,0,15,27), (width * 1.5, height * 1.7)))
 
-        self.image = self.enemy_anim.getFrame(0,0,20,20)
-        self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
+        self.image = self.enemy_anims.frames["walk1"]
         self.image.set_colorkey((0,0,0)) 
+       
         self.direction = 0
 
         #Entity velocity 
@@ -216,15 +220,30 @@ class GolemEnemy(Entity):
         self.rect.x, self.rect.y = x, y
 
     def findPlayer(self, player):
-        x = self.rect.x - player.rect.x
-        y = self.rect.y - player.rect.y
+        #Finds the angle the enemy is relative to the player
+        x = self.rect.centerx - player.rect.centerx
+        y = self.rect.centery - player.rect.centery
         self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
   
+    def followPlayer(self, player):
+
+        x = player.rect.centerx - self.rect.centerx
+        y = player.rect.centery - self.rect.centery
+
+        distance = math.hypot(x,y)
+
+        if distance > 100: #If too close to player, stop movement
+            x /= distance
+            y /= distance
+        else:              
+            x = 0
+            y = 0
+
+        self.moveX(x * self.vel_x)
+        self.moveY(y * self.vel_y)
+
     def update(self,window):
-        rotated_image = pygame.transform.rotate(self.image, self.direction)
-        rotated_rect = rotated_image.get_rect()
-        rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
-        window.blit(rotated_image,rotated_rect)
+        window.blit(self.image,self.rect)
 
 
 
@@ -270,6 +289,10 @@ class SpriteAnimation:
             self.next = not self.next
             self.count = 0
         self.count += 1
+
+   
+
+
        
 
     
