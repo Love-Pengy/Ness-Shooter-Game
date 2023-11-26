@@ -245,6 +245,58 @@ class GolemEnemy(Entity):
     def update(self,window):
         window.blit(self.image,self.rect)
 
+class GoblinEnemy(Entity):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anims = SpriteAnimation("Entities/goblinguy.png")
+      
+        self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(-1,0,15,27), (width * 1.5, height * 1.7)))
+        self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-20,0,15,27), (width * 1.5, height * 1.7)))
+        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-35,0,15,27), (width * 1.5, height * 1.7)))
+
+        self.image = self.enemy_anims.frames[0]
+        self.image.set_colorkey((0,0,0)) 
+       
+        self.direction = 0
+
+        #Entity velocity 
+        self.vel_x = 3
+        self.vel_y = 3
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def findPlayer(self, player):
+        #Finds the angle the enemy is relative to the player
+        x = self.rect.centerx - player.rect.centerx
+        y = self.rect.centery - player.rect.centery
+        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
+  
+    def followPlayer(self, player):
+
+        x = player.rect.centerx - self.rect.centerx
+        y = player.rect.centery - self.rect.centery
+
+        distance = math.hypot(x,y)
+
+        if distance > 20: #If too close to player, stop movement
+            x /= distance
+            y /= distance
+        else:              
+            x = 0
+            y = 0
+
+        self.moveX(x * self.vel_x)
+        self.moveY(y * self.vel_y)
+
+    def update(self,window):
+        self.image = self.enemy_anims.nextEnemyAnim()
+        window.blit(self.image,self.rect)
 
 
 
@@ -261,6 +313,7 @@ class SpriteAnimation:
         self.frames = dict() #contains all frames of animation
         self.next = False #moves animation foward
         self.count = 0
+        self.curr_anim = 0#current animation in animation cycle
 
     def registerAnim(self,name,image):
         """
@@ -289,6 +342,21 @@ class SpriteAnimation:
             self.next = not self.next
             self.count = 0
         self.count += 1
+
+    def nextEnemyAnim(self):
+        temp_dict = list(self.frames)
+        #Alternates the enemy walking sprite
+        if (self.count == 60):
+            self.count = 0
+            
+           
+        
+        self.curr_anim += 1
+        if(self.curr_anim == len(temp_dict))-1:
+            self.curr_anim = 0
+        temp_anim = self.frames[self.curr_anim]
+        self.count += 1
+        return temp_anim
 
    
 

@@ -88,7 +88,8 @@ class Map():
         self.DISPLAY = DISPLAY
         self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
         self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = GolemEnemy(17*TILESIZE,12*TILESIZE,50,50)
+        self.enemy2 = GolemEnemy(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy3 = GoblinEnemy(12*TILESIZE,6*TILESIZE,50,50)
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
 
@@ -132,6 +133,9 @@ class Map():
 
         self.enemy2.followPlayer(self.player)
         self.enemy2.update(self.DISPLAY)
+
+        self.enemy3.followPlayer(self.player)
+        self.enemy3.update(self.DISPLAY)
         # pygame.display.update()
 
 FPS = 60
