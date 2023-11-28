@@ -7,6 +7,7 @@ from pygame.math import Vector2
 
 # site for learning about random library
 # https://docs.python.org/3/library/random.html#random.randrange
+
 DEBUG = 0
 
 # driver struct for weapon actions
@@ -25,7 +26,8 @@ class Damage:
 # damageMultiplier = damage multiplier
 # base class for weapons
 class Weapon:
-    def __init__(self, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: int, damageMultiplier: float):
+    def __init__(self, game, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: int, damageMultiplier: float):
+        self.game = game
         self.attackSpeed = attackSpeed
         self.reloadSpeed = reloadSpeed
         self.maxAmmo = ammunition
@@ -64,12 +66,12 @@ class Weapon:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.damage.amount)
-        game.projectiles.append(proj)
+        self.game.projectiles.append(proj)
 
 
 # class for Flaming Deco
 class FlamingDeco:
-    def __init__(self, weapon):
+    def __init__(self, game, weapon):
         self.weapon = weapon
 
     def use(self) -> Damage:
@@ -100,12 +102,12 @@ class FlamingDeco:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        game.projectiles.append(proj)
+        self.game.projectiles.append(proj)
 
 
 # class for Frosty Deco
 class FrostyDeco:
-    def __init__(self, weapon):
+    def __init__(self, game, weapon):
         self.weapon = weapon
 
     def use(self) -> Damage:
@@ -137,12 +139,12 @@ class FrostyDeco:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        game.projectiles.append(proj)
+        self.game.projectiles.append(proj)
 
 
 # class for Shroom Deco
 class ShroomDeco:
-    def __init__(self, weapon):
+    def __init__(self, game, weapon):
         self.weapon = weapon
 
     # earth could potentially also be called poison but I don't think it really matters
@@ -175,4 +177,4 @@ class ShroomDeco:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        game.projectiles.append(proj)
+        self.game.projectiles.append(proj)

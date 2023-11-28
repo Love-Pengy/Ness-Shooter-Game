@@ -3,30 +3,33 @@ from UI import UIManager
 import projectiles
 from Weapons import Weapon
 from pygame.math import Vector2
-from map.map import * #Could just `import map.map` but ok
+from map.map import *
+from Entities.Entity import *
 
 DEBUG = 0
-#weapons that user starts game with
+
+# weapons that user starts game with
 defaultWeapons = {
-        "pistol" : "placeholder",  
-        "shotgun" : None, 
-        "machineGun" : None
-        }
+    "pistol": "placeholder",
+    "shotgun": None,
+    "machineGun": None
+}
 
-#default Items
-defaultItems ={
-        "healthPotions" : None, 
-        "manaPotions" : None
-        }
+# default Items
+defaultItems = {
+    "healthPotions": None,
+    "manaPotions": None
+}
 
-#default stats
-defaultStats ={
-        "attack" : 0, 
-        "defense" : 0, 
-        "speed" : 0,
-        "hp" : 100, 
-        "mana" : 50
-        }
+# default stats
+defaultStats = {
+    "attack": 0,
+    "defense": 0,
+    "speed": 0,
+    "hp": 100,
+    "mana": 50
+}
+
 
 class Game:
     def __init__(self):
@@ -36,6 +39,7 @@ class Game:
         @width : sets width of the screen
         @height : sets height of the screen
         """
+        self.projectiles = []
         self.FPS = 60
         self.TILESIZE = 40
         self.MAPWIDTH = 45
@@ -51,9 +55,17 @@ class Game:
             pygame.KEYDOWN
         ])
 
+    def create_weapon(self):
+        # Placeholder values
+        attackSpeed = 1.0
+        reloadSpeed = 2.0
+        ammunition = 10
+        accuracy = 100
+        damageMultiplier = 1.0
+        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier)
+        return weapon
 
-
-    def loop(self, weapon):
+    def loop(self):
         """
         Primary game loop. This should be
         run perpetually until the game is
@@ -65,17 +77,23 @@ class Game:
         self.stats = defaultStats
         self.score = 0
         self.UI = UIManager(self.weapons, self.items, self.stats, self.score, self.screen)
-
+        weapon = self.create_weapon()
         while True:
-            #self.clock.tick(self.FPS)
+            # self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Left mouse button clicked
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button clicked
+                    player_rect = Player.getPlayerRect()
+                    player_center = Vector2(Player.setDirection.rect.centerx, Player.setDirection.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
-                    weapon.fire(Vector2(mouse_pos[0], mouse_pos[1]), Vector2(1,0))
+                    weapon.fire(player_center, Player.setDirection.player_dir)
             self.screen.fill("black")
             self.map.update(self.screen)
+            # Update projectiles
+            for p in self.projectiles:
+                p.update()
+                p.draw(self.screen)
             keys = pygame.key.get_pressed()
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
             pygame.display.flip()
@@ -85,5 +103,4 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    weapon = Weapon(1.0, 2.0, 10, 5, 1.0)
-    game.loop(weapon)
+    game.loop()
