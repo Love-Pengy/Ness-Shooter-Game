@@ -84,7 +84,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button clicked
-                    player_rect = Player.getPlayerRect()
+                    player_rect = Map.player.rect
                     player_center = Vector2(Player.setDirection.rect.centerx, Player.setDirection.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
                     weapon.fire(player_center, Player.setDirection.player_dir)

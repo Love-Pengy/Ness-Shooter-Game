@@ -138,11 +138,6 @@ class Player(Entity):
         if pressed[pygame.K_d]:
             self.moveX(self.vel_x)    
         
-    @classmethod # https://stackoverflow.com/questions/12179271/meaning-of-classmethod-and-staticmethod-for-beginner
-    def getPlayerRect(cls):
-        return pygame.Rect(cls.player.rect)
-
-
 class SerpentEnemy(Entity):
 
     def __init__(self, x, y, width, height):
