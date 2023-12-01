@@ -97,8 +97,9 @@ class Game:
                 p.draw(self.screen)
 				#Debug
                 with open("prjdebug.log", "a") as f:
+                    f.truncate(0)
                     print(p, file = f)
-                    print("Projectile X position: ", p.x, "Projectile Y position: ", p.y, file = f)
+                    print("Projectile X position:", p.x, "Projectile Y position:", p.y, file = f)
                 pygame.draw.circle(self.screen, (255, 0, 0), (100,100), 25) # Red circle to indicate that the file has been written
             keys = pygame.key.get_pressed()
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
