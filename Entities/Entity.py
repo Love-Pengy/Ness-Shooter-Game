@@ -95,10 +95,10 @@ class Player(Entity):
         y = mouse_pos[1] - self.rect.centery
 
         # Direction player is aiming in degrees 
-        player_dir = (math.degrees(math.atan2(-y, x)) + 360) % 360
+        self.player_dir = (math.degrees(math.atan2(-y, x)) + 360) % 360
 
         # Direction player is facing split into 8 directions to determine correct sprite     
-        player_facing = int(player_dir / 45)
+        player_facing = int(self.player_dir / 45)
 
         if player_facing == 0:
             self.image = self.player_anims.frames["walk_right1"] if self.player_anims.next else self.player_anims.frames["walk_right2"]
@@ -116,6 +116,7 @@ class Player(Entity):
             self.image = self.player_anims.frames["walk_down1"] if self.player_anims.next else self.player_anims.frames["walk_down2"]
         elif player_facing == 7:
             self.image = self.player_anims.frames["walk_se1"] if self.player_anims.next else self.player_anims.frames["walk_se2"]
+		
    
     def processInput(self, pressed):
         if pressed[pygame.K_w] or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:

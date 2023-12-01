@@ -47,7 +47,8 @@ class Game:
         pygame.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
-        self.map = Map(self.screen)
+        self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
+        self.map = Map(self.player,self.screen)
         # this allows us to filter the event queue
         # for faster event processing
         pygame.event.set_allowed([
@@ -84,16 +85,21 @@ class Game:
                 if event.type == pygame.QUIT:
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button clicked
-                    player_rect = Map.player.rect
-                    player_center = Vector2(Player.setDirection.rect.centerx, Player.setDirection.rect.centery)
+                    player_rect = self.player.rect
+                    player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
-                    weapon.fire(player_center, Player.setDirection.player_dir)
+                    projectiles = weapon.fire(player_center, self.player.player_dir)
             self.screen.fill("black")
             self.map.update(self.screen)
             # Update projectiles
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
+				#Debug
+                with open("prjdebug.log", "a") as f:
+                    print(p, file = f)
+                    print("Projectile X position: ", p.x, "Projectile Y position: ", p.y, file = f)
+                pygame.draw.circle(self.screen, (255, 0, 0), (100,100), 25) # Red circle to indicate that the file has been written
             keys = pygame.key.get_pressed()
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
             pygame.display.flip()
