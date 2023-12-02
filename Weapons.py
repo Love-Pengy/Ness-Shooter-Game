@@ -66,7 +66,8 @@ class Weapon:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.damage.amount)
-        self.game.projectiles.append(proj)
+        return self.game.projectiles.append(proj)
+        
 
 
 # class for Flaming Deco
@@ -102,7 +103,7 @@ class FlamingDeco:
     def fire(self, position, direction):
         speed = 5.0  # Placeholder value
         proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        return self.game.projectiles.append(proj)
+        self.game.projectiles.append(proj)
 		
 
 

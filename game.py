@@ -88,19 +88,20 @@ class Game:
                     player_rect = self.player.rect
                     player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
-                    projectiles = weapon.fire(player_center, self.player.player_dir)
+                    new_projectiles = weapon.fire(player_center, self.player.player_dir)
+                    if new_projectiles is not None:
+                        self.projectiles.extend(new_projectiles)
             self.screen.fill("black")
             self.map.update(self.screen)
             # Update projectiles
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
-				#Debug
+                # Debug
                 with open("prjdebug.log", "a") as f:
-                    f.truncate(0)
-                    print(p, file = f)
-                    print("Projectile X position:", p.x, "Projectile Y position:", p.y, file = f)
-                pygame.draw.circle(self.screen, (255, 0, 0), (100,100), 25) # Red circle to indicate that the file has been written
+                    print(p, file=f)
+                    print("Projectile X position:", p.x, "Projectile Y position:", p.y, file=f)
+                pygame.draw.circle(self.screen, (255, 0, 0), (100, 100), 25)  # Red circle to indicate that the file has been written
             keys = pygame.key.get_pressed()
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
             pygame.display.flip()
