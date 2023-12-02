@@ -13,8 +13,8 @@ class Projectile:
         
     def update(self):
         # Move projectile 
-        self.x += self.position[0] + self.speed  
-        self.y += self.position[1] + self.speed
+        self.x += self.speed  
+        self.y += self.speed
     
     def draw(self, win):
        win.blit(self.image, (self.x, self.y)) # Draws the bullet
