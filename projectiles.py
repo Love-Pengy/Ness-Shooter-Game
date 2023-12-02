@@ -1,5 +1,7 @@
 import pygame
 from pygame.math import Vector2
+from math import cos, sin
+from math import radians as rads
 
 class Projectile:
     def __init__(self, position, direction, speed, damage):
@@ -12,12 +14,12 @@ class Projectile:
         self.image = pygame.image.load("UIAssets/bullet.png") # Here is the bullet
         
     def update(self):
-        # Move projectile 
-        self.x += self.speed  
-        self.y += self.speed
+        # Move projectile, trig functions are from basic vector math 
+        self.x += self.speed * cos(rads(self.direction))
+        self.y += self.speed * sin(rads(self.direction))
     
     def draw(self, win):
-       win.blit(self.image, (self.x, self.y)) # Draws the bullet
+        win.blit(self.image, (self.x, self.y)) # Draws the bullet
            
     def collide(self, enemy):
         # Collision check

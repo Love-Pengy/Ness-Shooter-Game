@@ -63,10 +63,10 @@ class Weapon:
         self.currAmmo -= 1
         return Damage("normal", int(100 * self.damageMult), None, randint(self.acc * -1, self.acc))
 
-    def fire(self, position, direction):
+    def fire(self, position, player_direction):
         speed = 5.0  # Placeholder value
-        proj = projectiles.create_projectile(position, direction, speed, self.damage.amount)
-        return self.game.projectiles.append(proj)
+        proj = projectiles.create_projectile(position, player_direction, speed, self.damage.amount)
+        return [proj]
         
 
 

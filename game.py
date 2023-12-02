@@ -5,6 +5,7 @@ from Weapons import Weapon
 from pygame.math import Vector2
 from map.map import *
 from Entities.Entity import *
+import os.path 
 
 DEBUG = 0
 
@@ -55,6 +56,10 @@ class Game:
             pygame.QUIT,
             pygame.KEYDOWN
         ])
+        try: # Attempt to delete the angle debug file so new data is shown each run
+            os.remove('angledbg.log')
+        except OSError:
+            pass
 
     def create_weapon(self):
         # Placeholder values
@@ -88,7 +93,15 @@ class Game:
                     player_rect = self.player.rect
                     player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
-                    new_projectiles = weapon.fire(player_center, self.player.player_dir)
+                    direction = self.player.player_dir
+					# Debug 2: Electric Boogaloo
+                    if os.path.exists('./angledbg.log') == True:
+                        with open("angledbg.log", "a") as f:
+                            print("Player Direction:", direction, file = f)
+                    else:
+                        with open("angledbg.log", "w") as f:
+                            print("Player direction:", direction, file = f)
+                    new_projectiles = weapon.fire(player_center, math.degrees(self.player.player_dir))
                     if new_projectiles is not None:
                         self.projectiles.extend(new_projectiles)
             self.screen.fill("black")
@@ -97,11 +110,14 @@ class Game:
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
+                """
                 # Debug
                 with open("prjdebug.log", "a") as f:
                     print(p, file=f)
                     print("Projectile X position:", p.x, "Projectile Y position:", p.y, file=f)
                 pygame.draw.circle(self.screen, (255, 0, 0), (100, 100), 25)  # Red circle to indicate that the file has been written
+				# End debug
+				"""
             keys = pygame.key.get_pressed()
             self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
             pygame.display.flip()
@@ -112,3 +128,4 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.loop()
+    
