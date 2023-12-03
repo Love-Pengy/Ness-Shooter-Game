@@ -68,7 +68,8 @@ class Game:
         ammunition = 10
         accuracy = 100
         damageMultiplier = 1.0
-        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier)
+        projectileSpeed = 5 
+        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier, projectileSpeed)
         return weapon
 
     def loop(self):
@@ -103,7 +104,7 @@ class Game:
                             print("Player direction:", direction, file = f)
                     if(DEBUG): 
                         print(f"{player_center=}, {self.player.player_dir=}, {math.degrees(self.player.player_dir)=}")
-                    new_projectiles = weapon.fire(player_center, self.player.player_dir)
+                    new_projectiles = weapon.use(player_center, self.player.player_dir)
                     if new_projectiles is not None:
                         self.projectiles.extend(new_projectiles)
             self.screen.fill("black")

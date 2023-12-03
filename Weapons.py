@@ -1,6 +1,6 @@
 import pygame
 from dataclasses import dataclass
-from random import randint
+from random import uniform
 from time import time
 import projectiles
 from pygame.math import Vector2
@@ -16,7 +16,7 @@ class Damage:
     type: str  # damage type (may or may not be used)
     amount: int  # damage amount
     debuff: str  # debuff AKA powerups/decos added to weapons
-    deviation: int  # degree of deviation from straight for bullet
+    deviation: float  # degree of deviation from straight for bullet
 
 
 # attackSpeed = amount of times per second character can attack
@@ -24,9 +24,11 @@ class Damage:
 # ammunition = ammo count before reload
 # accuracy = max variation of bullets in degrees
 # damageMultiplier = damage multiplier
+# projectileSpeeed = speed at which the projectiles travel 
+
 # base class for weapons
 class Weapon:
-    def __init__(self, game, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: int, damageMultiplier: float):
+    def __init__(self, game, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: float, damageMultiplier: float, projectileSpeed: float):
         self.game = game
         self.attackSpeed = attackSpeed
         self.reloadSpeed = reloadSpeed
@@ -36,37 +38,37 @@ class Weapon:
         self.reloading = False
         self.lastShotTime = 0
         self.currAmmo = ammunition
-        self.damage = Damage("normal", int(100 * self.damageMult), None, 0)  # Initialize the damage attribute
+        self.damage = None
+        self.projSpeed = projectileSpeed
 
-    def use(self) -> Damage:
+    def use(self, position, player_direction):
         if DEBUG:
             print(f"{self.attackSpeed=}, {self.reloadSpeed=}, {self.maxAmmo=}, {self.acc=}, {self.damageMult=}, {self.reloading=}, {self.lastShotTime=}, {self.currAmmo=}")
+
         # updates will go in here so that a dedicated update() function doesn't need to be called
         if self.currAmmo == 0 and not self.reloading:
             self.reloading = True
             return None
 
         if self.reloading:
-            if time() - self.lastShotTime > self.reloadSpeed:
+            if ((time() - self.lastShotTime) > self.reloadSpeed):
                 self.reloading = False
                 self.currAmmo = self.maxAmmo
                 self.currAmmo -= 1
-                return Damage("normal", int(100 * self.damageMult), None, randint(self.acc * -1, self.acc))
+                self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
+                return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
             else:
                 return None
 
-        if time() - self.lastShotTime < 1 / self.attackSpeed:
+        if (time() - self.lastShotTime) < (1 / self.attackSpeed):
             if DEBUG:
                 print("time since shot: ", time() - self.lastShotTime)
             return None
         self.lastShotTime = time()
         self.currAmmo -= 1
-        return Damage("normal", int(100 * self.damageMult), None, randint(self.acc * -1, self.acc))
-
-    def fire(self, position, player_direction):
-        speed = 5.0  # Placeholder value
-        proj = projectiles.create_projectile(position, player_direction, speed, self.damage.amount)
-        return [proj]
+        self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
+        return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
+    
         
 
 
@@ -75,7 +77,7 @@ class FlamingDeco:
     def __init__(self, game, weapon):
         self.weapon = weapon
 
-    def use(self) -> Damage:
+    def use(self, position, player_direction):
         if DEBUG:
             print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
         # updates will go in here so that a dedicated update() function doesn't need to be called
@@ -84,27 +86,23 @@ class FlamingDeco:
             return None
 
         if self.weapon.reloading:
-            if time() - self.weapon.lastShotTime > self.weapon.reloadSpeed:
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", randint(self.weapon.acc * -1, self.weapon.acc))
+                self.weapon.damage = Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+                return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
             else:
                 return None
 
-        if time() - self.weapon.lastShotTime < 1 / self.weapon.attackSpeed:
+        if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
             if DEBUG:
                 print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", randint(self.weapon.acc * -1, self.weapon.acc))
-
-    def fire(self, position, direction):
-        speed = 5.0  # Placeholder value
-        proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        self.game.projectiles.append(proj)
-		
+        self.weapon.damage = Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+        return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
 
 # class for Frosty Deco
@@ -112,8 +110,7 @@ class FrostyDeco:
     def __init__(self, game, weapon):
         self.weapon = weapon
 
-    def use(self) -> Damage:
-
+    def use(self, position, player_direction):
         if DEBUG:
             print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
         # updates will go in here so that a dedicated update() function doesn't need to be called
@@ -122,26 +119,23 @@ class FrostyDeco:
             return None
 
         if self.weapon.reloading:
-            if time() - self.weapon.lastShotTime > self.weapon.reloadSpeed:
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", randint(self.weapon.acc * -1, self.weapon.acc))
+                self.weapon.damage = Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+                return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
             else:
                 return None
 
-        if time() - self.weapon.lastShotTime < 1 / self.weapon.attackSpeed:
+        if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
             if DEBUG:
                 print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", randint(self.weapon.acc * -1, self.weapon.acc))
-
-    def fire(self, position, direction):
-        speed = 5.0  # Placeholder value
-        proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        self.game.projectiles.append(proj)
+        self.weapon.damage = Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+        return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
 
 # class for Shroom Deco
@@ -150,8 +144,7 @@ class ShroomDeco:
         self.weapon = weapon
 
     # earth could potentially also be called poison but I don't think it really matters
-    def use(self) -> Damage:
-
+    def use(self, position, player_direction):
         if DEBUG:
             print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
         # updates will go in here so that a dedicated update() function doesn't need to be called
@@ -160,23 +153,20 @@ class ShroomDeco:
             return None
 
         if self.weapon.reloading:
-            if time() - self.weapon.lastShotTime > self.weapon.reloadSpeed:
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
                 self.weapon.reloading = False
                 self.weapon.currAmmo = self.weapon.maxAmmo
                 self.weapon.currAmmo -= 1
-                return Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", randint(self.weapon.acc * -1, self.weapon.acc))
+                self.weapon.damage = Damage("Earth", int(100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+                return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
             else:
                 return None
 
-        if time() - self.weapon.lastShotTime < 1 / self.weapon.attackSpeed:
+        if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
             if DEBUG:
                 print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
-        return Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", randint(self.weapon.acc * -1, self.weapon.acc))
-
-    def fire(self, position, direction):
-        speed = 5.0  # Placeholder value
-        proj = projectiles.create_projectile(position, direction, speed, self.weapon.damage.amount)
-        self.game.projectiles.append(proj)
+        self.weapon.damage = Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
+        return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
