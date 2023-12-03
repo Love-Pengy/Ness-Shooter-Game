@@ -2,21 +2,28 @@ import pygame
 from pygame.math import Vector2
 from math import cos, sin
 from math import radians as rads
+from math import atan2
+
+DEBUG = 0
 
 class Projectile:
     def __init__(self, position, direction, speed, damage):
         self.x = position[0]
         self.y = position[1]  
-        self.position = Vector2(self.x, self.y)
+        #self.position = Vector2(self.x, self.y)
+        self.position = position
         self.direction = direction
+        self.image = pygame.image.load("UIAssets/bullet.png") # Here is the bullet
         self.speed = speed
         self.damage = damage
-        self.image = pygame.image.load("UIAssets/bullet.png") # Here is the bullet
-        
+        if(DEBUG): 
+            print(f"angleTesting: {self.position.angle_to((0, 0))}")
+        self.image = pygame.transform.rotate(self.image, (direction+270))
+
     def update(self):
         # Move projectile, trig functions are from basic vector math 
         self.x += self.speed * cos(rads(self.direction))
-        self.y += self.speed * sin(rads(self.direction))
+        self.y += ((self.speed * -1) * sin(rads(self.direction)))
     
     def draw(self, win):
         win.blit(self.image, (self.x, self.y)) # Draws the bullet

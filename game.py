@@ -95,13 +95,15 @@ class Game:
                     mouse_pos = pygame.mouse.get_pos()
                     direction = self.player.player_dir
 					# Debug 2: Electric Boogaloo
-                    if os.path.exists('./angledbg.log') == True:
+                    if os.path.exists('./angledbg.log'): 
                         with open("angledbg.log", "a") as f:
                             print("Player Direction:", direction, file = f)
                     else:
                         with open("angledbg.log", "w") as f:
                             print("Player direction:", direction, file = f)
-                    new_projectiles = weapon.fire(player_center, math.degrees(self.player.player_dir))
+                    if(DEBUG): 
+                        print(f"{player_center=}, {self.player.player_dir=}, {math.degrees(self.player.player_dir)=}")
+                    new_projectiles = weapon.fire(player_center, self.player.player_dir)
                     if new_projectiles is not None:
                         self.projectiles.extend(new_projectiles)
             self.screen.fill("black")
