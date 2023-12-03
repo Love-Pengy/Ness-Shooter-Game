@@ -43,8 +43,6 @@ class Weapon:
         self.projSpeed = projectileSpeed
 
     def use(self, position, player_direction):
-        if DEBUG:
-            print(f"{self.attackSpeed=}, {self.reloadSpeed=}, {self.maxAmmo=}, {self.acc=}, {self.damageMult=}, {self.reloading=}, {self.lastShotTime=}, {self.currAmmo=}")
 
         # updates will go in here so that a dedicated update() function doesn't need to be called
         if self.currAmmo == 0 and not self.reloading:
@@ -57,16 +55,21 @@ class Weapon:
                 self.currAmmo = self.maxAmmo
                 self.currAmmo -= 1
                 self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
+                if(DEBUG): 
+                    print("off cd")
+                    #its this one 
+                self.lastShotTime = time()
                 return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
             else:
                 return None
 
         if (time() - self.lastShotTime) < (1 / self.attackSpeed):
-            if DEBUG:
-                print("time since shot: ", time() - self.lastShotTime)
             return None
         self.lastShotTime = time()
         self.currAmmo -= 1
+        if(DEBUG): 
+            print("whatever this one is")
+            # and this one
         self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
     
