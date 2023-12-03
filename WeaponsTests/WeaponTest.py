@@ -3,6 +3,7 @@ from Weapons import FlamingDeco
 from time import sleep
 from Weapons import FrostyDeco
 from Weapons import ShroomDeco 
+
 handgun = Weapon(5.5, 3.1, 30, 5.34, .3)
 shotgun = Weapon(.25, 10, 4, 15, .7)
 machineGun = Weapon(15, 5, 45, 7, .25) 
