@@ -87,8 +87,11 @@ class Map():
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
         self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
+        self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
+        self.enemy2 = GolemEnemy(17*TILESIZE,12*TILESIZE,50,50)
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
+
     def transition(self):
         if self.player.rect.centerx < 0:
             self.PlayerScreen[0] = self.PlayerScreen[0] - 1
@@ -116,11 +119,19 @@ class Map():
         self.player.processInput(keys)
         self.player.setDirection(mouse_pos)
         self.PlayerScreen = self.transition()
+
         #update display
         self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY)
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
-        self.player.update(self.DISPLAY,keys)
+        
+        self.player.update(self.DISPLAY)
+        self.enemy1.findPlayer(self.player)
+        self.enemy1.followPlayer(self.player)
+        self.enemy1.update(self.DISPLAY)
+
+        self.enemy2.followPlayer(self.player)
+        self.enemy2.update(self.DISPLAY)
         # pygame.display.update()
 
 FPS = 60
@@ -128,21 +139,3 @@ TILESIZE = 40
 MAPWIDTH = 45
 MAPHEIGHT = 24
 
-
-#Create Display
-'''
-pygame.init()
-clock = pygame.time.Clock()
-DISPLAY = pygame.display.set_mode((MAPWIDTH*TILESIZE,MAPHEIGHT*TILESIZE))
-
-map = Map(DISPLAY)
-#User Interface
-while True:
-    clock.tick(FPS)
-    for event in pygame.event.get():
-        #Quit
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-    map.update()
-'''    
