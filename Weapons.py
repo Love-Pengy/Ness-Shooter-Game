@@ -19,6 +19,7 @@ class Damage:
     deviation: float  # degree of deviation from straight for bullet
 
 
+
 # attackSpeed = amount of times per second character can attack
 # reloadSpeed = amount of seconds it takes to reload
 # ammunition = ammo count before reload
@@ -170,3 +171,4 @@ class ShroomDeco:
         self.weapon.currAmmo -= 1
         self.weapon.damage = Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
+
