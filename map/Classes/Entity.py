@@ -1,6 +1,7 @@
 import pygame
 import math
 import time
+import random
 
 class Entity(pygame.sprite.Sprite):
     """
@@ -230,8 +231,8 @@ class GolemEnemy(Entity):
   
     def followPlayer(self, player):
 
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
+        x = (player.rect.centerx + random.randrange(-500,500))- self.rect.centerx 
+        y = (player.rect.centery + random.randrange(-500,500))- self.rect.centery 
 
         distance = math.hypot(x,y)
 
@@ -243,7 +244,7 @@ class GolemEnemy(Entity):
             y = 0
 
         self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
+        self.moveY(y *self.vel_y)
 
     def update(self,window):
         self.image = self.enemy_anims.nextEnemyAnim()
@@ -516,7 +517,6 @@ class SpriteAnimation:
         self.count += 1
 
     def nextEnemyAnim(self):
-        temp_dict = list(self.frames)
         #Alternates the enemy walking sprite
         if (self.count == 5):
             self.count = 0
@@ -525,9 +525,8 @@ class SpriteAnimation:
         if(self.curr_anim == 3):
             self.curr_anim = 0
 
-        temp_anim = self.frames[self.curr_anim]
         self.count += 1
-        return temp_anim
+        return self.frames[self.curr_anim]
 
    
 
