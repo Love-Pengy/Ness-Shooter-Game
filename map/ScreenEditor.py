@@ -75,7 +75,7 @@ def rect_btns(RectBtns, current):
     pygame.draw.rect(DISPLAY,color.PINK, RectBtns[current])
     return current
 TILESIZE = 30
-TILETYPES = 16
+TILETYPES = 18
 MAPWIDTH = 45
 MAPHEIGHT = 24
 LOWER_MARGIN = 100

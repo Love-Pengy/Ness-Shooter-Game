@@ -74,7 +74,7 @@ class CollisionLayer():
 class Map():
     def __init__(self, DISPLAY):
         self.TILESIZE = 40
-        self.TILETYPES = 16
+        self.TILETYPES = 18
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
         self.tiles = TileProperties(self.TILETYPES)

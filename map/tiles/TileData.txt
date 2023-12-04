@@ -14,3 +14,5 @@ Snow 0
 Ice 0
 Tree 1
 BombWall 1
+SnowTree 1
+RockPath 0
