@@ -272,6 +272,7 @@ class WeaponsHUD:
         self.pistol = weapons["pistol"]
         self.shotgun = weapons["shotgun"]
         self.machineGun = weapons["machineGun"]
+        print(f"{self.pistol=}, {self.shotgun=}, {self.machineGun=}")
         self.active = 1
         self.pistolRect = pistolSprite.get_rect()
         self.pistolRect = self.pistolRect.move(1522, 885)
@@ -292,7 +293,15 @@ class WeaponsHUD:
         self.shotgun = weapons["shotgun"]
         self.machineGun = weapons["machineGun"]        
         if(gunChange is not None): 
-            self.activeGun = gunChange
+            if(gunChange == 0): 
+                if(self.pistol): 
+                    self.activeGun = gunChange
+            elif(gunChange == 1): 
+                if(self.shotgun):  
+                    self.activeGun = gunChange
+            else: 
+                if(self.machineGun): 
+                    self.activeGun = gunChange
             print(f"{self.activeGun=}")
 
 

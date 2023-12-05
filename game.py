@@ -11,9 +11,9 @@ DEBUG = 0
 
 # weapons that user starts game with
 defaultWeapons = {
-    "pistol": "placeholder",
-    "shotgun": None,
-    "machineGun": None
+    "pistol": "The Blickey",
+    "shotgun": "The Drill",
+    "machineGun": "The Gat"
 }
 
 # default Items
