@@ -1,64 +1,68 @@
 from Inventory import *
 import Weapons
+import pygame
 from time import sleep
+from pygame.math import Vector2
+
 inventory = InventoryManager()
-
-handgun = Weapon(5, 3, 30, 5, .3)
-shotgun = Weapon(.25, 10, 4, 15, .7)
-machineGun = Weapon(15, 5, 45, 7, .25) 
-
+screen = pygame.display.set_mode((45 * 40, 24 * 40))
+screen = screen.fill("black")
+handgun = Weapon(screen, 5, 3, 30, 5, .3, 1)
+shotgun = Weapon(screen, .25, 10, 4, 15, .7, 1)
+machineGun = Weapon(screen, 15, 5, 45, 7, .25, 1) 
+position = Vector2(0, 0)
+direction = 0
 inventory.addItem(handgun)
 inventory.addItem(shotgun)
 inventory.addItem(machineGun)
-WTESTS = 0
+WTESTS = 1
 STESTS = 0
-ITESTS = 1
+ITESTS = 0
 if(WTESTS): 
     for _ in range(0, 1500): 
-        val = inventory.useItem(handgun)
+        val = inventory.useItem(handgun, position, direction)
         if(val): 
             print(val)
+        sleep(.01)
+    for _ in range(0, 1500): 
+        val = inventory.useItem(shotgun, position, direction)
+        if(val): 
+            print(val)
+
         sleep(.01)
 
     for _ in range(0, 1500): 
-        val = inventory.useItem(shotgun)
-        if(val): 
-            print(val)
-
-        sleep(.01)
-
-    for _ in range(0, 1500): 
-        val = inventory.useItem(machineGun)
+        val = inventory.useItem(machineGun, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    flamingHandgun = FlamingDeco(handgun)
+    flamingHandgun = FlamingDeco(screen, handgun)
     inventory.addItem(flamingHandgun)
     sleep(5)
 
     for _ in range(0, 1500): 
-        val = inventory.useItem(flamingHandgun)
+        val = inventory.useItem(flamingHandgun, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    frostyTheSnowmanBlicky = FrostyDeco(handgun)
+    frostyTheSnowmanBlicky = FrostyDeco(screen, handgun)
     inventory.addItem(frostyTheSnowmanBlicky)
     sleep(5)
 
     for _ in range(0, 1500): 
-        val = inventory.useItem(frostyTheSnowmanBlicky)
+        val = inventory.useItem(frostyTheSnowmanBlicky, position, direction)
         if(val):
             print(val)
         sleep(.01)
 
-    shroomHandgun = ShroomDeco(handgun)
+    shroomHandgun = ShroomDeco(screen, handgun)
     inventory.addItem(shroomHandgun)
     sleep(5)
 
     for _ in range(0, 1500): 
-        val = inventory.useItem(shroomHandgun)
+        val = inventory.useItem(shroomHandgun, position, direction)
         if(val): 
             print(val)
         sleep(.01)
@@ -67,37 +71,37 @@ if(WTESTS):
     inventory.addItem(handgun)
     sleep(5)
     for _ in range(0, 1500): 
-        val = inventory.useItem(handgun)
+        val = inventory.useItem(handgun, position, direction)
         if(val):
             print(val)
         sleep(.01)
 
 #deco override test
-    flamingShotty = FlamingDeco(shotgun)
+    flamingShotty = FlamingDeco(screen, shotgun)
     inventory.addItem(flamingShotty)
     sleep(5)
 
     for _ in range(0, 1500):
-        val = inventory.useItem(flamingShotty)
+        val = inventory.useItem(flamingShotty, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    frostyShotty = FrostyDeco(shotgun)
+    frostyShotty = FrostyDeco(screen, shotgun)
     inventory.addItem(frostyShotty)
     sleep(5)
 
     for _ in range(0, 1500):
-        val = inventory.useItem(frostyShotty)
+        val = inventory.useItem(frostyShotty, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    shroomShotty = ShroomDeco(shotgun)
+    shroomShotty = ShroomDeco(screen, shotgun)
     inventory.addItem(shroomShotty)
     sleep(5)
     for _ in range(0, 1500): 
-        val = inventory.useItem(shroomShotty)
+        val = inventory.useItem(shroomShotty, position, direction)
         if(val): 
             print(val)
         sleep(.01)
@@ -105,42 +109,42 @@ if(WTESTS):
     inventory.addItem(shotgun)
     sleep(5)
     for _ in range(0, 1500): 
-        val = inventory.useItem(shotgun)
+        val = inventory.useItem(shotgun, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
 
-    flamingUzi = FlamingDeco(machineGun)
+    flamingUzi = FlamingDeco(screen, machineGun)
     inventory.addItem(flamingUzi)
     sleep(5)
     for _ in range(0, 1500):
-        val = inventory.useItem(flamingUzi)
+        val = inventory.useItem(flamingUzi, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    frostyUzi = FrostyDeco(machineGun)
+    frostyUzi = FrostyDeco(screen, machineGun)
     inventory.addItem(frostyUzi)
     sleep(5)
     for _ in range(0, 1500):
-        val = inventory.useItem(frostyUzi)
+        val = inventory.useItem(frostyUzi, position, direction)
         if(val): 
             print(val)
         sleep(.01)
 
-    shroomUzi = ShroomDeco(machineGun)
+    shroomUzi = ShroomDeco(screen, machineGun)
     inventory.addItem(shroomUzi)
     sleep(5)
     for _ in range(0, 1500): 
-        val = inventory.useItem(shroomUzi)  
+        val = inventory.useItem(shroomUzi, position, direction)  
         if(val): 
             print(val)
         sleep(.01)
 
     inventory.addItem(machineGun)
     for _ in range(0, 1500): 
-        val = inventory.useItem(machineGun)
+        val = inventory.useItem(machineGun, position, direction)
         if(val): 
             print(val)
         sleep(.01)
