@@ -57,7 +57,6 @@ class Weapon:
                 self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
                 if(DEBUG): 
                     print("off cd")
-                    #its this one 
                 self.lastShotTime = time()
                 return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
             else:
@@ -69,11 +68,28 @@ class Weapon:
         self.currAmmo -= 1
         if(DEBUG): 
             print("whatever this one is")
-            # and this one
         self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
     
-        
+    def __eq__(self, compare):
+        if(isinstance(compare, Weapon)): 
+            if(self.reloadSpeed == compare.reloadSpeed): 
+               if(self.attackSpeed == compare.attackSpeed): 
+                    if(self.maxAmmo == compare.maxAmmo): 
+                        if(self.acc == compare.acc): 
+                            if(self.damageMult == compare.damageMult):
+                                if(self.projSpeed == compare.projSpeed): 
+                                    return(True)
+            return(False)
+        else: 
+            if(self.attackSpeed == compare.weapon.attackSpeed): 
+                if(self.reloadSpeed == compare.weapon.reloadSpeed): 
+                    if(self.maxAmmo == compare.weapon.maxAmmo): 
+                        if(self.acc == compare.weapon.acc): 
+                            if(self.damageMult == compare.weapon.damageMult): 
+                                if(self.projSpeed == compare.weapon.projSpeed):
+                                    return(True)
+            return(False)
 
 
 # class for Flaming Deco
@@ -108,7 +124,27 @@ class FlamingDeco:
         self.weapon.damage = Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
+    def __eq__(self, compare): 
+        if(isinstance(compare, Weapon)): 
+            if(self.weapon.attackSpeed == compare.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.maxAmmo): 
+                        if(self.weapon.acc == compare.acc): 
+                            if(self.weapon.damageMult == compare.damageMult): 
+                                return(True)
+            return(False)
+        else: 
+            if(self.weapon.attackSpeed == compare.weapon.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.weapon.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.weapon.maxAmmo): 
+                        if(self.weapon.acc == compare.weapon.acc): 
+                            if(self.weapon.damageMult == compare.weapon.damageMult): 
+                                if(self.weapon.projSpeed == compare.weapon.projSpeed): 
+                                    return(True)
+            return(False)
 
+
+            
 # class for Frosty Deco
 class FrostyDeco:
     def __init__(self, game, weapon):
@@ -140,6 +176,25 @@ class FrostyDeco:
         self.weapon.currAmmo -= 1
         self.weapon.damage = Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
+    
+    def __eq__(self, compare): 
+        if(isinstance(compare, Weapon)): 
+            if(self.weapon.attackSpeed == compare.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.maxAmmo): 
+                        if(self.weapon.acc == compare.acc): 
+                            if(self.weapon.damageMult == compare.damageMult): 
+                                return(True)
+            return(False)
+        else: 
+            if(self.weapon.attackSpeed == compare.weapon.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.weapon.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.weapon.maxAmmo): 
+                        if(self.weapon.acc == compare.weapon.acc): 
+                            if(self.weapon.damageMult == compare.weapon.damageMult): 
+                                if(self.weapon.projSpeed == compare.weapon.projSpeed): 
+                                    return(True)
+            return(False)
 
 
 # class for Shroom Deco
@@ -174,4 +229,23 @@ class ShroomDeco:
         self.weapon.currAmmo -= 1
         self.weapon.damage = Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
+
+    def __eq__(self, compare): 
+        if(isinstance(compare, Weapon)): 
+            if(self.weapon.attackSpeed == compare.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.maxAmmo): 
+                        if(self.weapon.acc == compare.acc): 
+                            if(self.weapon.damageMult == compare.damageMult): 
+                                return(True)
+            return(False)
+        else: 
+            if(self.weapon.attackSpeed == compare.weapon.attackSpeed): 
+                if(self.weapon.reloadSpeed == compare.weapon.reloadSpeed): 
+                    if(self.weapon.maxAmmo == compare.weapon.maxAmmo): 
+                        if(self.weapon.acc == compare.weapon.acc): 
+                            if(self.weapon.damageMult == compare.weapon.damageMult): 
+                                if(self.weapon.projSpeed == compare.weapon.projSpeed): 
+                                    return(True)
+            return(False)
 
