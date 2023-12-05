@@ -95,14 +95,14 @@ class Game:
                     player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
                     direction = self.player.player_dir
-					# Debug 2: Electric Boogaloo
-                    if os.path.exists('./angledbg.log'): 
-                        with open("angledbg.log", "a") as f:
-                            print("Player Direction:", direction, file = f)
-                    else:
-                        with open("angledbg.log", "w") as f:
-                            print("Player direction:", direction, file = f)
-                    if(DEBUG): 
+                    
+                    if(DEBUG):
+                        if os.path.exists('./angledbg.log'): 
+                            with open("angledbg.log", "a") as f:
+                                print("Player Direction:", direction, file = f)
+                        else:
+                            with open("angledbg.log", "w") as f:
+                                print("Player direction:", direction, file = f)
                         print(f"{player_center=}, {self.player.player_dir=}, {math.degrees(self.player.player_dir)=}")
                     new_projectiles = weapon.use(player_center, self.player.player_dir)
                     if new_projectiles is not None:

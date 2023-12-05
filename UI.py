@@ -67,8 +67,8 @@ class UIManager:
         self.pMenu = PauseMenu(screen)
         
     #update weapons HUD with the new order of weapons or weapon 
-    def updateWeaponHUD(self, newWeapons):
-        self.wHUD.update(newWeapons)
+    def updateWeaponHUD(self, newWeapons, change):
+        self.wHUD.update(newWeapons, change)
 
     #update count of items based off of the new inventory amount
     def updateItemHUD(self, newItems):
@@ -87,15 +87,23 @@ class UIManager:
         self.scHUD.update(newScore)
     
     def update(self, keys, stats, score, weapons, items):
+        changeGun = None #bars
         if(keys[pygame.K_ESCAPE]): 
             self.pMenu.toggle()
         if(not keys[pygame.K_ESCAPE]): 
             self.pMenu.setEligibleToggle()
         if(self.pMenu.active): 
             self.pMenu.execute()
+        if(keys[pygame.K_1]):
+            changeGun = 0
+        elif(keys[pygame.K_2]): 
+            changeGun = 1
+        elif(keys[pygame.K_3]): 
+            changeGun = 2
+            
         self.updateStatHUD(stats)
         self.updateScoreHUD(score)
-        self.updateWeaponHUD(weapons)
+        self.updateWeaponHUD(weapons, changeGun)
         self.updateItemHUD(items)
         self.iHUD.execute()
         self.wHUD.execute()
@@ -271,6 +279,7 @@ class WeaponsHUD:
         self.shotgunRect = self.shotgunRect.move(1595, 885)
         self.machineGunRect = machineGunSprite.get_rect()
         self.machineGunRect = self.machineGunRect.move(1665, 885)
+        self.activeGun = 0
 
     def toggle(self): 
         if(self.active): 
@@ -278,10 +287,13 @@ class WeaponsHUD:
         else: 
             self.active = 1
         
-    def update(self, weapons):
+    def update(self, weapons, gunChange=None):
         self.pistol = weapons["pistol"]
         self.shotgun = weapons["shotgun"]
         self.machineGun = weapons["machineGun"]        
+        if(gunChange is not None): 
+            self.activeGun = gunChange
+            print(f"{self.activeGun=}")
 
 
 
@@ -303,7 +315,13 @@ class WeaponsHUD:
             if(self.machineGun): 
                 checkDeco(self.machineGun, self.screen)
                 self.screen.blit(machineGunSprite, self.machineGunRect)
-
+            print(f"{self.activeGun=}")
+            if(self.activeGun == 0): 
+                pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1507, 875, 77, 73), 5, 5)
+            elif(self.activeGun == 1): 
+                pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1581, 875, 80, 73), 5, 5)
+            else:
+                pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1655, 875, 78, 73), 5, 5)
 
 
 
