@@ -24,6 +24,9 @@ class Entity(pygame.sprite.Sprite):
         self.vel_x = 5
         self.vel_y = 5
 
+        self.prev_x = 0
+        self.prev_y = 0
+
         self.rect = self.image.get_rect()
     
     def moveX(self,x_vel):
@@ -31,6 +34,29 @@ class Entity(pygame.sprite.Sprite):
 
     def moveY(self,y_vel):
         self.rect.y += y_vel
+
+    def revertPosition(self):
+        self.rect.x = self.rect.x - self.prev_x
+        self.rect.y = self.rect.y - self.prev_y
+
+    def detectCollision(self, enemy, sprite_group):
+        if self.rect.colliderect(enemy.rect):
+            if self.rect.x < enemy.rect.x:
+                    self.rect.x -= self.vel_x
+                    enemy.rect.x += enemy.vel_x
+            else:
+                    self.rect.x += self.vel_x
+                    enemy.rect.x -= enemy.vel_x
+
+            if self.rect.y < enemy.rect.y:
+                    self.rect.y -= self.vel_y
+                    enemy.rect.y += enemy.vel_y
+            else:
+                    self.rect.y += self.vel_x
+                    enemy.rect.y -= enemy.vel_x
+
+    
+
 
     def update(self,window):
         """Stub function to be implemented by 
@@ -84,7 +110,9 @@ class Player(Entity):
 
 
     def update(self,window):
-         window.blit(self.image, self.rect)
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
+        window.blit(self.image, self.rect)
     
 
     def setDirection(self,mouse_pos):
@@ -119,7 +147,8 @@ class Player(Entity):
             self.image = self.player_anims.frames["walk_down1"] if self.player_anims.next else self.player_anims.frames["walk_down2"]
         elif player_facing == 7:
             self.image = self.player_anims.frames["walk_se1"] if self.player_anims.next else self.player_anims.frames["walk_se2"]
-   
+    
+
     def processInput(self, pressed):
         if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
             self.player_anims.nextAnim()
@@ -192,6 +221,8 @@ class SerpentEnemy(Entity):
         rotated_rect = rotated_image.get_rect()
         rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
         window.blit(rotated_image,rotated_rect)
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
 
 class GolemEnemy(Entity):
 
@@ -247,6 +278,8 @@ class GolemEnemy(Entity):
         self.moveY(y *self.vel_y)
 
     def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
@@ -264,6 +297,10 @@ class GoblinEnemy(Entity):
         self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-35,0,15,27), (width * 1.5, height * 1.7)))
 
         self.image = self.enemy_anims.frames[0]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[1]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
        
         self.direction = 0
@@ -300,6 +337,8 @@ class GoblinEnemy(Entity):
         self.moveY(y * self.vel_y)
 
     def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
@@ -357,6 +396,8 @@ class GhostEnemy(Entity):
         self.moveY(y * self.vel_y)
 
     def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
@@ -414,6 +455,8 @@ class DwarfEnemy(Entity):
         self.moveY(y * self.vel_y)
 
     def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
@@ -470,6 +513,8 @@ class MushroomEnemy(Entity):
         self.moveY(y * self.vel_y)
 
     def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 

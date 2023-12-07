@@ -52,11 +52,13 @@ class Game:
 
 
     def loop(self):
+        
         """
         Primary game loop. This should be
         run perpetually until the game is
         over or is closed.
         """
+
         self.screen.fill("black")
         self.weapons = defaultWeapons
         self.items = defaultItems

@@ -11,7 +11,7 @@ class Entity(pygame.sprite.Sprite):
     sprites for the player and enemies.
     """
 
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y):
 
         #constructor for the pygame Sprite class
         pygame.sprite.Sprite.__init__(self)
@@ -45,10 +45,10 @@ class Player(Entity):
     an interface for attacking enemies.
     """
     
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y):
 
         #constructor for the pygame Sprite class
-        super().__init__(x,y,width,height)
+        super().__init__(x,y)
       
         #Instantiate class to handle sprite animation
         self.player_anims = SpriteAnimation("Entities/ness_spritesheet.png")
@@ -144,9 +144,9 @@ class Player(Entity):
 
 class SerpentEnemy(Entity):
 
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y):
         #constructor for the pygame Sprite class
-        super().__init__(x,y,width,height)
+        super().__init__(x,y)
       
         #Instantiate class to handle sprite animation
         self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
@@ -180,9 +180,9 @@ class SerpentEnemy(Entity):
 
 class SerpentEnemy(Entity):
 
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y):
         #constructor for the pygame Sprite class
-        super().__init__(x,y,width,height)
+        super().__init__(x,y)
       
         #Instantiate class to handle sprite animation
         self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
@@ -238,12 +238,12 @@ class SpriteAnimation:
         """
         self.frames[name] = image
 
-    def getFrame(self,x,y,width,height):
+    def getFrame(self,x,y):
         #converts spritesheet to pygame surface
         image = pygame.Surface((width,height)).convert_alpha()
 
         #Cuts out individual sprite from spritesheet
-        image.blit(self.sheet,(x,y,width,height))
+        image.blit(self.sheet,(x,y))
 
         #Removes colored outline around the sprite 
         image.set_colorkey((0,0,0)) 
