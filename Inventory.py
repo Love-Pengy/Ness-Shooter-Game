@@ -13,39 +13,9 @@ def getIndexToReplace(weaponOP, weaponList: list):
             print("1")
         if(isinstance(weaponOP, FlamingDeco)): 
             print("2")
-    if(isinstance(weaponOP, Weapon)): 
-        for weaponI in weaponList:
-            if(isinstance(weaponI, Weapon)): 
-                if(weaponOP.attackSpeed == weaponI.attackSpeed): 
-                    if(weaponOP.reloadSpeed == weaponI.reloadSpeed): 
-                        if(weaponOP.maxAmmo == weaponI.maxAmmo): 
-                            if(weaponOP.acc == weaponI.acc): 
-                                if(weaponOP.damageMult == weaponI.damageMult): 
-                                    return(weaponList.index(weaponI))
-            else: 
-                if(weaponOP.attackSpeed == weaponI.weapon.attackSpeed): 
-                    if(weaponOP.reloadSpeed == weaponI.weapon.reloadSpeed): 
-                        if(weaponOP.maxAmmo == weaponI.weapon.maxAmmo): 
-                            if(weaponOP.acc == weaponI.weapon.acc): 
-                                if(weaponOP.damageMult == weaponI.weapon.damageMult): 
-                                    return(weaponList.index(weaponI))
-    else:  
-        for weaponI in weaponList: 
-            if(isinstance(weaponI, Weapon)): 
-                if(weaponOP.weapon.attackSpeed == weaponI.attackSpeed): 
-                    if(weaponOP.weapon.reloadSpeed == weaponI.reloadSpeed): 
-                        if(weaponOP.weapon.maxAmmo == weaponI.maxAmmo): 
-                            if(weaponOP.weapon.acc == weaponI.acc): 
-                                if(weaponOP.weapon.damageMult == weaponI.damageMult): 
-                                    return(weaponList.index(weaponI))
-            else: 
-                if(weaponOP.weapon.attackSpeed == weaponI.weapon.attackSpeed): 
-                    if(weaponOP.weapon.reloadSpeed == weaponI.weapon.reloadSpeed): 
-                        if(weaponOP.weapon.maxAmmo == weaponI.weapon.maxAmmo): 
-                            if(weaponOP.weapon.acc == weaponI.weapon.acc): 
-                                if(weaponOP.weapon.damageMult == weaponI.weapon.damageMult): 
-                                    return(weaponList.index(weaponI))
-                
+    for weaponI in weaponList:
+        if(weaponOP == weaponI): 
+            return(weaponList.index(weaponI))
     return(None)
 
 #need getter functionality for the inventory
@@ -71,13 +41,13 @@ class InventoryManager:
         self.items.add(item)
 
     #returns true if item should have the associated action ran through or dict/none if weapon 
-    def useItem(self, item): 
+    def useItem(self, item, position=None, direction=None): 
         if(isinstance(item, int)): 
             return(self.score.use(item))
         if(isinstance(item, str)): 
             return(self.items.use(item))
         else: 
-            return(self.weapons.use(item))
+            return(self.weapons.use(item, position, direction))
     #itemType can be passed Weapon, str (where you specify what it is. Ex. healtPots), or int (score)
     #returns None if nonvalid itemType
     def getItem(self, itemType): 
@@ -115,12 +85,12 @@ class WeaponInventory:
             return
         print("ERROR: INVALID ITEM PASSED TO 'addItem' IN 'WeaponInventory'")
         return
-    def use(self, item) -> Damage:
+    def use(self, item, position, direction) -> Damage:
             index = getIndexToReplace(item, self.weapons)
             if(DEBUG): 
                 print(index)
             if(index is not None): 
-                return(self.weapons[getIndexToReplace(item, self.weapons)].use())
+                return(self.weapons[getIndexToReplace(item, self.weapons)].use(position, direction))
             else: 
                 return(None)
     def get(self): 

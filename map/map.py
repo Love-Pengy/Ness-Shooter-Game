@@ -76,7 +76,7 @@ class CollisionLayer():
                         player.vel_y = 0
 
 class Map():
-    def __init__(self, DISPLAY):
+    def __init__(self, player, DISPLAY):
         self.TILESIZE = 40
         self.TILETYPES = 16
         self.MAPWIDTH = 45
@@ -86,12 +86,16 @@ class Map():
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
+<<<<<<< HEAD
 
 
         self.enemy_group = pygame.sprite.Group()
         self.all_entities = pygame.sprite.Group()
 
         self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
+=======
+        self.player = player
+>>>>>>> refs/remotes/origin/main
         self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
         self.enemy2 = DwarfEnemy(17*TILESIZE,15*TILESIZE,50,50)
         self.enemy3 = GoblinEnemy(12*TILESIZE,6*TILESIZE,50,50)
