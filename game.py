@@ -88,10 +88,7 @@ class Game:
         self.UI = UIManager(self.weapons, self.items, self.stats, self.score, self.screen)
         weapon = self.create_weapon()
         while True:
-<<<<<<< HEAD
-=======
-            # self.clock.tick(self.FPS)
->>>>>>> refs/remotes/origin/main
+            # self.clock.tick(self.FP
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -118,6 +115,8 @@ class Game:
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
+
+            
                 """
                 # Debug
                 with open("prjdebug.log", "a") as f:

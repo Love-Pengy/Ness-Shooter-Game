@@ -2,6 +2,7 @@ import pygame
 import math
 import time
 import random
+from projectiles import *
 
 class Entity(pygame.sprite.Sprite):
     """
@@ -20,15 +21,17 @@ class Entity(pygame.sprite.Sprite):
         self.image = pygame.Surface([width, height])
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
-        #Velocity of entity movement for testing
+
+        #Velocity of entity movement 
         self.vel_x = 5
         self.vel_y = 5
 
         self.prev_x = 0
         self.prev_y = 0
 
-        self.rect = self.image.get_rect()
-    
+        #Count to control animations and/or fire rate
+        self.count = 0
+
     def moveX(self,x_vel):
         self.rect.x += x_vel
 
@@ -55,15 +58,50 @@ class Entity(pygame.sprite.Sprite):
                     self.rect.y += self.vel_x
                     enemy.rect.y -= enemy.vel_x
 
-    
-
-
     def update(self,window):
         """Stub function to be implemented by 
            inherited classes. Updates the entities sprites,
            actions, and position when called.
         """
         pass
+
+class Enemy(Entity):
+   
+    
+    def __init__(self,x,y,width,height):
+
+        super().__init__(x,y,width,height)
+        self.direction = 0 
+        self.bullet = Projectile((0,0),0,10,10)
+    
+
+    def findPlayer(self, player):
+        #Finds the angle the enemy is facing relative to the player
+        x = self.rect.centerx - player.rect.centerx
+        y = self.rect.centery - player.rect.centery
+        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
+
+        self.followDistance = 100 #Determines how close the enemy will approach the player
+
+    def followPlayer(self, player):
+
+        #moves enemy towards player up to a certain point depending
+        #on specific enemy behavior
+
+        x = player.rect.centerx - self.rect.centerx
+        y = player.rect.centery - self.rect.centery
+
+        distance = math.hypot(x,y)
+
+        if distance > self.followDistance: #If too close to player, stop movement
+            x /= distance
+            y /= distance
+        else:              
+            x = 0
+            y = 0
+
+        self.moveX(x * self.vel_x)
+        self.moveY(y * self.vel_y)
 
 class Player(Entity):
     """
@@ -170,7 +208,7 @@ class Player(Entity):
         if pressed[pygame.K_d]:
             self.moveX(self.vel_x)    
         
-class SerpentEnemy(Entity):
+class SerpentEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -182,8 +220,10 @@ class SerpentEnemy(Entity):
         self.image = self.enemy_anim.getFrame(0,0,96,96)
         self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
-
+        self.direction = 0 
+        
+        self.bullet = Projectile((0,0),0,10,10)
+        self.followDistance = 800
         #Entity velocity 
         self.vel_x = 2
         self.vel_y = 2
@@ -191,30 +231,7 @@ class SerpentEnemy(Entity):
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
-
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
-
-        distance = math.hypot(x,y)
-
-        if distance > 100: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
-
+ 
     def update(self,window):
         rotated_image = pygame.transform.rotate(self.image, self.direction)
         rotated_image.set_colorkey((0,0,0))
@@ -224,7 +241,12 @@ class SerpentEnemy(Entity):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
 
-class GolemEnemy(Entity):
+        if self.count == 30:
+            self.bullet = create_projectile((self.rect.x,self.rect.y),self.direction,10,10)
+            self.count = 0
+        self.count += 1
+
+class GolemEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -254,36 +276,13 @@ class GolemEnemy(Entity):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = (player.rect.centerx + random.randrange(-500,500))- self.rect.centerx 
-        y = (player.rect.centery + random.randrange(-500,500))- self.rect.centery 
-
-        distance = math.hypot(x,y)
-
-        if distance > 100: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y *self.vel_y)
-
     def update(self,window):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-class GoblinEnemy(Entity):
+class GoblinEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -304,7 +303,7 @@ class GoblinEnemy(Entity):
         self.image.set_colorkey((0,0,0)) 
        
         self.direction = 0
-
+        self.followDistance = 300
         #Entity velocity 
         self.vel_x = 3
         self.vel_y = 3
@@ -313,36 +312,13 @@ class GoblinEnemy(Entity):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
-
-        distance = math.hypot(x,y)
-
-        if distance > 20: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
-
     def update(self,window):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-class GhostEnemy(Entity):
+class GhostEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -372,36 +348,12 @@ class GhostEnemy(Entity):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
-
-        distance = math.hypot(x,y)
-
-        if distance > 20: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
-
-    def update(self,window):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-class DwarfEnemy(Entity):
+class DwarfEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -412,7 +364,7 @@ class DwarfEnemy(Entity):
       
         self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(2,0,17,27), (width * 1.5, height * 2)))
         self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-16,0,16,27), (width * 1.5, height * 2)))
-        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-32,0,17,27), (width * 1.5, height * 2)))
+        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-32,0,18,27), (width * 1.5, height * 2)))
 
         self.image = self.enemy_anims.frames[0]
         self.image.set_colorkey((0,0,0)) 
@@ -422,7 +374,7 @@ class DwarfEnemy(Entity):
         self.image.set_colorkey((0,0,0)) 
        
         self.direction = 0
-
+        self.followDistance = 100
         #Entity velocity 
         self.vel_x = 3
         self.vel_y = 3
@@ -431,36 +383,13 @@ class DwarfEnemy(Entity):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
-
-        distance = math.hypot(x,y)
-
-        if distance > 20: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
-
     def update(self,window):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-class MushroomEnemy(Entity):
+class MushroomEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -481,6 +410,7 @@ class MushroomEnemy(Entity):
         self.image.set_colorkey((0,0,0)) 
         self.direction = 0
 
+        self.followDistance = 600
         #Entity velocity 
         self.vel_x = 3
         self.vel_y = 3
@@ -488,29 +418,6 @@ class MushroomEnemy(Entity):
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
-
-    def findPlayer(self, player):
-        #Finds the angle the enemy is relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-    def followPlayer(self, player):
-
-        x = player.rect.centerx - self.rect.centerx
-        y = player.rect.centery - self.rect.centery
-
-        distance = math.hypot(x,y)
-
-        if distance > 20: #If too close to player, stop movement
-            x /= distance
-            y /= distance
-        else:              
-            x = 0
-            y = 0
-
-        self.moveX(x * self.vel_x)
-        self.moveY(y * self.vel_y)
 
     def update(self,window):
         self.prev_x = self.rect.x

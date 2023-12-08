@@ -1,7 +1,8 @@
 import pygame, sys, csv
 import map.Classes.GraphicDesign as GraphicDesign
 from map.Classes.Entity import *
- 
+
+
 class TileProperties:
     def __init__(self, TILETYPES):
         self.tile_list = []
@@ -94,7 +95,7 @@ class Map():
         self.player = player
 
         self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = DwarfEnemy(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy2 = MushroomEnemy(17*TILESIZE,15*TILESIZE,50,50)
         self.enemy3 = GoblinEnemy(12*TILESIZE,6*TILESIZE,50,50)
 
         self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)

@@ -2,6 +2,8 @@ import pygame
 import math
 import time
 
+
+
 class Entity(pygame.sprite.Sprite):
     """
     Parent class of all game entities including the 
@@ -11,11 +13,7 @@ class Entity(pygame.sprite.Sprite):
     sprites for the player and enemies.
     """
 
-<<<<<<< HEAD
-    def __init__(self,x,y):
-=======
     def __init__(self, x, y, width, height):
->>>>>>> refs/remotes/origin/main
 
         # constructor for the pygame Sprite class
         pygame.sprite.Sprite.__init__(self)
@@ -48,15 +46,6 @@ class Player(Entity):
     animation of the player sprite, and provides
     an interface for attacking enemies.
     """
-<<<<<<< HEAD
-    
-    def __init__(self,x,y):
-
-        #constructor for the pygame Sprite class
-        super().__init__(x,y)
-      
-        #Instantiate class to handle sprite animation
-=======
 
     def __init__(self, x, y, width, height):
 
@@ -64,7 +53,6 @@ class Player(Entity):
         super().__init__(x, y, width, height)
 
         # Instantiate class to handle sprite animation
->>>>>>> refs/remotes/origin/main
         self.player_anims = SpriteAnimation("Entities/ness_spritesheet.png")
 
         # Load individual sprites into animation dict
@@ -155,19 +143,11 @@ class Player(Entity):
         
 class SerpentEnemy(Entity):
 
-<<<<<<< HEAD
-    def __init__(self,x,y):
-        #constructor for the pygame Sprite class
-        super().__init__(x,y)
-      
-        #Instantiate class to handle sprite animation
-=======
     def __init__(self, x, y, width, height):
         # constructor for the pygame Sprite class
         super().__init__(x, y, width, height)
 
         # Instantiate class to handle sprite animation
->>>>>>> refs/remotes/origin/main
         self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
 
         self.image = self.enemy_anim.getFrame(0, 0, 96, 96)
@@ -197,47 +177,6 @@ class SerpentEnemy(Entity):
         rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
         window.blit(rotated_image,rotated_rect)
 
-<<<<<<< HEAD
-class SerpentEnemy(Entity):
-
-    def __init__(self,x,y):
-        #constructor for the pygame Sprite class
-        super().__init__(x,y)
-      
-        #Instantiate class to handle sprite animation
-        self.enemy_anim = SpriteAnimation("Entities/Serpent.gif")
-
-        self.image = self.enemy_anim.getFrame(0,0,96,96)
-        self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
-        self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
-
-        #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
-
-        #make rectangle from sprite image
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
-
-
-    def findPlayer(self, player):
-        x = self.rect.x - player.rect.x
-        y = self.rect.y - player.rect.y
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
-  
-
-
-    def update(self,window):
-        rotated_image = pygame.transform.rotate(self.image, self.direction)
-        rotated_rect = rotated_image.get_rect()
-        rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
-        window.blit(rotated_image,rotated_rect)
-
-
-
-=======
->>>>>>> refs/remotes/origin/main
 
 class SpriteAnimation:
     """
@@ -260,20 +199,12 @@ class SpriteAnimation:
         """
         self.frames[name] = image
 
-<<<<<<< HEAD
-    def getFrame(self,x,y):
-=======
     def getFrame(self, x, y, width, height):
->>>>>>> refs/remotes/origin/main
         #converts spritesheet to pygame surface
         image = pygame.Surface((width, height)).convert_alpha()
 
         #Cuts out individual sprite from spritesheet
-<<<<<<< HEAD
-        image.blit(self.sheet,(x,y))
-=======
         image.blit(self.sheet,(x, y, width, height))
->>>>>>> refs/remotes/origin/main
 
         #Removes colored outline around the sprite 
         image.set_colorkey((0, 0, 0)) 
