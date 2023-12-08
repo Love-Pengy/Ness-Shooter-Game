@@ -20,8 +20,9 @@ class Entity(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         #Velocity of entity movement for testing
-        self.vel_x = 5
-        self.vel_y = 5
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
         self.rect = self.image.get_rect()
     
@@ -73,9 +74,17 @@ class Player(Entity):
     
         self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
-        #player velocity 
-        self.vel_x = 5
-        self.vel_y = 5
+        #player velocity
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        # Player stats
+        self.hp = 200
+        self.atk = 25
+        self.defense = 20
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -155,8 +164,16 @@ class SerpentEnemy(Entity):
         self.direction = 0
 
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 2
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        # Stats
+        self.hp = 100
+        self.atk = 15
+        self.defense = 25
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, :"Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -192,14 +209,14 @@ class SerpentEnemy(Entity):
         rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
         window.blit(rotated_image,rotated_rect)
 
-class GolemEnemy(Entity):
+class GrassmanEnemy(Entity):
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
         super().__init__(x,y,width,height)
       
         #Instantiate class to handle sprite animation
-        self.enemy_anims = SpriteAnimation("Entities/golem.png")
+        self.enemy_anims = SpriteAnimation("Entities/grassman.png")
       
         self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(0,0,15,27), (width * 1.5, height * 1.7)))
         self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-20,0,15,27), (width * 1.5, height * 1.7)))
@@ -215,12 +232,20 @@ class GolemEnemy(Entity):
         self.direction = 0
 
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+
+        # Stats (subject to change)
+        self.hp = 40
+        self.atk = 10
+        self.defense = 5 # "Defense" is spelled out because "def" is a reserved word
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed}
 
     def findPlayer(self, player):
         #Finds the angle the enemy is relative to the player
@@ -267,9 +292,17 @@ class GoblinEnemy(Entity):
        
         self.direction = 0
 
-        #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        #Entity velocity
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        # Stats
+        self.hp = 20
+        self.atk = 5
+        self.defense = 2
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": 0}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -324,9 +357,17 @@ class GhostEnemy(Entity):
        
         self.direction = 0
 
-        #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        #Entity velocity
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        # Stats
+        self.hp = 25
+        self.atk = 5
+        self.defense = 50
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -359,7 +400,7 @@ class GhostEnemy(Entity):
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-class DwarfEnemy(Entity):
+class DevilGoombaEnemy(Entity): # It's what the damn thing looks like
 
     def __init__(self,x,y,width,height):
         #constructor for the pygame Sprite class
@@ -382,8 +423,16 @@ class DwarfEnemy(Entity):
         self.direction = 0
 
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        # stats
+        self.hp = 50
+        self.atk = 10
+        self.defense = 20
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -402,7 +451,7 @@ class DwarfEnemy(Entity):
 
         distance = math.hypot(x,y)
 
-        if distance > 20: #If too close to player, stop movement
+        if distance > 100: #If too close to player, stop movement
             x /= distance
             y /= distance
         else:              
@@ -438,8 +487,16 @@ class MushroomEnemy(Entity):
         self.direction = 0
 
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #stats
+        self.hp = 200
+        self.atk = 25
+        self.defense = 20
+        self.mana = 0
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -528,14 +585,3 @@ class SpriteAnimation:
         temp_anim = self.frames[self.curr_anim]
         self.count += 1
         return temp_anim
-
-   
-
-
-       
-
-    
-
-
-    
-

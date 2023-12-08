@@ -248,4 +248,3 @@ class ShroomDeco:
                                 if(self.weapon.projSpeed == compare.weapon.projSpeed): 
                                     return(True)
             return(False)
-

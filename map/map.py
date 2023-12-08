@@ -88,8 +88,8 @@ class Map():
         self.DISPLAY = DISPLAY
         self.player = player
         self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = DwarfEnemy(17*TILESIZE,15*TILESIZE,50,50)
-        self.enemy3 = GolemEnemy(12*TILESIZE,6*TILESIZE,50,50)
+        self.enemy2 = DevilGoombaEnemy(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy3 = GrassmanEnemy(12*TILESIZE,6*TILESIZE,50,50)
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
 
