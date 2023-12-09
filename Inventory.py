@@ -7,12 +7,6 @@ DEBUG = 0
 
 #finds the corresponding index to an identical weapon regardless of whether or not its a deco (sorry for the if statements couldnt find a better way)
 def getIndexToReplace(weaponOP, weaponList: list): 
-    if(DEBUG): 
-        print("INDEXTOREPLACE: ", type(weaponOP))
-        if(isinstance(weaponOP, Weapon)): 
-            print("1")
-        if(isinstance(weaponOP, FlamingDeco)): 
-            print("2")
     for weaponI in weaponList:
         if(weaponOP == weaponI): 
             return(weaponList.index(weaponI))
@@ -27,17 +21,11 @@ class InventoryManager:
        
     def addItem(self, item): 
         if(isinstance(item, int)): 
-            if(DEBUG): 
-                print("ADDED SCORE")
             self.score.add(item)
             return
         if((isinstance(item, Weapon)) or (isinstance(item, FlamingDeco)) or (isinstance(item, FrostyDeco)) or (isinstance(item, ShroomDeco))): 
-            if(DEBUG): 
-                print("ADDED WEAPON")
             self.weapons.add(item)
             return
-        if(DEBUG): 
-            print("ADDED ITEM")
         self.items.add(item)
 
     #returns true if item should have the associated action ran through or dict/none if weapon 
@@ -48,6 +36,7 @@ class InventoryManager:
             return(self.items.use(item))
         else: 
             return(self.weapons.use(item, position, direction))
+
     #itemType can be passed Weapon, str (where you specify what it is. Ex. healtPots), or int (score)
     #returns None if nonvalid itemType
     def getItem(self, itemType, index=None): 
@@ -77,8 +66,6 @@ class WeaponInventory:
             self.weapons[getIndexToReplace(item, self.weapons)] = item
             return
         if(isinstance(item, FlamingDeco)):
-            if(DEBUG): 
-                print("FLAMING DECO")
             self.weapons[getIndexToReplace(item, self.weapons)] = item
             return
         if(isinstance(item, FrostyDeco)): 
@@ -89,14 +76,18 @@ class WeaponInventory:
             return
         print("ERROR: INVALID ITEM PASSED TO 'addItem' IN 'WeaponInventory'")
         return
+
     def use(self, item, position, direction) -> Damage:
             index = getIndexToReplace(item, self.weapons)
-            if(DEBUG): 
-                print(index)
             if(index is not None): 
                 return(self.weapons[getIndexToReplace(item, self.weapons)].use(position, direction))
             else: 
                 return(None)
+
+    def update(self): 
+        for i in range(0, len(self.weapons)): 
+            if(self.weapons[i]): 
+                self.weapons[i].update()
 
     def get(self, index=None): 
         if(index is not None): 
