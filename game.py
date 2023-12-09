@@ -41,7 +41,7 @@ class Game:
         @height : sets height of the screen
         """
         self.projectiles = []
-        self.FPS = 60
+        self.FPS = 120
         self.TILESIZE = 40
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24

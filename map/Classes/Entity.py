@@ -66,7 +66,6 @@ class Entity(pygame.sprite.Sprite):
         pass
 
 class Enemy(Entity):
-   
     
     def __init__(self,x,y,width,height):
 
@@ -139,8 +138,8 @@ class Player(Entity):
      #   self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
-        self.vel_x = 10
-        self.vel_y = 10
+        self.vel_x = 30
+        self.vel_y = 30
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -471,6 +470,100 @@ class MushroomEnemy(Enemy):
         self.direction = 0
 
         self.bullets = []
+        self.followDistance = 300
+        #Entity velocity 
+        self.vel_x = 3
+        self.vel_y = 3
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
+        self.image = self.enemy_anims.nextEnemyAnim()
+        window.blit(self.image,self.rect)
+
+        if self.count == 30:
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.count = 0
+        self.count += 1
+
+        for b in self.bullets:
+          b.update()
+          b.draw(window)
+
+
+class TikiBoss1(Enemy):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anims = SpriteAnimation("Entities/tiki1.png")
+      
+        self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(0,0,16,27), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-16,0,16,27), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-32,0,16,27), (width * 3, height * 3)))
+
+        self.image = self.enemy_anims.frames[0]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[1]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[2]
+        self.image.set_colorkey((0,0,0)) 
+        self.direction = 0
+
+        self.bullets = []
+        self.followDistance = 300
+        #Entity velocity 
+        self.vel_x = 3
+        self.vel_y = 3
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
+        self.image = self.enemy_anims.nextEnemyAnim()
+        window.blit(self.image,self.rect)
+
+        if self.count == 30:
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.count = 0
+        self.count += 1
+
+        for b in self.bullets:
+          b.update()
+          b.draw(window)
+
+
+class TikiBoss2(Enemy):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anims = SpriteAnimation("Entities/tiki2.png")
+      
+        self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(0,0,16,27), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-16,0,16,27), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-32,0,16,27), (width * 3, height * 3)))
+
+        self.image = self.enemy_anims.frames[0]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[1]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[2]
+        self.image.set_colorkey((0,0,0)) 
+        self.direction = 0
+
+        self.bullets = []
         self.followDistance = 600
         #Entity velocity 
         self.vel_x = 3
@@ -487,13 +580,62 @@ class MushroomEnemy(Enemy):
         window.blit(self.image,self.rect)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
+
+class Boss3(Enemy):
+
+    def __init__(self,x,y,width,height):
+        #constructor for the pygame Sprite class
+        super().__init__(x,y,width,height)
+      
+        #Instantiate class to handle sprite animation
+        self.enemy_anims = SpriteAnimation("Entities/boss3.png")
+      
+        self.enemy_anims.registerAnim(0,pygame.transform.scale(self.enemy_anims.getFrame(0,0,16,37), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(1,pygame.transform.scale(self.enemy_anims.getFrame(-16,0,16,37), (width * 3, height * 3)))
+        self.enemy_anims.registerAnim(2,pygame.transform.scale(self.enemy_anims.getFrame(-32,0,16,37), (width * 3, height * 3)))
+
+        self.image = self.enemy_anims.frames[0]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[1]
+        self.image.set_colorkey((0,0,0)) 
+        self.image = self.enemy_anims.frames[2]
+        self.image.set_colorkey((0,0,0)) 
+        self.direction = 0
+
+        self.bullets = []
+        self.followDistance = 200
+        #Entity velocity 
+        self.vel_x = 3
+        self.vel_y = 3
+
+        #make rectangle from sprite image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+
+    def update(self,window):
+        self.prev_x = self.rect.x
+        self.prev_y = self.rect.y
+        self.image = self.enemy_anims.nextEnemyAnim()
+        window.blit(self.image,self.rect)
+
+        if self.count == 30:
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.count = 0
+        self.count += 1
+
+        for b in self.bullets:
+          b.update()
+          b.draw(window)
+
+
+
 
 class SpriteAnimation:
     """

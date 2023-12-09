@@ -94,9 +94,9 @@ class Map():
 
         self.player = player
 
-        self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = MushroomEnemy(17*TILESIZE,15*TILESIZE,50,50)
-        self.enemy3 = GoblinEnemy(12*TILESIZE,6*TILESIZE,50,50)
+        self.enemy1 = Boss3(18*TILESIZE,12*TILESIZE,50,50)
+        self.enemy2 = TikiBoss2(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy3 = TikiBoss1(12*TILESIZE,6*TILESIZE,50,50)
 
         self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)
         self.enemy_group.add(self.enemy1,self.enemy2,self.enemy3)
@@ -144,22 +144,23 @@ class Map():
         #     self.player.detectCollision(enemy, self.enemy_group)
 
 
+        #Sprite group for detecting entity on entity collision
         for sprite in self.all_entities:
             for enemy in self.enemy_group:
                 enemy.detectCollision(sprite,self.all_entities)
 
-
-
-
         self.player.update(self.DISPLAY)
+
         self.enemy1.findPlayer(self.player)
         self.enemy1.followPlayer(self.player)
         self.enemy1.update(self.DISPLAY)
 
         self.enemy2.followPlayer(self.player)
+        self.enemy1.findPlayer(self.player)
         self.enemy2.update(self.DISPLAY)
 
         self.enemy3.followPlayer(self.player)
+        self.enemy1.findPlayer(self.player)
         self.enemy3.update(self.DISPLAY)
         # pygame.display.update()
 
