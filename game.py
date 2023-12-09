@@ -6,12 +6,13 @@ from pygame.math import Vector2
 from map.map import *
 from Entities.Entity import *
 import os.path 
-
+from Inventory import getIndexToReplace
+from Inventory import InventoryManager
 DEBUG = 0
 
 # weapons that user starts game with
 defaultWeapons = {
-    "pistol": "placeholder",
+    "pistol": "The Blickey",
     "shotgun": None,
     "machineGun": None
 }
@@ -24,11 +25,11 @@ defaultItems = {
 
 # default stats
 defaultStats = {
-    "attack": 0,
-    "defense": 0,
-    "speed": 0,
-    "hp": 100,
-    "mana": 50
+    "Attack": 0,
+    "Defense": 0,
+    "Speed": 0,
+    "HP": 100,
+    "Mana": 50
 }
 
 
@@ -40,6 +41,14 @@ class Game:
         @width : sets width of the screen
         @height : sets height of the screen
         """
+        # https://www.mygreatlearning.com/blog/global-variables-in-python/#:~:text=However%2C%20if%20you%20want%20to,would%20in%20a%20regular%20function.&text=Access%20across%20modules%3A%20Global%20variables,modules%20within%20the%20same%20program.
+        global pistol 
+        pistol = Weapon(self, 1.0, 2.0, 10, 1.5 , .3, 5)
+        global shotgun
+        shotgun = Weapon(self, .65, 10, 4, 15, .7, 3) 
+        global machineGun
+        machineGun = Weapon(self, 15, 5, 45, 7, .25, 10)
+
         self.projectiles = []
         self.FPS = 120
         self.TILESIZE = 40
@@ -47,9 +56,15 @@ class Game:
         self.MAPHEIGHT = 24
         pygame.init()
         self.clock = pygame.time.Clock()
+        self.inventory = InventoryManager()
+        self.inventory.addItem(pistol)
+        self.inventory.addItem(shotgun)
+        self.inventory.addItem(machineGun)
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
+        self.UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.inventory, self.screen)
         self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
         self.map = Map(self.player,self.screen)
+        self.shooting = False
         # this allows us to filter the event queue
         # for faster event processing
         pygame.event.set_allowed([
@@ -60,17 +75,8 @@ class Game:
             os.remove('angledbg.log')
         except OSError:
             pass
+        
 
-    def create_weapon(self):
-        # Placeholder values
-        attackSpeed = 5.0
-        reloadSpeed = 2.0
-        ammunition = 10
-        accuracy = 100
-        damageMultiplier = 1.0
-        projectileSpeed = 10
-        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier, projectileSpeed)
-        return weapon
 
     def loop(self):
         
@@ -79,54 +85,46 @@ class Game:
         run perpetually until the game is
         over or is closed.
         """
-
+        self.currentWeapon = pistol
         self.screen.fill("black")
-        self.weapons = defaultWeapons
-        self.items = defaultItems
-        self.stats = defaultStats
-        self.score = 0
-        self.UI = UIManager(self.weapons, self.items, self.stats, self.score, self.screen)
-        weapon = self.create_weapon()
         while True:
+            keys = pygame.key.get_pressed()
+            # self.clock.tick(self.FPS)
             # self.clock.tick(self.FP
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left mouse button clicked
+                if(keys[pygame.K_1]): 
+                    self.currentWeapon = pistol
+                elif(keys[pygame.K_2]): 
+                    if(len(self.inventory.getItem(Weapon)) > 1):
+                        self.currentWeapon = shotgun
+                elif(keys[pygame.K_3]): 
+                    if(len(self.inventory.getItem(Weapon)) > 2): 
+                        self.currentWeapon = machineGun
+
+                if((event.type == pygame.MOUSEBUTTONDOWN) and (event.button == 1)): 
+                    self.shooting = True
+
+                if((event.type == pygame.MOUSEBUTTONUP) and (event.button == 1)): 
+                    self.shooting = False
+
+                if(self.shooting): 
                     player_rect = self.player.rect
                     player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
                     mouse_pos = pygame.mouse.get_pos()
-                    direction = self.player.player_dir
-					# Debug 2: Electric Boogaloo
-                    if os.path.exists('./angledbg.log'): 
-                        with open("angledbg.log", "a") as f:
-                            print("Player Direction:", direction, file = f)
-                    else:
-                        with open("angledbg.log", "w") as f:
-                            print("Player direction:", direction, file = f)
-                    if(DEBUG): 
-                        print(f"{player_center=}, {self.player.player_dir=}, {math.degrees(self.player.player_dir)=}")
-                    new_projectiles = weapon.use(player_center, self.player.player_dir)
+                    direction = self.player.player_dir                
+                    new_projectiles = self.inventory.useItem(self.currentWeapon, player_center, self.player.player_dir)
                     if new_projectiles is not None:
                         self.projectiles.extend(new_projectiles)
+
             self.screen.fill("black")
             self.map.update(self.screen)
             # Update projectiles
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
-
-            
-                """
-                # Debug
-                with open("prjdebug.log", "a") as f:
-                    print(p, file=f)
-                    print("Projectile X position:", p.x, "Projectile Y position:", p.y, file=f)
-                pygame.draw.circle(self.screen, (255, 0, 0), (100, 100), 25)  # Red circle to indicate that the file has been written
-				# End debug
-				"""
-            keys = pygame.key.get_pressed()
-            self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
+            self.UI.update(keys, defaultStats)
             pygame.display.flip()
             # pygame.display.update()
             self.clock.tick(self.FPS)
