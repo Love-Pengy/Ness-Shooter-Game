@@ -1,7 +1,8 @@
 import pygame, sys, csv
 import map.Classes.GraphicDesign as GraphicDesign
 from map.Classes.Entity import *
- 
+
+
 class TileProperties:
     def __init__(self, TILETYPES):
         self.tile_list = []
@@ -86,10 +87,20 @@ class Map():
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
+        self.enemy_group = pygame.sprite.Group()
+        self.all_entities = pygame.sprite.Group()
+
+        self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
+
         self.player = player
-        self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = DwarfEnemy(17*TILESIZE,15*TILESIZE,50,50)
-        self.enemy3 = GolemEnemy(12*TILESIZE,6*TILESIZE,50,50)
+
+        self.enemy1 = Boss3(18*TILESIZE,12*TILESIZE,50,50)
+        self.enemy2 = TikiBoss2(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy3 = TikiBoss1(12*TILESIZE,6*TILESIZE,50,50)
+
+        self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)
+        self.enemy_group.add(self.enemy1,self.enemy2,self.enemy3)
+
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
 
@@ -126,15 +137,30 @@ class Map():
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
         
+
+
+      
+        # for enemy in self.enemy_group:
+        #     self.player.detectCollision(enemy, self.enemy_group)
+
+
+        #Sprite group for detecting entity on entity collision
+        for sprite in self.all_entities:
+            for enemy in self.enemy_group:
+                enemy.detectCollision(sprite,self.all_entities)
+
         self.player.update(self.DISPLAY)
+
         self.enemy1.findPlayer(self.player)
         self.enemy1.followPlayer(self.player)
         self.enemy1.update(self.DISPLAY)
 
         self.enemy2.followPlayer(self.player)
+        self.enemy1.findPlayer(self.player)
         self.enemy2.update(self.DISPLAY)
 
         self.enemy3.followPlayer(self.player)
+        self.enemy1.findPlayer(self.player)
         self.enemy3.update(self.DISPLAY)
         # pygame.display.update()
 

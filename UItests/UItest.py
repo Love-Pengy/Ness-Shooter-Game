@@ -14,7 +14,6 @@ defaultWeapons = {
         "machineGun" : None
         }
 
-
 #bind for inventory
 inventoryBind = 'tab'
 
@@ -140,8 +139,6 @@ class Game:
             pygame.QUIT,
             pygame.KEYDOWN
         ])
-
-
 
     def loop(self):
         """

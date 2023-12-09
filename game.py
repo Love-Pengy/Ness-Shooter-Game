@@ -50,7 +50,7 @@ class Game:
         machineGun = Weapon(self, 15, 5, 45, 7, .25, 10)
 
         self.projectiles = []
-        self.FPS = 60
+        self.FPS = 120
         self.TILESIZE = 40
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
@@ -79,6 +79,7 @@ class Game:
 
 
     def loop(self):
+        
         """
         Primary game loop. This should be
         run perpetually until the game is
@@ -89,6 +90,7 @@ class Game:
         while True:
             keys = pygame.key.get_pressed()
             # self.clock.tick(self.FPS)
+            # self.clock.tick(self.FP
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -122,7 +124,6 @@ class Game:
             for p in self.projectiles:
                 p.update()
                 p.draw(self.screen)
-
             self.UI.update(keys, defaultStats)
             pygame.display.flip()
             # pygame.display.update()
