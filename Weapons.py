@@ -30,6 +30,7 @@ class Damage:
 # base class for weapons
 class Weapon:
     def __init__(self, game, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: float, damageMultiplier: float, projectileSpeed: float):
+
         self.game = game
         self.attackSpeed = attackSpeed
         self.reloadSpeed = reloadSpeed
@@ -55,8 +56,6 @@ class Weapon:
                 self.currAmmo = self.maxAmmo
                 self.currAmmo -= 1
                 self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
-                if(DEBUG): 
-                    print("off cd")
                 self.lastShotTime = time()
                 return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
             else:
@@ -66,11 +65,21 @@ class Weapon:
             return None
         self.lastShotTime = time()
         self.currAmmo -= 1
-        if(DEBUG): 
-            print("whatever this one is")
         self.damage = Damage("normal", int(100 * self.damageMult), None, round(uniform((self.acc * -1), self.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
     
+    def update(self): 
+        #print("HERE", self.reloading)
+        if self.currAmmo == 0 and not self.reloading:
+            self.reloading = True
+            return
+
+        if(self.reloading): 
+            if ((time() - self.lastShotTime) > self.reloadSpeed):
+                self.reloading = False
+                self.currAmmo = self.maxAmmo
+
+
     def __eq__(self, compare):
         if(isinstance(compare, Weapon)): 
             if(self.reloadSpeed == compare.reloadSpeed): 
@@ -124,6 +133,12 @@ class FlamingDeco:
         self.weapon.damage = Damage("Fire", int(100 * self.weapon.damageMult), "Flaming", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
+    def update(self): 
+        if(self.reloading): 
+            if ((time() - self.lastShotTime) > self.reloadSpeed):
+                self.reloading = False
+                self.currAmmo = self.maxAmmo
+
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 
             if(self.weapon.attackSpeed == compare.attackSpeed): 
@@ -176,6 +191,12 @@ class FrostyDeco:
         self.weapon.currAmmo -= 1
         self.weapon.damage = Damage("Ice", int(100 * self.weapon.damageMult), "Frosty", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
+
+    def update(self): 
+        if(self.reloading): 
+            if ((time() - self.lastShotTime) > self.reloadSpeed):
+                self.reloading = False
+                self.currAmmo = self.maxAmmo
     
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 
@@ -229,6 +250,13 @@ class ShroomDeco:
         self.weapon.currAmmo -= 1
         self.weapon.damage = Damage("Earth", int(100 * self.weapon.damageMult), "Shroom", round(uniform((self.weapon.acc * -1), self.weapon.acc), 1))
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
+
+    def update(self): 
+        if(self.reloading): 
+            if ((time() - self.lastShotTime) > self.reloadSpeed):
+                print("UPDATED")
+                self.reloading = False
+                self.currAmmo = self.maxAmmo
 
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 
