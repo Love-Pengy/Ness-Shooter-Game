@@ -6,6 +6,7 @@
 #File David made that allows buttons to be created and checked for pressed attribute
 from Weapons import *
 from Button import Button
+from time import time
 import pygame
 DEBUG = 0
 # https://stackoverflow.com/questions/6339057/draw-a-transparent-rectangles-and-polygons-in-pygame # got function to draw semi-transparent shape from here
@@ -245,7 +246,6 @@ class WeaponsHUD:
     def __init__(self, inventory, screen):
         self.screen = screen
         self.inventory = inventory
-        #will be none if they don't exist
         self.pistol = self.inventory.getItem(Weapon, 0)
         self.shotgun = self.inventory.getItem(Weapon, 1)
         self.machineGun = self.inventory.getItem(Weapon, 2)
@@ -260,6 +260,10 @@ class WeaponsHUD:
         self.pistolCurrAmmo = myfont.render(str(0), False, (255, 255, 255))
         self.shotgunCurrAmmo = myfont.render(str(0), False, (255, 255, 255))
         self.machineGunCurrAmmo = myfont.render(str(0), False, (255, 255, 255))
+        self.pistolReloadTime = myfont.render(str(0), False, (255, 0, 0))
+        self.shotgunReloadTime = myfont.render(str(0), False, (255, 0, 0))
+        self.machineGunReloadTime = myfont.render(str(0), False, (255, 0, 0))
+        
         
     def toggle(self): 
         if(self.active): 
@@ -268,14 +272,30 @@ class WeaponsHUD:
             self.active = 1
         
     def update(self, gunChange=None):
+        self.inventory.weapons.update()
         self.pistol = self.inventory.getItem(Weapon, 0)
         self.shotgun = self.inventory.getItem(Weapon, 1)
         self.machineGun = self.inventory.getItem(Weapon, 2)
-        self.pistolCurrAmmo = myfont.render(str(self.inventory.getItem(Weapon, 0).currAmmo), False, (255, 255, 255))
+        
+        self.pistolCurrAmmo = myfont.render(str(self.pistol.currAmmo), False, (255, 255, 255))
+        if(self.pistol.reloading): 
+            self.pistolReloadTime = myfont.render(str(round((self.pistol.reloadSpeed - (time() - self.pistol.lastShotTime)), 1)), False, (255, 0, 0))
+        else: 
+            self.pistolReloadTime = None
+
         if(self.shotgun):
-            self.shotgunCurrAmmo = myfont.render(str(self.inventory.getItem(Weapon, 1).currAmmo), False, (255, 255, 255))
+            if(self.shotgun.reloading): 
+                self.shotgunReloadTime = myfont.render(str(round((self.shotgun.reloadSpeed - (time() - self.shotgun.lastShotTime)), 1)), False, (255, 0, 0))
+            else: 
+                self.shotgunCurrAmmo = myfont.render(str(self.shotgun.currAmmo), False, (255, 255, 255))
+                self.shotgunReloadTime = None
+
         if(self.machineGun):
-            self.machineGunCurrAmmo = myfont.render(str(self.inventory.getItem(Weapon, 2).currAmmo), False, (255, 255, 255))
+            if(self.machineGun.reloading): 
+                self.machineGunReloadTime = myfont.render(str(round((self.machineGun.reloadSpeed - (time() - self.machineGun.lastShotTime)), 1)), False, (255, 0, 0))
+            else: 
+                self.machineGunCurrAmmo = myfont.render(str(self.machineGun.currAmmo), False, (255, 255, 255))
+                self.machineGunReloadTime = None
         
         if(gunChange is not None): 
             if(gunChange == 0): 
@@ -293,9 +313,6 @@ class WeaponsHUD:
 
     def execute(self):
         if(self.active):
-            if(DEBUG): 
-                print(f"{self.pistol=}, {self.shotgun=}, {self.machineGun=}")
-            #this is crop for weapons bar (location of blit, location of contents for crop, dimensions of crop)
             self.screen.blit(uiBorders, (1500, 875), (2300, 150, 250, 75))
 
             if(self.activeGun == 0): 
@@ -306,20 +323,29 @@ class WeaponsHUD:
                 pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1655, 875, 78, 73), 5, 5)
 
         if(self.pistol):
-            #checks for power up, if found it blits the associated icon
-                checkDeco(self.pistol, self.screen)
-                self.screen.blit(pistolSprite, self.pistolRect)
+            checkDeco(self.pistol, self.screen)
+            self.screen.blit(pistolSprite, self.pistolRect)
+
+            if(self.pistolReloadTime): 
+                self.screen.blit(self.pistolReloadTime, (1535, 900))
+            else: 
                 self.screen.blit(self.pistolCurrAmmo, (1557,925))
 
-                if(self.shotgun):
-                    checkDeco(self.shotgun, self.screen)
-                    self.screen.blit(shotgunSprite, self.shotgunRect)
-                    self.screen.blit(self.shotgunCurrAmmo, (1581,875))
+        if(self.shotgun):
+            checkDeco(self.shotgun, self.screen)
+            self.screen.blit(shotgunSprite, self.shotgunRect)
+            if(self.shotgunReloadTime): 
+                self.screen.blit(self.shotgunReloadTime, (1613, 900))
+            else: 
+                self.screen.blit(self.shotgunCurrAmmo, (1640,925))
 
-                if(self.machineGun): 
-                    checkDeco(self.machineGun, self.screen)
-                    self.screen.blit(machineGunSprite, self.machineGunRect)
-                    self.screen.blit(self.machineGunCurrAmmo, (1581,875))
+        if(self.machineGun): 
+            checkDeco(self.machineGun, self.screen)
+            self.screen.blit(machineGunSprite, self.machineGunRect)
+            if(self.machineGunReloadTime): 
+                self.screen.blit(self.machineGunReloadTime, (1680, 900))
+            else:
+                self.screen.blit(self.machineGunCurrAmmo, (1705,925))
 
 
 class ItemsHUD:
