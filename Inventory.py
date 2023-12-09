@@ -50,8 +50,12 @@ class InventoryManager:
             return(self.weapons.use(item, position, direction))
     #itemType can be passed Weapon, str (where you specify what it is. Ex. healtPots), or int (score)
     #returns None if nonvalid itemType
-    def getItem(self, itemType): 
+    def getItem(self, itemType, index=None): 
         if(itemType is Weapon): 
+            if(index is not None):
+                if(index >= len(self.weapons.get())):
+                   return(None)
+                return(self.weapons.get(index))
             return(self.weapons.get())
         if(itemType is int): 
             return(self.score.get())
@@ -93,8 +97,11 @@ class WeaponInventory:
                 return(self.weapons[getIndexToReplace(item, self.weapons)].use(position, direction))
             else: 
                 return(None)
-    def get(self): 
-        print(self.weapons)
+
+    def get(self, index=None): 
+        if(index is not None): 
+            return(self.weapons[index])
+        return(self.weapons)
 
 class ItemsInventory: 
     

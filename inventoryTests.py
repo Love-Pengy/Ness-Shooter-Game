@@ -15,9 +15,10 @@ direction = 0
 inventory.addItem(handgun)
 inventory.addItem(shotgun)
 inventory.addItem(machineGun)
-WTESTS = 1
+WTESTS = 0
 STESTS = 0
 ITESTS = 0
+MISCTESTS = 1
 if(WTESTS): 
     for _ in range(0, 1500): 
         val = inventory.useItem(handgun, position, direction)
@@ -214,4 +215,9 @@ if(ITESTS):
     print(inventory.useItem("meowBlaster1"))
 
 
-
+if(MISCTESTS): 
+    print(inventory.getItem(Weapon, 0))
+    print(inventory.getItem(Weapon, 1))
+    print(inventory.getItem(Weapon, 2))
+    print(inventory.getItem(Weapon, 5))
+    print(inventory.getItem(Weapon))

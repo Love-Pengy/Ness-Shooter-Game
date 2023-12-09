@@ -6,14 +6,14 @@ from pygame.math import Vector2
 from map.map import *
 from Entities.Entity import *
 import os.path 
-
+from Inventory import InventoryManager
 DEBUG = 0
 
 # weapons that user starts game with
 defaultWeapons = {
     "pistol": "The Blickey",
-    "shotgun": "The Drill",
-    "machineGun": "The Gat"
+    "shotgun": None,
+    "machineGun": None
 }
 
 # default Items
@@ -24,11 +24,11 @@ defaultItems = {
 
 # default stats
 defaultStats = {
-    "attack": 0,
-    "defense": 0,
-    "speed": 0,
-    "hp": 100,
-    "mana": 50
+    "Attack": 0,
+    "Defense": 0,
+    "Speed": 0,
+    "HP": 100,
+    "Mana": 50
 }
 
 
@@ -40,6 +40,9 @@ class Game:
         @width : sets width of the screen
         @height : sets height of the screen
         """
+        # https://www.mygreatlearning.com/blog/global-variables-in-python/#:~:text=However%2C%20if%20you%20want%20to,would%20in%20a%20regular%20function.&text=Access%20across%20modules%3A%20Global%20variables,modules%20within%20the%20same%20program.
+        global pistol 
+        pistol = Weapon(self, 1.0, 2.0, 10, 1.5 , .3, 5)
         self.projectiles = []
         self.FPS = 60
         self.TILESIZE = 40
@@ -47,9 +50,13 @@ class Game:
         self.MAPHEIGHT = 24
         pygame.init()
         self.clock = pygame.time.Clock()
+        self.inventory = InventoryManager()
+        self.inventory.addItem(pistol)
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
+        self.UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.inventory, self.screen)
         self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
         self.map = Map(self.player,self.screen)
+    
         # this allows us to filter the event queue
         # for faster event processing
         pygame.event.set_allowed([
@@ -60,17 +67,8 @@ class Game:
             os.remove('angledbg.log')
         except OSError:
             pass
+        
 
-    def create_weapon(self):
-        # Placeholder values
-        attackSpeed = 1.0
-        reloadSpeed = 2.0
-        ammunition = 10
-        accuracy = 100
-        damageMultiplier = 1.0
-        projectileSpeed = 5 
-        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier, projectileSpeed)
-        return weapon
 
     def loop(self):
         """
@@ -79,12 +77,6 @@ class Game:
         over or is closed.
         """
         self.screen.fill("black")
-        self.weapons = defaultWeapons
-        self.items = defaultItems
-        self.stats = defaultStats
-        self.score = 0
-        self.UI = UIManager(self.weapons, self.items, self.stats, self.score, self.screen)
-        weapon = self.create_weapon()
         while True:
             # self.clock.tick(self.FPS)
             for event in pygame.event.get():
@@ -104,7 +96,7 @@ class Game:
                             with open("angledbg.log", "w") as f:
                                 print("Player direction:", direction, file = f)
                         print(f"{player_center=}, {self.player.player_dir=}, {math.degrees(self.player.player_dir)=}")
-                    new_projectiles = weapon.use(player_center, self.player.player_dir)
+                    new_projectiles = self.inventory.useItem(pistol, player_center, self.player.player_dir)
                     if new_projectiles is not None:
                         self.projectiles.extend(new_projectiles)
             self.screen.fill("black")
@@ -122,7 +114,7 @@ class Game:
 				# End debug
 				"""
             keys = pygame.key.get_pressed()
-            self.UI.update(keys, self.stats, self.score, self.weapons, self.items)
+            self.UI.update(keys, defaultStats)
             pygame.display.flip()
             # pygame.display.update()
             self.clock.tick(self.FPS)
