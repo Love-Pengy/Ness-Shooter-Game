@@ -2,12 +2,17 @@ import pygame
 from UI import UIManager
 import projectiles
 from Weapons import Weapon
+from Weapons import FlamingDeco
+from Weapons import FrostyDeco
+from Weapons import ShroomDeco
 from pygame.math import Vector2
 from map.map import *
 from Entities.Entity import *
 import os.path 
 from Inventory import getIndexToReplace
 from Inventory import InventoryManager
+from random import randint
+
 DEBUG = 0
 
 # weapons that user starts game with
@@ -58,8 +63,10 @@ class Game:
         self.clock = pygame.time.Clock()
         self.inventory = InventoryManager()
         self.inventory.addItem(pistol)
+        self.inventory.addItem(shotgun)
+        self.inventory.addItem(machineGun)
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
-        self.UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.inventory, self.screen)
+        self.UI = UIManager(defaultStats, self.inventory, self.screen)
         self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
         self.map = Map(self.player,self.screen)
         self.shooting = False
@@ -86,7 +93,7 @@ class Game:
         self.currentWeapon = pistol
         self.screen.fill("black")
         while True:
-            print(self.clock.get_fps())
+            #print(self.clock.get_fps())
             keys = pygame.key.get_pressed()
             if(self.UI.pMenu.isActive()): 
                 for event in pygame.event.get():
@@ -100,14 +107,41 @@ class Game:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         return
+                    if(keys[pygame.K_x]): 
+                        defaultStats["Attack"] += randint(0, 10)
+                        defaultStats["Defense"] += randint(0, 10)
+                        defaultStats["Speed"] += randint(0, 10) 
+                        defaultStats["HP"] += randint(0, 10)
+                        defaultStats["Mana"] += randint(0, 10)
+                    if(keys[pygame.K_z]):      
+                        self.inventory.addItem(100)
+                    if(keys[pygame.K_q]): 
+                        self.inventory.useItem("healthPot")
+                    if(keys[pygame.K_e]): 
+                        self.inventory.useItem("manaPot")
+                    if(keys[pygame.K_8]): 
+                        if(not isinstance(self.inventory.getItem(Weapon, 0), FlamingDeco)): 
+                           flamingPistol = FlamingDeco(self.screen, pistol)
+                           self.inventory.addItem(flamingPistol)
+
+                    if(keys[pygame.K_9]): 
+                        if(not isinstance(self.inventory.getItem(Weapon, 1), FrostyDeco)): 
+                            frostyShotgun = FrostyDeco(self.screen, shotgun)
+                            self.inventory.addItem(frostyShotgun)
+
+                    if(keys[pygame.K_0]): 
+                        if(not isinstance(self.inventory.getItem(Weapon, 2), ShroomDeco)): 
+                            shroomMachineGun = ShroomDeco(self.screen, machineGun)
+                            self.inventory.addItem(shroomMachineGun)
+
                     if(keys[pygame.K_1]): 
-                        self.currentWeapon = pistol
+                        self.currentWeapon = self.inventory.getItem(Weapon, 0)
                     elif(keys[pygame.K_2]): 
                         if(len(self.inventory.getItem(Weapon)) > 1):
-                            self.currentWeapon = shotgun
+                            self.currentWeapon = self.inventory.getItem(Weapon, 1)
                     elif(keys[pygame.K_3]): 
                         if(len(self.inventory.getItem(Weapon)) > 2): 
-                            self.currentWeapon = machineGun
+                            self.currentWeapon = self.inventory.getItem(Weapon, 2)
 
                     if((event.type == pygame.MOUSEBUTTONDOWN) and (event.button == 1)): 
                         self.shooting = True
