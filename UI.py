@@ -73,8 +73,28 @@ class UIManager:
             self.pMenu.toggle()
         if(not keys[pygame.K_ESCAPE]): 
             self.pMenu.setEligibleToggle()
+
         if(self.pMenu.active): 
+            if(self.stHUD.isActive()): 
+                self.stHUD.toggle()
+            if(self.iHUD.isActive()): 
+                self.iHUD.toggle()
+            if(self.scHUD.isActive()): 
+                self.scHUD.toggle()
+            if(self.wHUD.isActive()): 
+                self.wHUD.toggle()
             self.pMenu.execute()
+        else: 
+            if(not self.stHUD.isActive()): 
+                self.stHUD.toggle()
+            if(not self.iHUD.isActive()): 
+                self.iHUD.toggle()
+            if(not self.scHUD.isActive()): 
+                self.scHUD.toggle()
+            if(not self.wHUD.isActive()): 
+                self.wHUD.toggle()
+
+            
         if(keys[pygame.K_1]):
             changeGun = 0
         elif(keys[pygame.K_2]): 
@@ -119,6 +139,9 @@ class PauseMenu:
                 exit()
             if(self.continueB.IsPressed()): 
                 self.toggle()
+    
+    def isActive(self): 
+        return(self.active)
 
 
 
@@ -180,6 +203,9 @@ class StatHUD:
             self.screen.blit(self.currManaTextSurface, (420, 920))
             self.screen.blit(currManaIcon, self.currManaRect)
 
+    def isActive(self): 
+        return(self.active)
+
 
 class ScoreHUD: 
     def __init__(self, score, screen):
@@ -203,6 +229,9 @@ class ScoreHUD:
             self.screen.blit(uiBorders2, (817, 0), (250, 275, 165, 50)) 
             self.screen.blit(self.scoreTextSurface, (900, 15))
 
+    def isActive(self): 
+        return(self.active)
+
 def checkDeco(weapon, screen): 
     if(isinstance(weapon, FlamingDeco)):
         screen.blit(uiBorders, (1400, 250), (145, 360, 47, 50))
@@ -212,6 +241,8 @@ def checkDeco(weapon, screen):
         screen.blit(uiBorders, (1500, 250), (45, 360, 50, 50))
     else:
         pass
+
+
 
 
 class WeaponsHUD: 
@@ -294,30 +325,33 @@ class WeaponsHUD:
             else:
                 pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1655, 875, 78, 73), 5, 5)
 
-        if(self.pistol):
-            checkDeco(self.pistol, self.screen)
-            self.screen.blit(pistolSprite, self.pistolRect)
+            if(self.pistol):
+                checkDeco(self.pistol, self.screen)
+                self.screen.blit(pistolSprite, self.pistolRect)
 
-            if(self.pistolReloadTime): 
-                self.screen.blit(self.pistolReloadTime, (1535, 900))
-            else: 
-                self.screen.blit(self.pistolCurrAmmo, (1557,925))
+                if(self.pistolReloadTime): 
+                    self.screen.blit(self.pistolReloadTime, (1535, 900))
+                else: 
+                    self.screen.blit(self.pistolCurrAmmo, (1557,925))
 
-        if(self.shotgun):
-            checkDeco(self.shotgun, self.screen)
-            self.screen.blit(shotgunSprite, self.shotgunRect)
-            if(self.shotgunReloadTime): 
-                self.screen.blit(self.shotgunReloadTime, (1613, 900))
-            else: 
-                self.screen.blit(self.shotgunCurrAmmo, (1640,925))
+            if(self.shotgun):
+                checkDeco(self.shotgun, self.screen)
+                self.screen.blit(shotgunSprite, self.shotgunRect)
+                if(self.shotgunReloadTime): 
+                    self.screen.blit(self.shotgunReloadTime, (1613, 900))
+                else: 
+                    self.screen.blit(self.shotgunCurrAmmo, (1640,925))
 
-        if(self.machineGun): 
-            checkDeco(self.machineGun, self.screen)
-            self.screen.blit(machineGunSprite, self.machineGunRect)
-            if(self.machineGunReloadTime): 
-                self.screen.blit(self.machineGunReloadTime, (1680, 900))
-            else:
-                self.screen.blit(self.machineGunCurrAmmo, (1705,925))
+            if(self.machineGun): 
+                checkDeco(self.machineGun, self.screen)
+                self.screen.blit(machineGunSprite, self.machineGunRect)
+                if(self.machineGunReloadTime): 
+                    self.screen.blit(self.machineGunReloadTime, (1680, 900))
+                else:
+                    self.screen.blit(self.machineGunCurrAmmo, (1705,925))
+
+    def isActive(self): 
+        return(self.active)
 
 
 class ItemsHUD:
@@ -364,4 +398,8 @@ class ItemsHUD:
                 self.screen.blit(manaIcon, self.mPotRect)
             else: 
                 self.screen.blit(self.emptymPotTextSurface, (1636, 815))
+
+    def isActive(self): 
+        return(self.active)
+    
 

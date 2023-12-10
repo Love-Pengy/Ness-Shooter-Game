@@ -89,43 +89,52 @@ class Game:
             keys = pygame.key.get_pressed()
             # self.clock.tick(self.FPS)
             # self.clock.tick(self.FP
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return
-                if(keys[pygame.K_1]): 
-                    self.currentWeapon = pistol
-                elif(keys[pygame.K_2]): 
-                    if(len(self.inventory.getItem(Weapon)) > 1):
-                        self.currentWeapon = shotgun
-                elif(keys[pygame.K_3]): 
-                    if(len(self.inventory.getItem(Weapon)) > 2): 
-                        self.currentWeapon = machineGun
+            if(self.UI.pMenu.isActive()): 
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return
+                self.UI.update(keys, defaultStats)
+                pygame.display.flip()
+                # pygame.display.update()
+                self.clock.tick(self.FPS)
+            else: 
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return
+                    if(keys[pygame.K_1]): 
+                        self.currentWeapon = pistol
+                    elif(keys[pygame.K_2]): 
+                        if(len(self.inventory.getItem(Weapon)) > 1):
+                            self.currentWeapon = shotgun
+                    elif(keys[pygame.K_3]): 
+                        if(len(self.inventory.getItem(Weapon)) > 2): 
+                            self.currentWeapon = machineGun
 
-                if((event.type == pygame.MOUSEBUTTONDOWN) and (event.button == 1)): 
-                    self.shooting = True
+                    if((event.type == pygame.MOUSEBUTTONDOWN) and (event.button == 1)): 
+                        self.shooting = True
 
-                if((event.type == pygame.MOUSEBUTTONUP) and (event.button == 1)): 
-                    self.shooting = False
+                    if((event.type == pygame.MOUSEBUTTONUP) and (event.button == 1)): 
+                        self.shooting = False
 
-                if(self.shooting): 
-                    player_rect = self.player.rect
-                    player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
-                    mouse_pos = pygame.mouse.get_pos()
-                    direction = self.player.player_dir                
-                    new_projectiles = self.inventory.useItem(self.currentWeapon, player_center, self.player.player_dir)
-                    if new_projectiles is not None:
-                        self.projectiles.extend(new_projectiles)
+                    if(self.shooting): 
+                        player_rect = self.player.rect
+                        player_center = Vector2(self.player.rect.centerx, self.player.rect.centery)
+                        mouse_pos = pygame.mouse.get_pos()
+                        direction = self.player.player_dir                
+                        new_projectiles = self.inventory.useItem(self.currentWeapon, player_center, self.player.player_dir)
+                        if new_projectiles is not None:
+                            self.projectiles.extend(new_projectiles)
 
-            self.screen.fill("black")
-            self.map.update(self.screen)
-            # Update projectiles
-            for p in self.projectiles:
-                p.update()
-                p.draw(self.screen)
-            self.UI.update(keys, defaultStats)
-            pygame.display.flip()
-            # pygame.display.update()
-            self.clock.tick(self.FPS)
+                self.screen.fill("black")
+                self.map.update(self.screen)
+                # Update projectiles
+                for p in self.projectiles:
+                    p.update()
+                    p.draw(self.screen)
+                self.UI.update(keys, defaultStats)
+                pygame.display.flip()
+                # pygame.display.update()
+                self.clock.tick(self.FPS)
 
 
 if __name__ == "__main__":
