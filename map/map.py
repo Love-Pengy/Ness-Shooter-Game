@@ -87,10 +87,10 @@ class Map():
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
+
+        #Sprite Groups for collision
         self.enemy_group = pygame.sprite.Group()
         self.all_entities = pygame.sprite.Group()
-
-        self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
 
         self.player = player
 
@@ -148,11 +148,19 @@ class Map():
 
         #Loop to check bullet on entity collision
         for enemy in self.enemy_group:
+            for bullet in enemy.bullets:
+                if(bullet.rect.colliderect(enemy.rect)):
+
+                    #Insert damage calc function here 
+                    self.all_entities.remove(enemy)
+                    pygame.sprite.Sprite.remove(bullet)
+                    
+        for enemy in self.enemy_group:
             for sprite in self.all_entities:
                 temp = sprite.rect.collideobjects(enemy.bullets)
                 if(temp  != None):
-                    self.all_entities.remove(temp)
-                    pygame.sprite.Sprite.remove(bullet)
+                    self.all_entities.remove(sprite)
+                    pygame.sprite.Sprite.remove(temp)
                 
 
         #Loop to check bullet collision
@@ -166,12 +174,7 @@ class Map():
         #             else:
         #                 print("NORHTING")
                        
-        
-    
         self.player.update(self.DISPLAY)
-
-     
-           
         # pygame.display.update()
 
 FPS = 60

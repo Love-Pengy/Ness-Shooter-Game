@@ -619,7 +619,7 @@ class Boss3(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
 
-
+        self.bullet_rects = []
         self.bullets = []
         self.followDistance = 200
         #Entity velocity 
