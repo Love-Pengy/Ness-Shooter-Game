@@ -29,6 +29,8 @@ class Projectile(pygame.sprite.Sprite):
         # Move projectile, trig functions are from basic vector math 
         self.x += self.speed * cos(rads(self.direction))
         self.y += ((self.speed * -1) * sin(rads(self.direction)))
+        self.rect.x = self.x
+        self.rect.y = self.y
     
     def draw(self, win):
         win.blit(self.image, (self.x, self.y)) # Draws the bullet

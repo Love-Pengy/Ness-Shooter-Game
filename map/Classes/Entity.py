@@ -641,6 +641,7 @@ class Boss3(Enemy):
 
         if self.count == 30:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+
             self.count = 0
         self.count += 1
 

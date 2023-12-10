@@ -121,6 +121,7 @@ class Map():
             self.PlayerScreen[1] = self.PlayerScreen[1] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Down
             self.player.rect.y = 1 * self.TILESIZE
+
         return self.PlayerScreen
 
     def update(self, DISPLAY):
@@ -146,21 +147,14 @@ class Map():
         for enemy in self.enemy_group:
             enemy.update(self.DISPLAY,self.player)
 
-        #Loop to check bullet on entity collision
-        for enemy in self.enemy_group:
-            for bullet in enemy.bullets:
-                if(bullet.rect.colliderect(enemy.rect)):
-
-                    #Insert damage calc function here 
-                    self.all_entities.remove(enemy)
-                    pygame.sprite.Sprite.remove(bullet)
-                    
+        #Loop to check bullet on entity collision           
         for enemy in self.enemy_group:
             for sprite in self.all_entities:
                 temp = sprite.rect.collideobjects(enemy.bullets)
-                if(temp  != None):
+                if(temp is not None and sprite != enemy):
+                    print("WORKIING")
                     self.all_entities.remove(sprite)
-                    pygame.sprite.Sprite.remove(temp)
+                    #pygame.sprite.Sprite.remove(temp)
                 
 
         #Loop to check bullet collision
