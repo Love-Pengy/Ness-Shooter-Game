@@ -8,9 +8,9 @@ class TileProperties:
         self.tile_list = []
         self.IsCollider = []
         self.tile_names = []
-        self.Data = open("map/tiles/TileData.txt")
+        self.Data = open("tiles/TileData.txt")
         for x in range(TILETYPES):
-                tile = pygame.image.load(f'map/tiles/{x}.png')
+                tile = pygame.image.load(f'tiles/{x}.png')
                 tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
                 self.tile_list.append(tiletransform)
                 self.Collision()
@@ -33,7 +33,7 @@ class screen(TileProperties):
             self.screen.append(r)
     def load(self,CurrentX,CurrentY):
         print("Now Loading...")
-        with open(f'map/Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+        with open(f'Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
@@ -41,7 +41,7 @@ class screen(TileProperties):
         print("Load Complete!")
     def save(self, CurrentX, CurrentY):
         print("Now Saving...")
-        with open(f"map/Screens/Screen{CurrentX}{CurrentY}.csv", "w", newline="") as csvfile:
+        with open(f"Screens/Screen{CurrentX}{CurrentY}.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile, delimiter= ",")
             for row in CurrentScreen.screen:
                 writer.writerow(row)
@@ -103,8 +103,8 @@ description = GraphicDesign.Text(DISPLAY, "ubuntumono", 30)
 tileNames = GraphicDesign.Text(DISPLAY, "ubuntumono", 15)
 #tabnames = GraphicDesign.Text(DISPLAY, "ubuntomono", )
 #Make Buttons
-save = pygame.image.load("map/tiles/save.png")
-load = pygame.image.load("map/tiles/load.png")
+save = pygame.image.load("tiles/save.png")
+load = pygame.image.load("tiles/load.png")
 savebtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-75),save)
 loadbtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2+200,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-60),load)
 button_list = make_buttons(tiles)

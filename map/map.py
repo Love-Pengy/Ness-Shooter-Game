@@ -54,11 +54,11 @@ class CollisionLayer():
         self.height = height
         self.Tilesize = TILESIZE
     def DrawCollision(self):
-        collideRect = self.screen.Tiles[CurrentScreen.screen[0][0]].get_rect()
+        collideRect = self.screen.Tiles[self.screen.screen[0][0]].get_rect()
         for row in range(self.height): #Rows
             for col in range(self.width): #Columns
                 if self.screen.IsCollider[self.screen.screen[row][col]]:
-                    collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
+                    collideRect = self.screen.Tiles[self.screen.screen[row][col]].get_rect()
                     collideRect.x = col * TILESIZE
                     collideRect.y = row * TILESIZE
                     pygame.draw.rect(self.display, color.RED, collideRect,2)
@@ -126,7 +126,7 @@ class Map():
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
         
-        self.player.update(self.DISPLAY)
+        self.player.update(self.DISPLAY,keys)
         self.enemy1.findPlayer(self.player)
         self.enemy1.followPlayer(self.player)
         self.enemy1.update(self.DISPLAY)
@@ -136,7 +136,7 @@ class Map():
 
         self.enemy3.followPlayer(self.player)
         self.enemy3.update(self.DISPLAY)
-        # pygame.display.update()
+        #pygame.display.update()
 
 FPS = 60
 TILESIZE = 40

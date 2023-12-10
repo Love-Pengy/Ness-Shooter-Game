@@ -74,16 +74,26 @@ class Player(Entity):
         self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
-        self.vel_x = 5
-        self.vel_y = 5
+        self.vel_x = 0
+        self.vel_y = 0
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
 
-    def update(self,window):
+    def update(self,window, key):
          window.blit(self.image, self.rect)
+         if key[pygame.K_a]: 
+            self.moveX(self.vel_x)
+         if key[pygame.K_d]:
+           # self.image = self.player_anims.frames["walk_right1"]
+            self.moveX(self.vel_x)
+         if key[pygame.K_w]:
+            self.moveY(self.vel_y)
+         if key[pygame.K_s]:
+            #self.image = self.player_anims.frames["walk_down1"]
+            self.moveY(self.vel_y)
     
 
     def setDirection(self,mouse_pos):
@@ -120,25 +130,37 @@ class Player(Entity):
             self.image = self.player_anims.frames["walk_se1"] if self.player_anims.next else self.player_anims.frames["walk_se2"]
    
     def processInput(self, pressed):
-        if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
-            self.player_anims.nextAnim()
-
-        if pressed[pygame.K_w]:
-            self.moveY(self.vel_y * -1)
-            if pressed[pygame.K_d]:
-               self.moveX(self.vel_x)
-            elif pressed[pygame.K_a]:
-               self.moveX(-1 * self.vel_x)
-        if pressed[pygame.K_s]:
-            self.moveY(self.vel_y)
-            if pressed[pygame.K_d]:
-               self.moveX(self.vel_x)
-            elif pressed[pygame.K_a]:
-               self.moveX(-1 * self.vel_x)
-        if pressed[pygame.K_a]: 
-            self.moveX(-1 * self.vel_x)
+    #    if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
+     #       self.player_anims.nextAnim()
+#
+ #       if pressed[pygame.K_w]:
+  #          self.moveY(self.vel_y * -1)
+   #         if pressed[pygame.K_d]:
+    #           self.moveX(self.vel_x)
+     #       elif pressed[pygame.K_a]:
+      #         self.moveX(-1 * self.vel_x)
+       # if pressed[pygame.K_s]:
+        #    self.moveY(self.vel_y)
+         #   if pressed[pygame.K_d]:
+          #     self.moveX(self.vel_x)
+           # elif pressed[pygame.K_a]:
+            #   self.moveX(-1 * self.vel_x)
+#        if pressed[pygame.K_a]: 
+ #           self.moveX(-1 * self.vel_x)
+  #      if pressed[pygame.K_d]:
+   #         self.moveX(self.vel_x)   
+        if pressed[pygame.K_a]:
+            self.player_anims.nextAnim() 
+            self.vel_x = -5
         if pressed[pygame.K_d]:
-            self.moveX(self.vel_x)    
+            self.player_anims.nextAnim()
+            self.vel_x = 5
+        if pressed[pygame.K_w]:
+            self.player_anims.nextAnim()
+            self.vel_y = -5
+        if pressed[pygame.K_s]:
+            self.player_anims.nextAnim()
+            self.vel_y = 5
         
 class SerpentEnemy(Entity):
 
