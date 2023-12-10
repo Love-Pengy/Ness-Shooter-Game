@@ -86,7 +86,6 @@ class Game:
         self.currentWeapon = pistol
         self.screen.fill("black")
         while True:
-            print(self.clock.get_fps())
             keys = pygame.key.get_pressed()
             if(self.UI.pMenu.isActive()): 
                 for event in pygame.event.get():
