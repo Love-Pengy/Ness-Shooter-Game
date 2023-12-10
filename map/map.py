@@ -121,6 +121,7 @@ class Map():
             self.PlayerScreen[1] = self.PlayerScreen[1] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Down
             self.player.rect.y = 1 * self.TILESIZE
+
         return self.PlayerScreen
 
     def update(self, DISPLAY):
@@ -150,9 +151,9 @@ class Map():
         for enemy in self.enemy_group:
             for sprite in self.all_entities:
                 temp = sprite.rect.collideobjects(enemy.bullets)
-                if(temp  != None):
+                if(temp is not None):
                     self.all_entities.remove(temp)
-                    pygame.sprite.Sprite.remove(bullet)
+                    pygame.sprite.Sprite.remove(temp)
                 
 
         #Loop to check bullet collision
