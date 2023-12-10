@@ -153,7 +153,8 @@ class Map():
                 temp = sprite.rect.collideobjects(enemy.bullets)
                 if(temp is not None and sprite != enemy):
                     print("WORKIING")
-                    self.all_entities.remove(sprite)
+                    #self.all_entities.remove(enemy)
+                    self.enemy_group.remove(sprite)
                     #pygame.sprite.Sprite.remove(temp)
                 
 
