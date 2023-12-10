@@ -59,7 +59,7 @@ class Game:
         self.inventory = InventoryManager()
         self.inventory.addItem(pistol)
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
-        self.UI = UIManager(defaultStats, self.inventory, self.screen)
+        self.UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.inventory, self.screen)
         self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
         self.map = Map(self.player,self.screen)
         self.shooting = False

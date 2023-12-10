@@ -59,11 +59,11 @@ manaIcon = pygame.image.load("UIAssets/Mana_Icon.png")
 manaIcon = pygame.transform.scale(manaIcon, (40, 40))
 
 class UIManager:
-    def __init__(self, weapons, items, stats, score, inventory, screen):
+    def __init__(self, stats, inventory, screen):
         self.wHUD = WeaponsHUD(inventory, screen)
         self.iHUD = ItemsHUD(inventory, screen)
         self.stHUD = StatHUD(stats, screen)
-        self.scHUD = ScoreHUD(score, screen)
+        self.scHUD = ScoreHUD(inventory.getItem(int), screen)
         self.pMenu = PauseMenu(screen)
         self.inventory = inventory
 
@@ -118,6 +118,7 @@ class PauseMenu:
         self.exitB = Button(screen, 1300, 480, exitButton)
         self.active = 0
         self.eligibleToggle = True 
+        self.screen = screen
 
     def toggle(self): 
         if(self.eligibleToggle):
@@ -125,6 +126,7 @@ class PauseMenu:
                 self.active = 0
             else: 
                 self.active = 1
+                self.drawRect = 1
             self.eligibleToggle = False
     
     def setEligibleToggle(self): 
@@ -133,6 +135,9 @@ class PauseMenu:
     def execute(self): 
 
         if(self.active): 
+            if(self.drawRect): 
+                draw_rect_alpha(self.screen, (0, 0, 0, 75), (0, 0, 1800, 960))
+                self.drawRect = 0
             self.exitB.draw()
             self.continueB.draw()
             if(self.exitB.IsPressed()): 
@@ -208,6 +213,7 @@ class StatHUD:
 
 
 class ScoreHUD: 
+
     def __init__(self, score, screen):
         self.screen = screen
         self.score = score
