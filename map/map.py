@@ -94,9 +94,9 @@ class Map():
 
         self.player = player
 
-        self.enemy1 = Boss3(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = TikiBoss2(17*TILESIZE,15*TILESIZE,50,50)
-        self.enemy3 = TikiBoss1(12*TILESIZE,6*TILESIZE,50,50)
+        self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
+        self.enemy2 = SerpentEnemy(17*TILESIZE,15*TILESIZE,50,50)
+        self.enemy3 = SerpentEnemy(12*TILESIZE,6*TILESIZE,50,50)
 
         self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)
         self.enemy_group.add(self.enemy1,self.enemy2,self.enemy3)
@@ -137,28 +137,33 @@ class Map():
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
         
-
-
-      
-        # for enemy in self.enemy_group:
-        #     self.player.detectCollision(enemy, self.enemy_group)
-
-
         #Sprite group for detecting entity on entity collision
         for sprite in self.all_entities:
             for enemy in self.enemy_group:
                 enemy.detectCollision(sprite,self.all_entities)
 
+        #Loop to update all enemies on screen
+        for enemy in self.enemy_group:
+            enemy.update(self.DISPLAY,self.player)
+
+        
+        #Loop to check bullet collision
+        for enemy1 in self.enemy_group:
+            for bullet in enemy1.bullets:
+                for enemy2 in self.enemy_group:
+                    if(bullet.rect.colliderect(enemy2.rect)):
+                        print("RUnNING")
+                        self.enemy_group.remove(enemy2)
+                        pygame.sprite.Sprite.remove(bullet)
+                    else:
+                        print("NORHTING")
+                       
+        
+    
         self.player.update(self.DISPLAY)
 
      
-        self.enemy1.update(self.DISPLAY,self.player)
-      
-        self.enemy2.update(self.DISPLAY,self.player)
-
-        self.enemy3.update(self.DISPLAY,self.player)
-
-       
+           
         # pygame.display.update()
 
 FPS = 60

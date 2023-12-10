@@ -71,7 +71,7 @@ class Enemy(Entity):
 
         super().__init__(x,y,width,height)
         self.direction = 0 
-        self.bullet = Projectile((0,0),0,10,10)
+        self.bullets = []
         self.followDistance = 100 #Determines how close the enemy will approach the player
 
     def findPlayer(self, player):
@@ -79,8 +79,6 @@ class Enemy(Entity):
         x = -self.rect.centerx + player.rect.centerx
         y = -self.rect.centery + player.rect.centery
         self.direction = math.degrees(math.atan2(-y,x))
-
-        #print(self.direction)
     
         return self.direction
 
@@ -140,8 +138,8 @@ class Player(Entity):
      #   self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
-        self.vel_x = 7
-        self.vel_y = 7
+        self.vel_x = 15
+        self.vel_y = 15
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -149,6 +147,7 @@ class Player(Entity):
 
 
     def update(self,window,player):
+        self.player_anims.nextAnim()
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         window.blit(self.image, self.rect)
@@ -189,8 +188,8 @@ class Player(Entity):
     
 
     def processInput(self, pressed):
-        if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
-            self.player_anims.nextAnim()
+        # if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
+        #     self.player_anims.nextAnim()
 
         if pressed[pygame.K_w]:
             self.moveY(self.vel_y * -1)
@@ -222,8 +221,8 @@ class SerpentEnemy(Enemy):
         self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
         self.image.set_colorkey((0,0,0)) 
         
-        self.bullets = []
-        self.followDistance = 800
+      
+        self.followDistance = 300
         #Entity velocity 
         self.vel_x = 2
         self.vel_y = 2
@@ -233,7 +232,7 @@ class SerpentEnemy(Enemy):
         self.rect.x, self.rect.y = x, y
  
     def update(self,window,player):
-        rotated_image = pygame.transform.rotate(self.image, self.direction)
+        rotated_image = pygame.transform.rotate(self.image, self.direction+180)
         rotated_image.set_colorkey((0,0,0))
         rotated_rect = rotated_image.get_rect()
         rotated_rect.x, rotated_rect.y = self.rect.x,self.rect.y
@@ -245,7 +244,8 @@ class SerpentEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
+            temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10)
+            self.bullets.append(temp)
             self.count = 0
         self.count += 1
 
