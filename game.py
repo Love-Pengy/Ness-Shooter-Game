@@ -50,7 +50,7 @@ class Game:
         machineGun = Weapon(self, 15, 5, 45, 7, .25, 10)
 
         self.projectiles = []
-        self.FPS = 120
+        self.FPS = 60
         self.TILESIZE = 40
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
@@ -87,14 +87,15 @@ class Game:
         self.screen.fill("black")
         while True:
             keys = pygame.key.get_pressed()
+
             if(self.UI.pMenu.isActive()): 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         return
                 self.UI.update(keys, defaultStats)
-                pygame.display.flip()
+                #pygame.display.flip()
                 # pygame.display.update()
-                self.clock.tick(self.FPS)
+                #self.clock.tick(self.FPS)
             else: 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -131,7 +132,7 @@ class Game:
                     p.draw(self.screen)
                 self.UI.update(keys, defaultStats)
                 pygame.display.flip()
-                # pygame.display.update()
+                pygame.display.update()
                 self.clock.tick(self.FPS)
 
 
