@@ -151,17 +151,14 @@ class Map():
 
         self.player.update(self.DISPLAY)
 
-        self.enemy1.findPlayer(self.player)
-        self.enemy1.followPlayer(self.player)
-        self.enemy1.update(self.DISPLAY)
+     
+        self.enemy1.update(self.DISPLAY,self.player)
+      
+        self.enemy2.update(self.DISPLAY,self.player)
 
-        self.enemy2.followPlayer(self.player)
-        self.enemy1.findPlayer(self.player)
-        self.enemy2.update(self.DISPLAY)
+        self.enemy3.update(self.DISPLAY,self.player)
 
-        self.enemy3.followPlayer(self.player)
-        self.enemy1.findPlayer(self.player)
-        self.enemy3.update(self.DISPLAY)
+       
         # pygame.display.update()
 
 FPS = 60

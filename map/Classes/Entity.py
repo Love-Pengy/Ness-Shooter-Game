@@ -58,7 +58,7 @@ class Entity(pygame.sprite.Sprite):
                     self.rect.y += self.vel_x
                     enemy.rect.y -= enemy.vel_x
 
-    def update(self,window):
+    def update(self,window,player):
         """Stub function to be implemented by 
            inherited classes. Updates the entities sprites,
            actions, and position when called.
@@ -72,15 +72,17 @@ class Enemy(Entity):
         super().__init__(x,y,width,height)
         self.direction = 0 
         self.bullet = Projectile((0,0),0,10,10)
-    
+        self.followDistance = 100 #Determines how close the enemy will approach the player
 
     def findPlayer(self, player):
         #Finds the angle the enemy is facing relative to the player
-        x = self.rect.centerx - player.rect.centerx
-        y = self.rect.centery - player.rect.centery
-        self.direction = (math.degrees(math.atan2(-y,x)) + 360) % 360
+        x = -self.rect.centerx + player.rect.centerx
+        y = -self.rect.centery + player.rect.centery
+        self.direction = math.degrees(math.atan2(-y,x))
 
-        self.followDistance = 100 #Determines how close the enemy will approach the player
+        #print(self.direction)
+    
+        return self.direction
 
     def followPlayer(self, player):
 
@@ -138,15 +140,15 @@ class Player(Entity):
      #   self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
-        self.vel_x = 30
-        self.vel_y = 30
+        self.vel_x = 7
+        self.vel_y = 7
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         window.blit(self.image, self.rect)
@@ -219,7 +221,6 @@ class SerpentEnemy(Enemy):
         self.image = self.enemy_anim.getFrame(0,0,96,96)
         self.image =  pygame.transform.rotate(self.image, 90) #Rotates sprite image to initially face player
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0 
         
         self.bullets = []
         self.followDistance = 800
@@ -231,7 +232,7 @@ class SerpentEnemy(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
  
-    def update(self,window):
+    def update(self,window,player):
         rotated_image = pygame.transform.rotate(self.image, self.direction)
         rotated_image.set_colorkey((0,0,0))
         rotated_rect = rotated_image.get_rect()
@@ -239,6 +240,9 @@ class SerpentEnemy(Enemy):
         window.blit(rotated_image,rotated_rect)
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
+
+        self.findPlayer(player)
+        self.followPlayer(player)
 
         if self.count == 30:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
@@ -248,8 +252,6 @@ class SerpentEnemy(Enemy):
         for b in self.bullets:
           b.update()
           b.draw(window)
-
-       
 
 class GolemEnemy(Enemy):
 
@@ -283,23 +285,24 @@ class GolemEnemy(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
         
-
 class GoblinEnemy(Enemy):
 
     def __init__(self,x,y,width,height):
@@ -320,7 +323,6 @@ class GoblinEnemy(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
        
-        self.direction = 0
         self.followDistance = 300
         self.bullets = []
 
@@ -332,21 +334,23 @@ class GoblinEnemy(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
 
 class GhostEnemy(Enemy):
 
@@ -367,8 +371,6 @@ class GhostEnemy(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-       
-        self.direction = 0
 
         self.bullets = []
         #Entity velocity 
@@ -384,21 +386,23 @@ class GhostEnemy(Enemy):
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
 
 class DwarfEnemy(Enemy):
 
@@ -422,7 +426,6 @@ class DwarfEnemy(Enemy):
        
         self.bullets = []
 
-        self.direction = 0
         self.followDistance = 100
         #Entity velocity 
         self.vel_x = 3
@@ -432,11 +435,14 @@ class DwarfEnemy(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
+
+        self.findPlayer(player)
+        self.followPlayer(player)
 
         if self.count == 30:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
@@ -446,7 +452,6 @@ class DwarfEnemy(Enemy):
         for b in self.bullets:
           b.update()
           b.draw(window)
-
 
 class MushroomEnemy(Enemy):
 
@@ -467,7 +472,7 @@ class MushroomEnemy(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
+        
 
         self.bullets = []
         self.followDistance = 300
@@ -479,21 +484,23 @@ class MushroomEnemy(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
 
 class TikiBoss1(Enemy):
 
@@ -514,7 +521,7 @@ class TikiBoss1(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
+     
 
         self.bullets = []
         self.followDistance = 300
@@ -526,21 +533,23 @@ class TikiBoss1(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
 
 class TikiBoss2(Enemy):
 
@@ -561,8 +570,7 @@ class TikiBoss2(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
-
+    
         self.bullets = []
         self.followDistance = 600
         #Entity velocity 
@@ -573,14 +581,17 @@ class TikiBoss2(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
@@ -607,7 +618,7 @@ class Boss3(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-        self.direction = 0
+
 
         self.bullets = []
         self.followDistance = 200
@@ -619,23 +630,23 @@ class Boss3(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
-    def update(self,window):
+    def update(self,window,player):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
         window.blit(self.image,self.rect)
 
+        self.findPlayer(player)
+        self.followPlayer(player)
+
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction+90,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
         for b in self.bullets:
           b.update()
           b.draw(window)
-
-
-
 
 class SpriteAnimation:
     """
