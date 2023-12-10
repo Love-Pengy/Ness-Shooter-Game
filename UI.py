@@ -369,9 +369,9 @@ class ItemsHUD:
         self.manaPots = self.inventory.getItem("manaPot")
         self.active = 1
         self.hPotRect = healthItemIcon.get_rect()
-        self.hPotRect = self.hPotRect.move(1492, 743)
+        self.hPotRect = self.hPotRect.move(1492, 805)
         self.mPotRect = manaIcon.get_rect()
-        self.mPotRect = self.mPotRect.move(1703, 743)
+        self.mPotRect = self.mPotRect.move(1703, 805)
         self.hPotTextSurface = myfont.render(str(self.healthPots), False, (255, 255, 255))
         self.mPotTextSurface = myfont.render(str(self.manaPots), False, (255, 255, 255))
         self.emptyhPotTextSurface = myfont.render("~", False, (255, 255, 255))
@@ -391,7 +391,10 @@ class ItemsHUD:
 
 
     def execute(self):
+
         if(self.active): 
+            draw_rect_alpha(self.screen, (0, 0, 0, 100), (1485, 800, 50, 50))
+            draw_rect_alpha(self.screen, (0, 0, 0, 100), (1700, 800, 50, 50))
             self.screen.blit(uiBorders, (1475, 790), (2125, 430, 300, 70)) 
             if(self.healthPots): 
                 self.screen.blit(self.hPotTextSurface, (1576, 815))
