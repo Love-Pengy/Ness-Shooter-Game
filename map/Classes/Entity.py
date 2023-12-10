@@ -173,7 +173,7 @@ class SerpentEnemy(Entity):
         self.atk = 15
         self.defense = 25
         self.mana = 0
-        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, :"Mana": self.mana}
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -245,7 +245,7 @@ class GrassmanEnemy(Entity):
         self.atk = 10
         self.defense = 5 # "Defense" is spelled out because "def" is a reserved word
         self.mana = 0
-        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed}
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
     def findPlayer(self, player):
         #Finds the angle the enemy is relative to the player
@@ -302,7 +302,7 @@ class GoblinEnemy(Entity):
         self.atk = 5
         self.defense = 2
         self.mana = 0
-        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": 0}
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
