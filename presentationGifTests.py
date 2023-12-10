@@ -50,7 +50,7 @@ class Game:
         machineGun = Weapon(self, 15, 5, 45, 7, .25, 10)
 
         self.projectiles = []
-        self.FPS = 60
+        self.FPS = 120
         self.TILESIZE = 40
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
@@ -59,7 +59,7 @@ class Game:
         self.inventory = InventoryManager()
         self.inventory.addItem(pistol)
         self.screen = pygame.display.set_mode((self.MAPWIDTH * self.TILESIZE, self.MAPHEIGHT * self.TILESIZE))
-        self.UI = UIManager(defaultStats, self.inventory, self.screen)
+        self.UI = UIManager(defaultWeapons, defaultItems, defaultStats, 0, self.inventory, self.screen)
         self.player = Player(23*self.TILESIZE,12*self.TILESIZE,50,50)
         self.map = Map(self.player,self.screen)
         self.shooting = False
@@ -88,15 +88,14 @@ class Game:
         while True:
             print(self.clock.get_fps())
             keys = pygame.key.get_pressed()
-
             if(self.UI.pMenu.isActive()): 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         return
                 self.UI.update(keys, defaultStats)
-                #pygame.display.flip()
+                pygame.display.flip()
                 # pygame.display.update()
-                #self.clock.tick(self.FPS)
+                self.clock.tick(self.FPS)
             else: 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -133,7 +132,7 @@ class Game:
                     p.draw(self.screen)
                 self.UI.update(keys, defaultStats)
                 pygame.display.flip()
-                pygame.display.update()
+                # pygame.display.update()
                 self.clock.tick(self.FPS)
 
 

@@ -146,17 +146,25 @@ class Map():
         for enemy in self.enemy_group:
             enemy.update(self.DISPLAY,self.player)
 
-        
+        #Loop to check bullet on entity collision
+        for enemy in self.enemy_group:
+            for sprite in self.all_entities:
+                temp = sprite.rect.collideobjects(enemy.bullets)
+                if(temp  != None):
+                    self.all_entities.remove(temp)
+                    pygame.sprite.Sprite.remove(bullet)
+                
+
         #Loop to check bullet collision
-        for enemy1 in self.enemy_group:
-            for bullet in enemy1.bullets:
-                for enemy2 in self.enemy_group:
-                    if(bullet.rect.colliderect(enemy2.rect)):
-                        print("RUnNING")
-                        self.enemy_group.remove(enemy2)
-                        pygame.sprite.Sprite.remove(bullet)
-                    else:
-                        print("NORHTING")
+        # for enemy1 in self.enemy_group:
+        #     for bullet in enemy1.bullets:
+        #         for enemy2 in self.enemy_group:
+        #             if(bullet.rect.colliderect(enemy2.rect)):
+        #                 print("RUnNING")
+        #                 self.enemy_group.remove(enemy2)
+        #                 pygame.sprite.Sprite.remove(bullet)
+        #             else:
+        #                 print("NORHTING")
                        
         
     
