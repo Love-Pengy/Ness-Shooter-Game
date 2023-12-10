@@ -10,7 +10,9 @@ from Weapons import ShroomDeco
 from Button import Button
 from time import time
 import pygame
+from Inventory import getIndexToReplace
 DEBUG = 0
+# https://stackoverflow.com/questions/23982907/how-to-center-text-in-pygame // how to draw centered text 
 # https://stackoverflow.com/questions/6339057/draw-a-transparent-rectangles-and-polygons-in-pygame # got function to draw semi-transparent shape from here
 # https://www.pygame.org/docs/ref/surface.html // learning what SRCALPHA is
 
@@ -217,7 +219,8 @@ class ScoreHUD:
     def __init__(self, score, screen):
         self.screen = screen
         self.score = score
-        self.scoreTextSurface = myfont.render(str(self.score), False, (255, 255, 255))
+        self.text = myfont.render(str(self.score), True, (255, 255, 255))
+        self.textRect = self.text.get_rect(center=(910, 25))
         self.active = 1
 
     def toggle(self): 
@@ -228,23 +231,43 @@ class ScoreHUD:
         
     def update(self, score): 
         self.score = score
-        self.scoreTextSurface = myfont.render(str(self.score), False, (255, 255, 255))
+        self.text = myfont.render(str(self.score), True, (255, 255, 255))
+        self.textRect = self.text.get_rect(center=(910, 25))
 
     def execute(self): 
         if(self.active): 
             self.screen.blit(uiBorders2, (817, 0), (250, 275, 165, 50)) 
-            self.screen.blit(self.scoreTextSurface, (900, 15))
+            self.screen.blit(self.text, self.textRect)
 
     def isActive(self): 
         return(self.active)
 
-def checkDeco(weapon, screen): 
-    if(isinstance(weapon, FlamingDeco)):
-        screen.blit(uiBorders, (1400, 250), (145, 360, 47, 50))
-    elif(isinstance(weapon, FrostyDeco)): 
-        screen.blit(uiBorders, (1450, 250), (95, 360, 47, 50))
-    elif(isinstance(weapon, ShroomDeco)): 
-        screen.blit(uiBorders, (1500, 250), (45, 360, 50, 50))
+def checkDeco(weapon, inventory, screen): 
+    index = getIndexToReplace(weapon, inventory.getItem(Weapon))
+    if(index is not None): 
+        if(isinstance(weapon, FlamingDeco)):
+            if(index == 0): 
+                screen.blit(uiBorders, (1525, 860), (145, 360, 47, 50))
+            elif(index == 1): 
+                screen.blit(uiBorders, (1600, 860), (145, 360, 47, 50))
+            else: 
+                screen.blit(uiBorders, (1675, 860), (145, 360, 47, 50))
+
+        elif(isinstance(weapon, FrostyDeco)): 
+            if(index == 0): 
+                screen.blit(uiBorders, (1525, 860), (95, 360, 47, 50))
+            elif(index == 1): 
+                screen.blit(uiBorders, (1600, 860), (95, 360, 47, 50))
+            else: 
+                screen.blit(uiBorders, (1675, 860), (95, 360, 47, 50))
+
+        elif(isinstance(weapon, ShroomDeco)): 
+            if(index == 0): 
+                screen.blit(uiBorders, (1525, 860), (45, 360, 50, 50))
+            elif(index == 1): 
+                screen.blit(uiBorders, (1600, 860), (45, 360, 50, 50))
+            else: 
+                screen.blit(uiBorders, (1675, 860), (45, 360, 50, 50))
     else:
         pass
 
@@ -286,25 +309,49 @@ class WeaponsHUD:
         self.shotgun = self.inventory.getItem(Weapon, 1)
         self.machineGun = self.inventory.getItem(Weapon, 2)
         
-        self.pistolCurrAmmo = myfont.render(str(self.pistol.currAmmo), False, (255, 255, 255))
-        if(self.pistol.reloading): 
-            self.pistolReloadTime = myfont.render(str(round((self.pistol.reloadSpeed - (time() - self.pistol.lastShotTime)), 1)), False, (255, 0, 0))
+        if(isinstance(self.inventory.getItem(Weapon, 0), Weapon)): 
+            self.pistolCurrAmmo = myfont.render(str(self.pistol.currAmmo), False, (255, 255, 255))
+            if(self.pistol.reloading): 
+                self.pistolReloadTime = myfont.render(str(round((self.pistol.reloadSpeed - (time() - self.pistol.lastShotTime)), 1)), False, (255, 0, 0))
+            else: 
+                self.pistolReloadTime = None
         else: 
-            self.pistolReloadTime = None
+            self.pistolCurrAmmo = myfont.render(str(self.pistol.weapon.currAmmo), False, (255, 255, 255))
+            if(self.pistol.weapon.reloading): 
+                self.pistolReloadTime = myfont.render(str(round((self.pistol.weapon.reloadSpeed - (time() - self.pistol.weapon.lastShotTime)), 1)), False, (255, 0, 0))
+            else: 
+                self.pistolReloadTime = None
 
         if(self.shotgun):
-            if(self.shotgun.reloading): 
-                self.shotgunReloadTime = myfont.render(str(round((self.shotgun.reloadSpeed - (time() - self.shotgun.lastShotTime)), 1)), False, (255, 0, 0))
+            if(isinstance(self.inventory.getItem(Weapon, 1), Weapon)): 
+                if(self.shotgun.reloading): 
+                    self.shotgunReloadTime = myfont.render(str(round((self.shotgun.reloadSpeed - (time() - self.shotgun.lastShotTime)), 1)), False, (255, 0, 0))
+                else: 
+                    self.shotgunCurrAmmo = myfont.render(str(self.shotgun.currAmmo), False, (255, 255, 255))
+                    self.shotgunReloadTime = None
             else: 
-                self.shotgunCurrAmmo = myfont.render(str(self.shotgun.currAmmo), False, (255, 255, 255))
-                self.shotgunReloadTime = None
+                if(self.shotgun.weapon.reloading): 
+                    self.shotgunReloadTime = myfont.render(str(round((self.shotgun.weapon.reloadSpeed - (time() - self.shotgun.weapon.lastShotTime)), 1)), False, (255, 0, 0))
+                else: 
+                    self.shotgunCurrAmmo = myfont.render(str(self.shotgun.weapon.currAmmo), False, (255, 255, 255))
+                    self.shotgunReloadTime = None
+
 
         if(self.machineGun):
-            if(self.machineGun.reloading): 
-                self.machineGunReloadTime = myfont.render(str(round((self.machineGun.reloadSpeed - (time() - self.machineGun.lastShotTime)), 1)), False, (255, 0, 0))
+            if(isinstance(self.inventory.getItem(Weapon, 2), Weapon)): 
+                if(self.machineGun.reloading): 
+                    self.machineGunReloadTime = myfont.render(str(round((self.machineGun.reloadSpeed - (time() - self.machineGun.lastShotTime)), 1)), False, (255, 0, 0))
+                else: 
+                    self.machineGunCurrAmmo = myfont.render(str(self.machineGun.currAmmo), False, (255, 255, 255))
+                    self.machineGunReloadTime = None
             else: 
-                self.machineGunCurrAmmo = myfont.render(str(self.machineGun.currAmmo), False, (255, 255, 255))
-                self.machineGunReloadTime = None
+                if(self.machineGun.weapon.reloading): 
+                    self.machineGunReloadTime = myfont.render(str(round((self.machineGun.weapon.reloadSpeed - (time() - self.machineGun.weapon.lastShotTime)), 1)), False, (255, 0, 0))
+                else: 
+                    self.machineGunCurrAmmo = myfont.render(str(self.machineGun.weapon.currAmmo), False, (255, 255, 255))
+                    self.machineGunReloadTime = None
+
+
         
         if(gunChange is not None): 
             if(gunChange == 0): 
@@ -322,6 +369,9 @@ class WeaponsHUD:
 
     def execute(self):
         if(self.active):
+            checkDeco(self.pistol,self.inventory,  self.screen)
+            checkDeco(self.shotgun, self.inventory, self.screen)
+            checkDeco(self.machineGun, self.inventory, self.screen)
             self.screen.blit(uiBorders, (1500, 875), (2300, 150, 250, 75))
 
             if(self.activeGun == 0): 
@@ -332,7 +382,6 @@ class WeaponsHUD:
                 pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(1655, 875, 78, 73), 5, 5)
 
             if(self.pistol):
-                checkDeco(self.pistol, self.screen)
                 self.screen.blit(pistolSprite, self.pistolRect)
 
                 if(self.pistolReloadTime): 
@@ -341,7 +390,6 @@ class WeaponsHUD:
                     self.screen.blit(self.pistolCurrAmmo, (1557,925))
 
             if(self.shotgun):
-                checkDeco(self.shotgun, self.screen)
                 self.screen.blit(shotgunSprite, self.shotgunRect)
                 if(self.shotgunReloadTime): 
                     self.screen.blit(self.shotgunReloadTime, (1613, 900))
@@ -349,7 +397,6 @@ class WeaponsHUD:
                     self.screen.blit(self.shotgunCurrAmmo, (1640,925))
 
             if(self.machineGun): 
-                checkDeco(self.machineGun, self.screen)
                 self.screen.blit(machineGunSprite, self.machineGunRect)
                 if(self.machineGunReloadTime): 
                     self.screen.blit(self.machineGunReloadTime, (1680, 900))
