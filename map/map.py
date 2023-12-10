@@ -32,7 +32,7 @@ class screen(TileProperties):
             self.screen.append(r)
     def load(self,CurrentX,CurrentY):
         print("Now Loading...")
-        with open(f'map/Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+        with open(f'map/Screens/TileMaps/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
