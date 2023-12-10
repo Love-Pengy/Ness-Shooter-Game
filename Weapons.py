@@ -10,7 +10,6 @@ from pygame.math import Vector2
 
 DEBUG = 0
 
-# driver struct for weapon actions
 @dataclass
 class Damage:
     type: str  # damage type (may or may not be used)
@@ -27,7 +26,6 @@ class Damage:
 # damageMultiplier = damage multiplier
 # projectileSpeeed = speed at which the projectiles travel 
 
-# base class for weapons
 class Weapon:
     def __init__(self, game, attackSpeed: float, reloadSpeed: float, ammunition: int, accuracy: float, damageMultiplier: float, projectileSpeed: float):
 
@@ -45,7 +43,6 @@ class Weapon:
 
     def use(self, position, player_direction):
 
-        # updates will go in here so that a dedicated update() function doesn't need to be called
         if self.currAmmo == 0 and not self.reloading:
             self.reloading = True
             return None
@@ -69,7 +66,6 @@ class Weapon:
         return [projectiles.create_projectile(position, player_direction, self.projSpeed, self.damage.amount)]
     
     def update(self): 
-        #print("HERE", self.reloading)
         if self.currAmmo == 0 and not self.reloading:
             self.reloading = True
             return
@@ -101,15 +97,12 @@ class Weapon:
             return(False)
 
 
-# class for Flaming Deco
 class FlamingDeco:
     def __init__(self, game, weapon):
         self.weapon = weapon
 
     def use(self, position, player_direction):
-        if DEBUG:
-            print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
-        # updates will go in here so that a dedicated update() function doesn't need to be called
+
         if self.weapon.currAmmo == 0 and not self.weapon.reloading:
             self.weapon.reloading = True
             return None
@@ -125,8 +118,6 @@ class FlamingDeco:
                 return None
 
         if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
-            if DEBUG:
-                print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
@@ -134,10 +125,10 @@ class FlamingDeco:
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
     def update(self): 
-        if(self.reloading): 
-            if ((time() - self.lastShotTime) > self.reloadSpeed):
-                self.reloading = False
-                self.currAmmo = self.maxAmmo
+        if(self.weapon.reloading): 
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
+                self.weapon.reloading = False
+                self.weapon.currAmmo = self.weapon.maxAmmo
 
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 
@@ -160,15 +151,12 @@ class FlamingDeco:
 
 
             
-# class for Frosty Deco
 class FrostyDeco:
     def __init__(self, game, weapon):
         self.weapon = weapon
 
     def use(self, position, player_direction):
-        if DEBUG:
-            print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
-        # updates will go in here so that a dedicated update() function doesn't need to be called
+
         if self.weapon.currAmmo == 0 and not self.weapon.reloading:
             self.weapon.reloading = True
             return None
@@ -184,8 +172,6 @@ class FrostyDeco:
                 return None
 
         if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
-            if DEBUG:
-                print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
@@ -193,10 +179,10 @@ class FrostyDeco:
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
     def update(self): 
-        if(self.reloading): 
-            if ((time() - self.lastShotTime) > self.reloadSpeed):
-                self.reloading = False
-                self.currAmmo = self.maxAmmo
+        if(self.weapon.reloading): 
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
+                self.weapon.reloading = False
+                self.weapon.currAmmo = self.weapon.maxAmmo
     
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 
@@ -218,16 +204,12 @@ class FrostyDeco:
             return(False)
 
 
-# class for Shroom Deco
 class ShroomDeco:
     def __init__(self, game, weapon):
         self.weapon = weapon
 
-    # earth could potentially also be called poison but I don't think it really matters
     def use(self, position, player_direction):
-        if DEBUG:
-            print(f"{self.weapon.attackSpeed=}, {self.weapon.reloadSpeed=}, {self.weapon.maxAmmo=}, {self.weapon.acc=}, {self.weapon.damageMult=}, {self.weapon.reloading=}, {self.weapon.lastShotTime=}, {self.weapon.currAmmo=}")
-        # updates will go in here so that a dedicated update() function doesn't need to be called
+        
         if self.weapon.currAmmo == 0 and not self.weapon.reloading:
             self.weapon.reloading = True
             return None
@@ -243,8 +225,6 @@ class ShroomDeco:
                 return None
 
         if (time() - self.weapon.lastShotTime) < (1 / self.weapon.attackSpeed):
-            if DEBUG:
-                print("time since shot: ", time() - self.weapon.lastShotTime)
             return None
         self.weapon.lastShotTime = time()
         self.weapon.currAmmo -= 1
@@ -252,11 +232,10 @@ class ShroomDeco:
         return [projectiles.create_projectile(position, player_direction, self.weapon.projSpeed, self.weapon.damage.amount)]
 
     def update(self): 
-        if(self.reloading): 
-            if ((time() - self.lastShotTime) > self.reloadSpeed):
-                print("UPDATED")
-                self.reloading = False
-                self.currAmmo = self.maxAmmo
+        if(self.weapon.reloading): 
+            if ((time() - self.weapon.lastShotTime) > self.weapon.reloadSpeed):
+                self.weapon.reloading = False
+                self.weapon.currAmmo = self.weapon.maxAmmo
 
     def __eq__(self, compare): 
         if(isinstance(compare, Weapon)): 

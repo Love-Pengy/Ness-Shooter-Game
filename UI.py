@@ -3,15 +3,17 @@
 # https://opengameart.org/content/larger-simple-heart
 # https://opengameart.org/content/golden-ui
 # https://opengameart.org/content/rpg-ui-icons
-#File David made that allows buttons to be created and checked for pressed attribute
-from Weapons import *
+from Weapons import Weapon
+from Weapons import FlamingDeco
+from Weapons import FrostyDeco
+from Weapons import ShroomDeco
 from Button import Button
 from time import time
 import pygame
 DEBUG = 0
 # https://stackoverflow.com/questions/6339057/draw-a-transparent-rectangles-and-polygons-in-pygame # got function to draw semi-transparent shape from here
 # https://www.pygame.org/docs/ref/surface.html // learning what SRCALPHA is
-#color is RGBA 
+
 def draw_rect_alpha(screen, color, rect):
     shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
     pygame.draw.rect(shape_surf, color, shape_surf.get_rect())
@@ -20,8 +22,6 @@ def draw_rect_alpha(screen, color, rect):
 pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
-#usage: 
-#label = myfont.render("wanted text", num, color)
 
 uiBorders = pygame.image.load("UIAssets/UIBorders.png")
 uiBorders = pygame.transform.scale_by(uiBorders, 3)
@@ -45,8 +45,8 @@ healthIcon = pygame.transform.scale(healthIcon, (40, 40))
 continueButton = pygame.image.load("UIAssets/ContinueButton.png")
 exitButton = pygame.image.load("UIAssets/ExitButton.png")
 baseDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Base.png")
-#https://stackoverflow.com/questions/27576645/how-to-overcome-python-fonts-pygame-not-being-loaded
 baseDamageIcon = pygame.transform.scale(baseDamageIcon, (50, 50))
+#https://stackoverflow.com/questions/27576645/how-to-overcome-python-fonts-pygame-not-being-loaded
 frostyDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Frosty.png")
 flamingDamageIcon = pygame.image.load("UIAssets/Damage_Icon_Flaming.png")
 speedIcon = pygame.image.load("UIAssets/Speed_Icon.png")
@@ -59,35 +59,14 @@ manaIcon = pygame.image.load("UIAssets/Mana_Icon.png")
 manaIcon = pygame.transform.scale(manaIcon, (40, 40))
 
 class UIManager:
-    #build all of respective UI's
-    def __init__(self, weapons, items, stats, score,inventory, screen):
+    def __init__(self, weapons, items, stats, score, inventory, screen):
         self.wHUD = WeaponsHUD(inventory, screen)
         self.iHUD = ItemsHUD(inventory, screen)
         self.stHUD = StatHUD(stats, screen)
         self.scHUD = ScoreHUD(score, screen)
         self.pMenu = PauseMenu(screen)
         self.inventory = inventory
-    #update weapons HUD with the new order of weapons or weapon 
-    def updateWeaponHUD(self, change):
-        self.wHUD.update(change)
 
-    #update count of items based off of the new inventory amount
-    def updateItemHUD(self):
-        self.iHUD.update()
-    
-    #update stat UI with new stats based off of Player class values
-    def updateStatHUD(self, newStats):
-        self.stHUD.update(newStats)
-
-
-    #bring up pause menu, execute appropriate action based off of button hit
-    def pauseMenuToggle(self):
-        self.pMenu.toggle()
-
-    #update score HUD
-    def updateScoreHUD(self, newScore):
-        self.scHUD.update(newScore)
-    
     def update(self, keys, stats):
         changeGun = None #bars
         if(keys[pygame.K_ESCAPE]): 
@@ -103,10 +82,10 @@ class UIManager:
         elif(keys[pygame.K_3]): 
             changeGun = 2
             
-        self.updateStatHUD(stats)
-        self.updateScoreHUD(self.inventory.getItem(int))
-        self.updateWeaponHUD(changeGun)
-        self.updateItemHUD()
+        self.stHUD.update(stats)
+        self.scHUD.update(self.inventory.getItem(int))
+        self.wHUD.update(changeGun)
+        self.iHUD.update()
         self.iHUD.execute()
         self.wHUD.execute()
         self.stHUD.execute()
@@ -117,7 +96,6 @@ class PauseMenu:
     def __init__(self, screen): 
         self.continueB = Button(screen, 200, 480, continueButton)
         self.exitB = Button(screen, 1300, 480, exitButton)
-        #maybe instead of drawing a boring ass box I can make the bg have a gauss blur
         self.active = 0
         self.eligibleToggle = True 
 
@@ -133,8 +111,6 @@ class PauseMenu:
         self.eligibleToggle= True
 
     def execute(self): 
-        if(DEBUG): 
-            print(f"PauseMenu Status: {self.active=} {self.eligibleToggle=}")
 
         if(self.active): 
             self.exitB.draw()
@@ -147,7 +123,7 @@ class PauseMenu:
 
 
 class StatHUD:
-    #passed a dict of stats 
+
     def __init__(self, stats, screen):
         self.attack = stats.get("Attack")
         self.defense = stats.get("Defense")
@@ -159,7 +135,6 @@ class StatHUD:
         self.attackRect = baseDamageIcon.get_rect()
         self.attackRect = self.attackRect.move(10, 900)
         self.attackTextSurface = myfont.render(str(self.attack), False, (255,255, 255))
-        #self.textSurface = self.textSurface.move(100, 950)
         self.defenseRect = defenseIcon.get_rect()
         self.defenseRect = self.defenseRect.move(100, 910)
         self.defenseTextSurface = myfont.render(str(self.defense), False, (255, 255, 255))
@@ -192,10 +167,7 @@ class StatHUD:
         self.currManaTextSurface = myfont.render(str(self.mana), False, (255, 255, 255))
 
     def execute(self): 
-        #draw everything to the screen if active
         if(self.active): 
-            # draw_rect_alpha(self.screen, (0, 0, 0), (10, 20, 30, 40))
-            #first set: RGBA ; Second set: X, Y, width, height
             draw_rect_alpha(self.screen, (0, 0, 0, 75), (0, 900, 465, 65))
             self.screen.blit(baseDamageIcon, self.attackRect)
             self.screen.blit(self.attackTextSurface, (65,920))

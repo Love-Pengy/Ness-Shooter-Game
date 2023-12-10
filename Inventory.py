@@ -5,14 +5,12 @@ from Weapons import ShroomDeco
 from Weapons import Damage
 DEBUG = 0
 
-#finds the corresponding index to an identical weapon regardless of whether or not its a deco (sorry for the if statements couldnt find a better way)
 def getIndexToReplace(weaponOP, weaponList: list): 
     for weaponI in weaponList:
         if(weaponOP == weaponI): 
             return(weaponList.index(weaponI))
     return(None)
 
-#need getter functionality for the inventory
 class InventoryManager: 
     def __init__(self): 
         self.weapons = WeaponInventory()
@@ -28,7 +26,6 @@ class InventoryManager:
             return
         self.items.add(item)
 
-    #returns true if item should have the associated action ran through or dict/none if weapon 
     def useItem(self, item, position=None, direction=None): 
         if(isinstance(item, int)): 
             return(self.score.use(item))
@@ -37,8 +34,6 @@ class InventoryManager:
         else: 
             return(self.weapons.use(item, position, direction))
 
-    #itemType can be passed Weapon, str (where you specify what it is. Ex. healtPots), or int (score)
-    #returns None if nonvalid itemType
     def getItem(self, itemType, index=None): 
         if(itemType is Weapon): 
             if(index is not None):
@@ -52,7 +47,6 @@ class InventoryManager:
             return(self.items.get(itemType))
         return(None)
 
-#possible instances: 
 class WeaponInventory: 
     
     def __init__(self): 
