@@ -131,7 +131,7 @@ class Game:
                     p.draw(self.screen)
                 self.player.addBullets(self.projectiles)
               
-                self.UI.update(keys, defaultStats)
+                self.UI.update(keys, self.player.getStats())
                 pygame.display.flip()
                 pygame.display.update()
                 self.clock.tick(self.FPS)

@@ -73,6 +73,13 @@ class Entity(pygame.sprite.Sprite):
         """
         pass
 
+    def damageCalc(self, attacker):
+       
+        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100)/100))
+        
+        self.hp -= damage
+        print(self.hp)
+
 class Enemy(Entity):
     
     def __init__(self,x,y,width,height):
@@ -219,6 +226,9 @@ class Player(Entity):
             
     def addBullets(self, bulletArr): 
         self.bullets = bulletArr
+
+    def getStats(self): 
+        return(self.stats)
         
 class SerpentEnemy(Enemy):
 
@@ -263,7 +273,7 @@ class SerpentEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10)
+            temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk)
             self.bullets.append(temp)
             self.count = 0
         self.count += 1
@@ -322,7 +332,7 @@ class GolemEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -379,7 +389,7 @@ class GoblinEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -438,7 +448,7 @@ class GhostEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -495,7 +505,7 @@ class DwarfEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -551,7 +561,7 @@ class MushroomEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -608,7 +618,7 @@ class TikiBoss1(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -664,7 +674,7 @@ class TikiBoss2(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -721,7 +731,7 @@ class Boss3(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
 
             self.count = 0
         self.count += 1
