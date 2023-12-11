@@ -7,6 +7,7 @@ class TileProperties:
     def __init__(self, TILETYPES,TILESIZE):
         self.tile_list = []
         self.IsCollider = []
+        self.IsPitfall = []
         self.tile_names = []
         self.Data = open("map/tiles/TileData.txt")
         for x in range(TILETYPES):
@@ -22,11 +23,13 @@ class TileProperties:
         TileData = CurrentTileProperties.split()
         self.tile_names.append(TileData[0])
         self.IsCollider.append(int(TileData[1]))
+        self.IsPitfall.append(int(TileData[2]))
 
 class screen(TileProperties):
     def __init__(self, Tile, MAPWIDTH, MAPHEIGHT, DISPLAY):
         self.Tiles = Tile.tile_list
         self.IsCollider = Tile.IsCollider
+        self.IsPitfall = Tile.IsPitfall
         self.TILESIZE = 40
         self.screen = []
         self.DISPLAY = DISPLAY
@@ -38,39 +41,30 @@ class screen(TileProperties):
 
     def LoadEnemies(self,x,y,enemy):
         if enemy == 1:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = SerpentEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 2:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = GolemEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 3:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = GoblinEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 4:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = GhostEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 5:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = DwarfEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 6:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = MushroomEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 7:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = TikiBoss1(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 8:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = TikiBoss2(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
         if enemy == 9:
-            print(f"Loading enemy at ({x*self.TILESIZE},{y*self.TILESIZE})")
             enemy1 = Boss3(x*self.TILESIZE,y*self.TILESIZE,50,50)
             self.enemies.add(enemy1)
 
@@ -131,6 +125,7 @@ class Map():
         self.TILETYPES = 16
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
+        self.LastTransition = 3
         self.tiles = TileProperties(self.TILETYPES,self.TILESIZE)
         self.color = GraphicDesign.ColorList()
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
@@ -154,18 +149,22 @@ class Map():
             self.PlayerScreen[0] = self.PlayerScreen[0] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Left
             self.player.rect.x = 44 * self.TILESIZE
+            self.LastTransition = 3
         elif self.player.rect.centerx > (self.MAPWIDTH * self.TILESIZE):
             self.PlayerScreen[0] = self.PlayerScreen[0] + 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Right
             self.player.rect.x = 1 * self.TILESIZE
+            self.LastTransition = 1
         if self.player.rect.centery < 0:
             self.PlayerScreen[1] = self.PlayerScreen[1] + 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Up
-            self.player.rect.y = 22 * self.TILESIZE
-        elif self.player.rect.centery > (self.MAPHEIGHT * self.TILESIZE):
+            self.player.rect.y = 21 * self.TILESIZE
+            self.LastTransition = 2
+        elif self.player.rect.bottom > (self.MAPHEIGHT * self.TILESIZE) - 1:
             self.PlayerScreen[1] = self.PlayerScreen[1] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Down
             self.player.rect.y = 1 * self.TILESIZE
+            self.LastTransition = 4
         return self.PlayerScreen
 
     def update(self, DISPLAY):
@@ -197,8 +196,27 @@ class Map():
                 if(temp  != None):
                     self.all_entities.remove(temp)
                     pygame.sprite.Sprite.remove(bullet)
-                
 
+        #Detects if player is above pitfalls  
+        playerposx = int(self.player.rect.centerx / self.TILESIZE)
+        playerposy = int(self.player.rect.bottom / self.TILESIZE)
+        if playerposy > 24:
+            playerposy = 24
+        if playerposx > 45:
+            playerposx = 45
+        if self.CurrentScreen.IsPitfall[self.CurrentScreen.screen[playerposy][playerposx]] == 1:
+                if self.LastTransition == 1:
+                    self.player.rect.x = 1 * self.TILESIZE
+                    self.player.rect.y = 12 * self.TILESIZE
+                if self.LastTransition == 2:
+                    self.player.rect.x = 22 * self.TILESIZE
+                    self.player.rect.y = 20 * self.TILESIZE
+                if self.LastTransition == 3:
+                    self.player.rect.x = 44 * self.TILESIZE
+                    self.player.rect.y = 12 * self.TILESIZE
+                if self.LastTransition == 4:
+                    self.player.rect.x = 22 * self.TILESIZE
+                    self.player.rect.y = 2 * self.TILESIZE
         self.player.update(self.DISPLAY,keys)
         for enemy in self.CurrentScreen.enemies:
             enemy.findPlayer(self.player)

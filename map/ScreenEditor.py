@@ -8,9 +8,10 @@ class TileProperties:
         self.tile_list = []
         self.IsCollider = []
         self.tile_names = []
-        self.Data = open("tiles/TileData.txt")
+        self.IsPitfall = []
+        self.Data = open("map/tiles/TileData.txt")
         for x in range(TILETYPES):
-                tile = pygame.image.load(f'tiles/{x}.png')
+                tile = pygame.image.load(f'map/tiles/{x}.png')
                 tiletransform = pygame.transform.scale(tile,(TILESIZE,TILESIZE))
                 self.tile_list.append(tiletransform)
                 self.Collision()
@@ -22,18 +23,23 @@ class TileProperties:
         TileData = CurrentTileProperties.split()
         self.tile_names.append(TileData[0])
         self.IsCollider.append(int(TileData[1]))
+        self.IsPitfall.append(int(TileData[2]))
 class screen(TileProperties):
     def __init__(self, Tile, MAPWIDTH, MAPHEIGHT):
         self.Tiles = Tile.tile_list
         self.IsCollider = Tile.IsCollider
+        self.IsPitfall = Tile.IsPitfall
+        self.EnemyScreen = []
         self.screen = []
         
         for row in range(MAPHEIGHT + 1):
             r = [0] * MAPWIDTH
+            s = [0] * MAPWIDTH
             self.screen.append(r)
+            self.EnemyScreen.append(s)
     def load(self,CurrentX,CurrentY):
         print("Now Loading...")
-        with open(f'Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+        with open(f'map/Screens/TileMaps/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
@@ -41,9 +47,13 @@ class screen(TileProperties):
         print("Load Complete!")
     def save(self, CurrentX, CurrentY):
         print("Now Saving...")
-        with open(f"Screens/Screen{CurrentX}{CurrentY}.csv", "w", newline="") as csvfile:
+        with open(f"map/Screens/TileMaps/Screen{CurrentX}{CurrentY}.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile, delimiter= ",")
             for row in CurrentScreen.screen:
+                writer.writerow(row)
+        with open(f"map/Screens/EnemyMaps/Screen{CurrentX}{CurrentY}.csv", "w", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter= ",")
+            for row in CurrentScreen.EnemyScreen:
                 writer.writerow(row)
         print("Save Complete!")
 #Draws Grid for level editor
@@ -103,8 +113,28 @@ description = GraphicDesign.Text(DISPLAY, "ubuntumono", 30)
 tileNames = GraphicDesign.Text(DISPLAY, "ubuntumono", 15)
 #tabnames = GraphicDesign.Text(DISPLAY, "ubuntomono", )
 #Make Buttons
-save = pygame.image.load("tiles/save.png")
-load = pygame.image.load("tiles/load.png")
+save = pygame.image.load("map/tiles/save.png")
+load = pygame.image.load("map/tiles/load.png")
+enemy_list = []
+enemy_list.append(pygame.image.load("Entities/Serpent.gif"))
+enemy_list.append(pygame.image.load("Entities/goblinguy.png"))
+enemy_list.append(pygame.image.load("Entities/golem.png"))
+enemy_list.append(pygame.image.load("Entities/Ghost.png"))
+enemy_list.append(pygame.image.load("Entities/lilguy.png"))
+enemy_list.append(pygame.image.load("Entities/Mushroom.png"))
+enemy_list.append(pygame.image.load("Entities/tiki1.png"))
+enemy_list.append(pygame.image.load("Entities/tiki2.png"))
+enemy_list.append(pygame.image.load("Entities/boss3.png"))
+en_list = []
+row = 0
+col = 0
+for i,j in enumerate(enemy_list):
+    enemy_button = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)+ (75*col) + 50, (75 * row) + 50, enemy_list[i])
+    en_list.append(enemy_button)
+    row += 1
+    if col == 3:
+        row+= 1
+        col = 0
 savebtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-75),save)
 loadbtn = Button.Button(DISPLAY,(MAPWIDTH*TILESIZE)//2+200,((MAPHEIGHT*TILESIZE)+LOWER_MARGIN-60),load)
 button_list = make_buttons(tiles)
@@ -151,7 +181,15 @@ while True:
                 current_tile = button_count
         pygame.draw.rect(DISPLAY,color.RED, button_list[current_tile].rect, 3)
     if tab == 1:
-        description.write_text("No Enemies Yet!!!", color.BLACK,(MAPWIDTH*TILESIZE) + 30, 90)
+        for button_count, i in enumerate(en_list):
+             i.draw()
+             butcol += 1
+             if butcol == 3:
+                butcol = 0
+                butrow += 1
+             if i.IsPressed():
+                current_tile = button_count
+        pygame.draw.rect(DISPLAY,color.RED, en_list[current_tile].rect, 3)
     if tab == 2:
         description.write_text("No Objects Yet!!!", color.BLACK,(MAPWIDTH*TILESIZE) + 30, 90)
     #Checks Mouse Position
@@ -161,8 +199,12 @@ while True:
     #Check if Mouse is within Map
     if pos[0] < (MAPWIDTH * TILESIZE) and pos[1] < (MAPHEIGHT * TILESIZE):
         if pygame.mouse.get_pressed()[0] == 1:
+            if tab == 0:
                 if CurrentScreen.screen[y][x] != current_tile:
                     CurrentScreen.screen[y][x] = current_tile
+            if tab == 1:
+                if CurrentScreen.EnemyScreen[y][x] != current_tile:
+                    CurrentScreen.EnemyScreen[y][x] = current_tile
     #Event Handler
     for event in pygame.event.get():
         #Quit
@@ -192,6 +234,11 @@ while True:
                         collideRect.x = col * TILESIZE
                         collideRect.y = row * TILESIZE
                         pygame.draw.rect(DISPLAY, color.RED, collideRect,2)
+            if CurrentScreen.IsPitfall[CurrentScreen.screen[row][col]]:
+                        collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
+                        collideRect.x = col * TILESIZE
+                        collideRect.y = row * TILESIZE
+                        pygame.draw.rect(DISPLAY, color.BLUE, collideRect,2)
     #Update Display
     draw_grid()
     pygame.display.update()

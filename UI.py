@@ -243,8 +243,8 @@ class ScoreHUD:
         return(self.active)
 
 def checkDeco(weapon, inventory, screen): 
-    index = getIndexToReplace(weapon, inventory.getItem(Weapon))
-    if(index is not None): 
+    if(weapon is not None): 
+        index = getIndexToReplace(weapon, inventory.getItem(Weapon))
         if(isinstance(weapon, FlamingDeco)):
             if(index == 0): 
                 screen.blit(uiBorders, (1525, 860), (145, 360, 47, 50))
