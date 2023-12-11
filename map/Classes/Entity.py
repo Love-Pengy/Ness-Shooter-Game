@@ -23,11 +23,19 @@ class Entity(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
 
         #Velocity of entity movement 
-        self.vel_x = 5
-        self.vel_y = 5
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
         self.prev_x = 0
         self.prev_y = 0
+
+        #Base stats
+        self.atk = 5
+        self.defense = 10
+        self.hp = 25
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #Count to control animations and/or fire rate
         self.count = 0
@@ -138,8 +146,16 @@ class Player(Entity):
        #self.image = self.player_anims.frames["walk_down1"] #initial sprite
         self.player_dir = 0
         #player velocity 
-        self.vel_x = 15
-        self.vel_y = 15
+        self.speed = 7
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 50
+        self.defense = 50
+        self.hp = 250
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -228,9 +244,16 @@ class SerpentEnemy(Enemy):
       
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 4
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
+        #Base stats
+        self.atk = 10
+        self.defense = 15
+        self.hp = 50
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -282,8 +305,16 @@ class GolemEnemy(Enemy):
         self.bullets = []
 
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 2
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 20
+        self.defense = 100
+        self.hp = 200
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -331,8 +362,16 @@ class GoblinEnemy(Enemy):
         self.bullets = []
 
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 5
+        self.defense = 5
+        self.hp = 25
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -378,8 +417,16 @@ class GhostEnemy(Enemy):
 
         self.bullets = []
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 30
+        self.defense = 40
+        self.hp = 75
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -431,8 +478,16 @@ class DwarfEnemy(Enemy):
 
         self.followDistance = 100
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 30
+        self.defense = 30
+        self.hp = 35
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -480,8 +535,16 @@ class MushroomEnemy(Enemy):
         self.bullets = []
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 25
+        self.defense = 25
+        self.hp = 75
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -529,8 +592,16 @@ class TikiBoss1(Enemy):
         self.bullets = []
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 50
+        self.defense = 75
+        self.hp = 350
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -577,8 +648,16 @@ class TikiBoss2(Enemy):
         self.bullets = []
         self.followDistance = 600
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 60
+        self.defense = 85
+        self.hp = 400
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -626,8 +705,16 @@ class Boss3(Enemy):
         self.bullets = []
         self.followDistance = 200
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 7
+        self.vel_x = 7
+        self.vel_y = 7
+
+        #Base stats
+        self.atk = 100
+        self.defense = 100
+        self.hp = 500
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -706,14 +793,3 @@ class SpriteAnimation:
 
         self.count += 1
         return self.frames[self.curr_anim]
-
-   
-
-
-       
-
-    
-
-
-    
-
