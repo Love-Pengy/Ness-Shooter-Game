@@ -144,6 +144,7 @@ class Player(Entity):
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+        self.bullets = []
 
 
     def update(self,window,player):
@@ -207,6 +208,9 @@ class Player(Entity):
             self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_d]:
             self.moveX(self.vel_x)    
+            
+    def add(self, bulletArr): 
+        self.bullets = bulletArr
         
 class SerpentEnemy(Enemy):
 
