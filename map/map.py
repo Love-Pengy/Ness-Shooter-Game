@@ -158,16 +158,6 @@ class Map():
                     #pygame.sprite.Sprite.remove(temp)
                 
 
-        #Loop to check bullet collision
-        # for enemy1 in self.enemy_group:
-        #     for bullet in enemy1.bullets:
-        #         for enemy2 in self.enemy_group:
-        #             if(bullet.rect.colliderect(enemy2.rect)):
-        #                 print("RUnNING")
-        #                 self.enemy_group.remove(enemy2)
-        #                 pygame.sprite.Sprite.remove(bullet)
-        #             else:
-        #                 print("NORHTING")
                        
         self.player.update(self.DISPLAY)
         # pygame.display.update()

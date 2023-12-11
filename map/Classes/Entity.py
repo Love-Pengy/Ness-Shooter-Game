@@ -135,7 +135,7 @@ class Player(Entity):
         self.player_anims.registerAnim("walk_nw1",self.player_anims.getFrame(-490,-120,64,100))
         self.player_anims.registerAnim("walk_nw2",self.player_anims.getFrame(-570,-120,64,100))
     
-     #   self.image = self.player_anims.frames["walk_down1"] #initial sprite
+       #self.image = self.player_anims.frames["walk_down1"] #initial sprite
     
         #player velocity 
         self.vel_x = 15
@@ -384,7 +384,6 @@ class GhostEnemy(Enemy):
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         self.image = self.enemy_anims.nextEnemyAnim()
-        window.blit(self.image,self.rect)
 
     def update(self,window,player):
         self.prev_x = self.rect.x
@@ -445,7 +444,7 @@ class DwarfEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction + 180,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
             self.count = 0
         self.count += 1
 
