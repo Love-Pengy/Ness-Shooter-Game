@@ -136,7 +136,7 @@ class Player(Entity):
         self.player_anims.registerAnim("walk_nw2",self.player_anims.getFrame(-570,-120,64,100))
     
        #self.image = self.player_anims.frames["walk_down1"] #initial sprite
-    
+        self.player_dir = 0
         #player velocity 
         self.vel_x = 15
         self.vel_y = 15
@@ -165,10 +165,10 @@ class Player(Entity):
         y = mouse_pos[1] - self.rect.centery
 
         #Direction player is aiming in degrees 
-        player_dir = (math.degrees(math.atan2(-y,x)) + 360) % 360
+        self.player_dir = (math.degrees(math.atan2(-y,x)) + 360) % 360
 
         #Direction player is facing split into 8 directions to determine correct sprite     
-        player_facing = int(player_dir / 45)
+        player_facing = int(self.player_dir / 45)
 
         if player_facing == 0:
             self.image = self.player_anims.frames["walk_right1"] if self.player_anims.next else self.player_anims.frames["walk_right2"]

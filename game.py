@@ -4,7 +4,7 @@ import projectiles
 from Weapons import Weapon
 from pygame.math import Vector2
 from map.map import *
-from Entities.Entity import *
+from map.Classes.Entity import *
 import os.path 
 from Inventory import getIndexToReplace
 from Inventory import InventoryManager
