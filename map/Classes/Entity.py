@@ -209,7 +209,7 @@ class Player(Entity):
         if pressed[pygame.K_d]:
             self.moveX(self.vel_x)    
             
-    def add(self, bulletArr): 
+    def addBullets(self, bulletArr): 
         self.bullets = bulletArr
         
 class SerpentEnemy(Enemy):

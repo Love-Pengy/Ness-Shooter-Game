@@ -130,7 +130,7 @@ class Game:
                 for p in self.projectiles:
                     p.update()
                     p.draw(self.screen)
-                self.player.add(p) 
+              
                 self.UI.update(keys, defaultStats)
                 pygame.display.flip()
                 pygame.display.update()
