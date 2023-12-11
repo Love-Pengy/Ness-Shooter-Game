@@ -6,8 +6,12 @@ from math import atan2
 
 DEBUG = 0
 
-class Projectile:
+class Projectile(pygame.sprite.Sprite):
     def __init__(self, position, direction, speed, damage):
+
+        #constructor for the pygame Sprite class
+        super().__init__(self)
+
         self.x = position[0]
         self.y = position[1]  
         #self.position = Vector2(self.x, self.y)

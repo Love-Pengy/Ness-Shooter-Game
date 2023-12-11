@@ -2,6 +2,8 @@ import pygame
 import math
 import time
 
+
+
 class Entity(pygame.sprite.Sprite):
     """
     Parent class of all game entities including the 
