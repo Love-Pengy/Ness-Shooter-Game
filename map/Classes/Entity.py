@@ -146,7 +146,7 @@ class Player(Entity):
         self.rect.x, self.rect.y = x, y
 
 
-    def update(self,window,player):
+    def update(self,window):
         self.player_anims.nextAnim()
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
