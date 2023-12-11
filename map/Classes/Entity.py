@@ -253,7 +253,7 @@ class SerpentEnemy(Enemy):
         #Base stats
         self.atk = 10
         self.defense = 15
-        self.hp = 50
+        self.hp = 10
         self.mana = 69 # Nice
         self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
         #make rectangle from sprite image
@@ -372,7 +372,7 @@ class GoblinEnemy(Enemy):
         self.atk = 5
         self.defense = 5
         self.hp = 25
-        self.mana = 69 # Nice
+        self.mana = 0 
         self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
