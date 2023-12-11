@@ -149,6 +149,7 @@ class Map():
 
         #Loop to check bullet on entity collision           
         for enemy in self.enemy_group:
+
             for sprite in self.all_entities:
                 temp = sprite.rect.collideobjects(enemy.bullets)
                 temp2 = sprite.rect.collideobjects(self.player.bullets)
@@ -160,6 +161,9 @@ class Map():
                 elif(temp2 is not None and sprite is not self.player): 
                     self.enemy_group.remove(sprite)
 
+                    for element in self.player.bullets: 
+                        if(element is temp2): 
+                            self.player.bullets.remove(temp2)
         
         '''
         temp = self.player.rect.collideobjects(enemy.bullets)
