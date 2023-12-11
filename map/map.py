@@ -151,16 +151,27 @@ class Map():
         for enemy in self.enemy_group:
             for sprite in self.all_entities:
                 temp = sprite.rect.collideobjects(enemy.bullets)
+                temp2 = sprite.rect.collideobjects(self.player.bullets)
                 if(temp is not None and sprite != enemy):
-                    print("WORKIING")
                     #self.all_entities.remove(enemy)
                     self.enemy_group.remove(sprite)
+
                     #pygame.sprite.Sprite.remove(temp)
-                
+                elif(temp2 is not None and sprite is not self.player): 
+                    self.enemy_group.remove(sprite)
+
+        
+        '''
+        temp = self.player.rect.collideobjects(enemy.bullets)
+        if(temp is not None): 
+            for element in enemy.bullets: 
+                if(element is temp): 
+                    enemy.bullets.remove(element)
+        ''' 
+               
 
                        
         self.player.update(self.DISPLAY)
-        # pygame.display.update()
 
 FPS = 60
 TILESIZE = 40
