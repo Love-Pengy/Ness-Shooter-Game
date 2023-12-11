@@ -32,7 +32,6 @@ defaultStats = {
     "Mana": 50
 }
 
-
 class Game:
     def __init__(self):
         """
@@ -130,6 +129,7 @@ class Game:
                 for p in self.projectiles:
                     p.update()
                     p.draw(self.screen)
+                    self.player.addBullets(self.projectiles)
               
                 self.UI.update(keys, defaultStats)
                 pygame.display.flip()

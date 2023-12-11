@@ -138,8 +138,8 @@ class Player(Entity):
        #self.image = self.player_anims.frames["walk_down1"] #initial sprite
         self.player_dir = 0
         #player velocity 
-        self.vel_x = 15
-        self.vel_y = 15
+        self.vel_x = 7
+        self.vel_y = 7
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
