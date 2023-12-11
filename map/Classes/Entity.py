@@ -227,6 +227,9 @@ class Player(Entity):
             
     def addBullets(self, bulletArr): 
         self.bullets = bulletArr
+
+    def getStats(self): 
+        return(self.stats)
         
 class SerpentEnemy(Enemy):
 
