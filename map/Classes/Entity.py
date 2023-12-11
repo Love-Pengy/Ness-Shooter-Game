@@ -523,7 +523,6 @@ class MushroomEnemy(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
         
-
         self.bullets = []
         self.followDistance = 300
         #Entity velocity 

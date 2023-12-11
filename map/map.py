@@ -143,7 +143,7 @@ class Map():
             for enemy in self.enemy_group:
                 enemy.detectCollision(sprite,self.all_entities)
 
-        #Loop to update all enemies on screen
+       #Loop to update all enemies on screen
         for enemy in self.enemy_group:
             enemy.update(self.DISPLAY,self.player)
 
@@ -157,6 +157,16 @@ class Map():
                     self.enemy_group.remove(sprite)
 
                     #pygame.sprite.Sprite.remove(temp)
+                elif(temp2 is not None and sprite is not self.player): 
+                    self.enemy_group.remove(sprite)
+
+        '''
+        temp = self.player.rect.collideobjects(enemy.bullets)
+        sif(temp is not None): 
+            for element in enemy.bullets: 
+                if(element is temp): 
+                    enemy.bullets.remove(element)
+        ''' 
 
         self.player.update(self.DISPLAY)
 

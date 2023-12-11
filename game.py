@@ -129,11 +129,7 @@ class Game:
                 for p in self.projectiles:
                     p.update()
                     p.draw(self.screen)
-<<<<<<< HEAD
-                    self.player.addBullets(self.projectiles)
-=======
                 self.player.addBullets(self.projectiles)
->>>>>>> refs/remotes/origin/main
               
                 self.UI.update(keys, defaultStats)
                 pygame.display.flip()
