@@ -131,10 +131,10 @@ class Map():
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
+
+        #Sprite Groups for collision
         self.enemy_group = pygame.sprite.Group()
         self.all_entities = pygame.sprite.Group()
-
-        #self.player = Player(23*TILESIZE,12*TILESIZE,50,50)
 
         self.player = player
 
@@ -185,18 +185,42 @@ class Map():
             for enemy in self.enemy_group:
                 enemy.detectCollision(sprite,self.all_entities)
 
-        #Loop to update all enemies on screen
+       #Loop to update all enemies on screen
         for enemy in self.enemy_group:
             enemy.update(self.DISPLAY,self.player)
 
-        #Loop to check bullet on entity collision
+        #Loop to check bullet on entity collision           
         for enemy in self.enemy_group:
+
             for sprite in self.all_entities:
+
+                #Despawn if hp hits 0
+                if(sprite.hp <= 0):
+                        self.enemy_group.remove(sprite)
+
                 temp = sprite.rect.collideobjects(enemy.bullets)
-                if(temp  != None):
+                temp2 = sprite.rect.collideobjects(self.player.bullets)
+
+                '''
+                if(temp  is not None):
                     self.all_entities.remove(temp)
                     pygame.sprite.Sprite.remove(bullet)
+                '''
+                if(temp is not None and sprite != enemy):
+                    #self.all_entities.remove(enemy)
 
+                    sprite.damageCalc(temp)
+
+                    #pygame.sprite.Sprite.remove(temp)
+                elif(temp2 is not None and sprite is not self.player): 
+
+                    sprite.damageCalc(temp2)
+
+
+
+                    for element in self.player.bullets: 
+                        if(element is temp2): 
+                            self.player.bullets.remove(temp2)
         #Detects if player is above pitfalls  
         playerposx = int(self.player.rect.centerx / self.TILESIZE)
         playerposy = int(self.player.rect.bottom / self.TILESIZE)
@@ -218,11 +242,19 @@ class Map():
                     self.player.rect.x = 22 * self.TILESIZE
                     self.player.rect.y = 2 * self.TILESIZE
         self.player.update(self.DISPLAY,keys)
+
         for enemy in self.CurrentScreen.enemies:
             enemy.findPlayer(self.player)
             enemy.followPlayer(self.player)
             enemy.update(self.DISPLAY, self.player)
        
         #pygame.display.update()
+        
+        self.player.update(self.DISPLAY)
+
+FPS = 60
+TILESIZE = 40
+MAPWIDTH = 45
+MAPHEIGHT = 24
 
 FPS = 60

@@ -245,32 +245,33 @@ class ScoreHUD:
 def checkDeco(weapon, inventory, screen): 
     if(weapon is not None): 
         index = getIndexToReplace(weapon, inventory.getItem(Weapon))
-        if(isinstance(weapon, FlamingDeco)):
-            if(index == 0): 
-                screen.blit(uiBorders, (1525, 860), (145, 360, 47, 50))
-            elif(index == 1): 
-                screen.blit(uiBorders, (1600, 860), (145, 360, 47, 50))
-            else: 
-                screen.blit(uiBorders, (1675, 860), (145, 360, 47, 50))
+        if(index is not None): 
+            if(isinstance(weapon, FlamingDeco)):
+                if(index == 0): 
+                    screen.blit(uiBorders, (1525, 860), (145, 360, 47, 50))
+                elif(index == 1): 
+                    screen.blit(uiBorders, (1600, 860), (145, 360, 47, 50))
+                else: 
+                    screen.blit(uiBorders, (1675, 860), (145, 360, 47, 50))
 
-        elif(isinstance(weapon, FrostyDeco)): 
-            if(index == 0): 
-                screen.blit(uiBorders, (1525, 860), (95, 360, 47, 50))
-            elif(index == 1): 
-                screen.blit(uiBorders, (1600, 860), (95, 360, 47, 50))
-            else: 
-                screen.blit(uiBorders, (1675, 860), (95, 360, 47, 50))
+            elif(isinstance(weapon, FrostyDeco)): 
+                if(index == 0): 
+                    screen.blit(uiBorders, (1525, 860), (95, 360, 47, 50))
+                elif(index == 1): 
+                    screen.blit(uiBorders, (1600, 860), (95, 360, 47, 50))
+                else: 
+                    screen.blit(uiBorders, (1675, 860), (95, 360, 47, 50))
 
-        elif(isinstance(weapon, ShroomDeco)): 
-            if(index == 0): 
-                screen.blit(uiBorders, (1525, 860), (45, 360, 50, 50))
-            elif(index == 1): 
-                screen.blit(uiBorders, (1600, 860), (45, 360, 50, 50))
-            else: 
-                screen.blit(uiBorders, (1675, 860), (45, 360, 50, 50))
-    else:
-        pass
-
+            elif(isinstance(weapon, ShroomDeco)): 
+                if(index == 0): 
+                    screen.blit(uiBorders, (1525, 860), (45, 360, 50, 50))
+                elif(index == 1): 
+                    screen.blit(uiBorders, (1600, 860), (45, 360, 50, 50))
+                else: 
+                    screen.blit(uiBorders, (1675, 860), (45, 360, 50, 50))
+        else:
+            pass
+    pass
 
 
 

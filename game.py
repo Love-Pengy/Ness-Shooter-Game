@@ -4,7 +4,7 @@ import projectiles
 from Weapons import Weapon
 from pygame.math import Vector2
 from map.map import *
-from Entities.Entity import *
+from map.Classes.Entity import *
 import os.path 
 from Inventory import getIndexToReplace
 from Inventory import InventoryManager
@@ -32,7 +32,6 @@ defaultStats = {
     "Mana": 50
 }
 
-
 class Game:
     def __init__(self):
         """
@@ -43,7 +42,7 @@ class Game:
         """
         # https://www.mygreatlearning.com/blog/global-variables-in-python/#:~:text=However%2C%20if%20you%20want%20to,would%20in%20a%20regular%20function.&text=Access%20across%20modules%3A%20Global%20variables,modules%20within%20the%20same%20program.
         global pistol 
-        pistol = Weapon(self, 1.0, 2.0, 10, 1.5 , .3, 5)
+        pistol = Weapon(self, 1.0, 2.0, 10, 1.5 , .3, 10)
         global shotgun
         shotgun = Weapon(self, .65, 10, 4, 15, .7, 3) 
         global machineGun
@@ -139,10 +138,13 @@ class Game:
                 for p in self.projectiles:
                     p.update()
                     p.draw(self.screen)
-                self.UI.update(keys, defaultStats)
+                self.player.addBullets(self.projectiles)
+              
+                self.UI.update(keys, self.player.getStats())
                 pygame.display.flip()
                 pygame.display.update()
                 self.clock.tick(self.FPS)
+
 
 
 if __name__ == "__main__":

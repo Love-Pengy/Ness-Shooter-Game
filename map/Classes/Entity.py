@@ -23,11 +23,19 @@ class Entity(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
 
         #Velocity of entity movement 
-        self.vel_x = 5
-        self.vel_y = 5
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
         self.prev_x = 0
         self.prev_y = 0
+
+        #Base stats
+        self.atk = 5
+        self.defense = 10
+        self.hp = 25
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #Count to control animations and/or fire rate
         self.count = 0
@@ -64,6 +72,13 @@ class Entity(pygame.sprite.Sprite):
            actions, and position when called.
         """
         pass
+
+    def damageCalc(self, attacker):
+       
+        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100)/100))
+        
+        self.hp -= damage
+        print(self.hp)
 
 class Enemy(Entity):
     
@@ -135,8 +150,8 @@ class Player(Entity):
         self.player_anims.registerAnim("walk_nw1",self.player_anims.getFrame(-490,-120,64,100))
         self.player_anims.registerAnim("walk_nw2",self.player_anims.getFrame(-570,-120,64,100))
     
-     #   self.image = self.player_anims.frames["walk_down1"] #initial sprite
-    
+       #self.image = self.player_anims.frames["walk_down1"] #initial sprite
+        self.player_dir = 0
         #player velocity 
         self.vel_x = 0
         self.vel_y = 0
@@ -144,6 +159,7 @@ class Player(Entity):
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+        self.bullets = []
 
 
     def update(self,window, key):
@@ -174,10 +190,10 @@ class Player(Entity):
         y = mouse_pos[1] - self.rect.centery
 
         #Direction player is aiming in degrees 
-        player_dir = (math.degrees(math.atan2(-y,x)) + 360) % 360
+        self.player_dir = (math.degrees(math.atan2(-y,x)) + 360) % 360
 
         #Direction player is facing split into 8 directions to determine correct sprite     
-        player_facing = int(player_dir / 45)
+        player_facing = int(self.player_dir / 45)
 
         if player_facing == 0:
             self.image = self.player_anims.frames["walk_right1"] if self.player_anims.next else self.player_anims.frames["walk_right2"]
@@ -211,6 +227,13 @@ class Player(Entity):
         if pressed[pygame.K_s]:
             self.player_anims.nextAnim()
             self.vel_y = 5
+            self.moveX(self.vel_x)    
+            
+    def addBullets(self, bulletArr): 
+        self.bullets = bulletArr
+
+    def getStats(self): 
+        return(self.stats)
         
 class SerpentEnemy(Enemy):
 
@@ -228,9 +251,16 @@ class SerpentEnemy(Enemy):
       
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 4
+        self.vel_x = self.speed
+        self.vel_y = self.speed
 
+        #Base stats
+        self.atk = 10
+        self.defense = 15
+        self.hp = 10
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -248,7 +278,7 @@ class SerpentEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10)
+            temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk)
             self.bullets.append(temp)
             self.count = 0
         self.count += 1
@@ -282,8 +312,16 @@ class GolemEnemy(Enemy):
         self.bullets = []
 
         #Entity velocity 
-        self.vel_x = 2
-        self.vel_y = 2
+        self.speed = 2
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 20
+        self.defense = 100
+        self.hp = 200
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -299,7 +337,7 @@ class GolemEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -331,8 +369,16 @@ class GoblinEnemy(Enemy):
         self.bullets = []
 
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 5
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 5
+        self.defense = 5
+        self.hp = 25
+        self.mana = 0 
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -348,7 +394,7 @@ class GoblinEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -378,8 +424,16 @@ class GhostEnemy(Enemy):
 
         self.bullets = []
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 30
+        self.defense = 40
+        self.hp = 75
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -399,7 +453,7 @@ class GhostEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -431,8 +485,16 @@ class DwarfEnemy(Enemy):
 
         self.followDistance = 100
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 30
+        self.defense = 30
+        self.hp = 35
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -448,7 +510,7 @@ class DwarfEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -476,12 +538,19 @@ class MushroomEnemy(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
         
-
         self.bullets = []
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 25
+        self.defense = 25
+        self.hp = 75
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -497,7 +566,7 @@ class MushroomEnemy(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -529,8 +598,16 @@ class TikiBoss1(Enemy):
         self.bullets = []
         self.followDistance = 300
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 50
+        self.defense = 75
+        self.hp = 350
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -546,7 +623,7 @@ class TikiBoss1(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -577,8 +654,16 @@ class TikiBoss2(Enemy):
         self.bullets = []
         self.followDistance = 600
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 3
+        self.vel_x = self.speed
+        self.vel_y = self.speed
+
+        #Base stats
+        self.atk = 60
+        self.defense = 85
+        self.hp = 400
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -594,7 +679,7 @@ class TikiBoss2(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
 
@@ -622,12 +707,20 @@ class Boss3(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
 
-
+        self.bullet_rects = []
         self.bullets = []
         self.followDistance = 200
         #Entity velocity 
-        self.vel_x = 3
-        self.vel_y = 3
+        self.speed = 7
+        self.vel_x = 7
+        self.vel_y = 7
+
+        #Base stats
+        self.atk = 100
+        self.defense = 100
+        self.hp = 500
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -643,7 +736,8 @@ class Boss3(Enemy):
         self.followPlayer(player)
 
         if self.count == 30:
-            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,10))
+            self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
+
             self.count = 0
         self.count += 1
 
@@ -705,14 +799,3 @@ class SpriteAnimation:
 
         self.count += 1
         return self.frames[self.curr_anim]
-
-   
-
-
-       
-
-    
-
-
-    
-

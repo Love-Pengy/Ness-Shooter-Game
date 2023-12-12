@@ -16,8 +16,6 @@ class Projectile:
         self.image = pygame.image.load("UIAssets/bullet.png") # Here is the bullet
         self.speed = speed
         self.damage = damage
-        if(DEBUG): 
-            print(f"angleTesting: {self.position.angle_to((0, 0))}")
         self.image = pygame.transform.rotate(self.image, (direction+270))
         self.rect = self.image.get_rect()
 
@@ -25,7 +23,9 @@ class Projectile:
         # Move projectile, trig functions are from basic vector math 
         self.x += self.speed * cos(rads(self.direction))
         self.y += ((self.speed * -1) * sin(rads(self.direction)))
-    
+        self.rect.x = self.x
+        self.rect.y = self.y
+
     def draw(self, win):
         win.blit(self.image, (self.x, self.y)) # Draws the bullet
            
