@@ -75,10 +75,11 @@ class Entity(pygame.sprite.Sprite):
 
     def damageCalc(self, attacker):
        
-        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100)/100))
+        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100))/100)
         
         self.hp -= damage
-        print(self.hp)
+        self.stats["HP"] = self.hp
+     
 
 class Enemy(Entity):
     
@@ -153,8 +154,8 @@ class Player(Entity):
        #self.image = self.player_anims.frames["walk_down1"] #initial sprite
         self.player_dir = 0
         #player velocity 
-        self.vel_x = 0
-        self.vel_y = 0
+        self.vel_x = 15
+        self.vel_y = 15
 
         #make rectangle from sprite image
         self.rect = self.image.get_rect()
@@ -162,22 +163,33 @@ class Player(Entity):
         self.bullets = []
 
 
-    def update(self,window, key):
+        #Base stats
+        self.atk = 9999
+        self.defense = 10
+        self.hp = 25
+        self.mana = 69 # Nice
+        self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
+
+
+    def update(self,window,key):
         self.player_anims.nextAnim()
         self.prev_x = self.rect.x
         self.prev_y = self.rect.y
         window.blit(self.image, self.rect)
-        if key[pygame.K_a]: 
-            self.moveX(self.vel_x)
-        if key[pygame.K_d]:
-           # self.image = self.player_anims.frames["walk_right1"]
-            self.moveX(self.vel_x)
-        if key[pygame.K_w]:
-            self.moveY(self.vel_y)
-        if key[pygame.K_s]:
-            #self.image = self.player_anims.frames["walk_down1"]
-            self.moveY(self.vel_y)
-    
+        # if key[pygame.K_a]: 
+        #     self.moveX(self.vel_x)
+        # if key[pygame.K_d]:
+        #     self.image = self.player_anims.frames["walk_right1"]
+        #     self.moveX(self.vel_x)
+        # if key[pygame.K_w]:
+        #     self.moveY(self.vel_y)
+        #     if pressed[pygame.K_RIGHT]:
+        #        self.moveX(self.vel_x)
+        #    elif pressed[pygame.K_LEFT]:
+        #        self.moveX(-1 * self.vel_x)
+        # if key[pygame.K_s]:
+        #     self.image = self.player_anims.frames["walk_down1"]
+        #     self.moveY(self.vel_y)
 
     def setDirection(self,mouse_pos):
         """
@@ -214,19 +226,24 @@ class Player(Entity):
     
 
     def processInput(self, pressed):
-    
-        if pressed[pygame.K_a]:
-            self.player_anims.nextAnim() 
-            self.vel_x = -5
-        if pressed[pygame.K_d]:
-            self.player_anims.nextAnim()
-            self.vel_x = 5
+        # if pressed[pygame.K_w]or pressed[pygame.K_a] or pressed[pygame.K_s] or pressed[pygame.K_d]:
+        #     self.player_anims.nextAnim()
+
         if pressed[pygame.K_w]:
-            self.player_anims.nextAnim()
-            self.vel_y = -5
+            self.moveY(self.vel_y * -1)
+            if pressed[pygame.K_d]:
+               self.moveX(self.vel_x)
+            elif pressed[pygame.K_a]:
+               self.moveX(-1 * self.vel_x)
         if pressed[pygame.K_s]:
-            self.player_anims.nextAnim()
-            self.vel_y = 5
+            self.moveY(self.vel_y)
+            if pressed[pygame.K_d]:
+               self.moveX(self.vel_x)
+            elif pressed[pygame.K_a]:
+               self.moveX(-1 * self.vel_x)
+        if pressed[pygame.K_a]: 
+            self.moveX(-1 * self.vel_x)
+        if pressed[pygame.K_d]:
             self.moveX(self.vel_x)    
             
     def addBullets(self, bulletArr): 
@@ -258,7 +275,7 @@ class SerpentEnemy(Enemy):
         #Base stats
         self.atk = 10
         self.defense = 15
-        self.hp = 10
+        self.hp = 1
         self.mana = 69 # Nice
         self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
         #make rectangle from sprite image
@@ -277,7 +294,7 @@ class SerpentEnemy(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 50:
             temp = create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk)
             self.bullets.append(temp)
             self.count = 0
@@ -336,7 +353,7 @@ class GolemEnemy(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 100:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
@@ -452,7 +469,7 @@ class GhostEnemy(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 80:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
@@ -509,7 +526,7 @@ class DwarfEnemy(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 35:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
@@ -565,7 +582,7 @@ class MushroomEnemy(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 55:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
@@ -622,7 +639,7 @@ class TikiBoss1(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 65:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
             self.count = 0
         self.count += 1
@@ -735,7 +752,7 @@ class Boss3(Enemy):
         self.findPlayer(player)
         self.followPlayer(player)
 
-        if self.count == 30:
+        if self.count == 45:
             self.bullets.append(create_projectile((self.rect.centerx,self.rect.centery),self.direction,10,self.atk))
 
             self.count = 0
