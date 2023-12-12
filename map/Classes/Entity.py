@@ -27,6 +27,7 @@ class Entity(pygame.sprite.Sprite):
         self.vel_x = self.speed
         self.vel_y = self.speed
 
+        self.isDead = False
         self.prev_x = 0
         self.prev_y = 0
 
@@ -37,6 +38,8 @@ class Entity(pygame.sprite.Sprite):
         self.mana = 69 # Nice
         self.stats = {"HP": self.hp, "Attack": self.atk, "Defense": self.defense, "Speed": self.speed, "Mana": self.mana}
 
+
+        self.score = 100
         #Count to control animations and/or fire rate
         self.count = 0
 
@@ -162,6 +165,7 @@ class Player(Entity):
         self.rect.x, self.rect.y = x, y
         self.bullets = []
 
+        self.score = 0
 
         #Base stats
         self.atk = 9999
@@ -610,7 +614,7 @@ class TikiBoss1(Enemy):
         self.image.set_colorkey((0,0,0)) 
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
-     
+        self.score = 500
 
         self.bullets = []
         self.followDistance = 300
@@ -668,6 +672,7 @@ class TikiBoss2(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
     
+        self.score = 500
         self.bullets = []
         self.followDistance = 600
         #Entity velocity 
@@ -724,6 +729,7 @@ class Boss3(Enemy):
         self.image = self.enemy_anims.frames[2]
         self.image.set_colorkey((0,0,0)) 
 
+        self.score = 500
         self.bullet_rects = []
         self.bullets = []
         self.followDistance = 200
