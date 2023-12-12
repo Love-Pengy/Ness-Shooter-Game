@@ -105,6 +105,10 @@ class screen(TileProperties):
                 #Despawn if hp hits 0
                 if(sprite.hp <= 0):
                     self.enemies.remove(sprite)
+                    if(sprite.isDead == False):
+                        player.score += sprite.score
+                    sprite.isDead = True
+                  
                 print(player.hp)
                 if(player.hp <= 0):
                     print("GAME OVER")
@@ -172,8 +176,6 @@ class Map():
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
         self.player = player
-
- 
 
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,self.TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
