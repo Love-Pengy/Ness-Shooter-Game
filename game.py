@@ -72,8 +72,17 @@ class Game:
             os.remove('angledbg.log')
         except OSError:
             pass
-        
 
+    def create_weapon(self):
+        # Placeholder values
+        attackSpeed = 3.0
+        reloadSpeed = 2.0
+        ammunition = 10
+        accuracy = 100
+        damageMultiplier = 1.0
+        projectileSpeed = 10
+        weapon = Weapon(self, attackSpeed, reloadSpeed, ammunition, accuracy, damageMultiplier, projectileSpeed)
+        return weapon
 
     def loop(self):
         

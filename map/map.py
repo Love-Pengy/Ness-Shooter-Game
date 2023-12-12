@@ -88,7 +88,7 @@ class screen(TileProperties):
 
         self.all_entities = self.enemies.copy()
         self.all_entities.add(player)
-
+        checker = 1
         for sprite in self.all_entities:
             for enemy in self.enemies:
                 enemy.detectCollision(sprite,self.all_entities)
@@ -106,7 +106,8 @@ class screen(TileProperties):
                 if(sprite.hp <= 0):
                     self.enemies.remove(sprite)
                     if(sprite.isDead == False):
-                        player.score += sprite.score
+                        player.score = sprite.score
+                        checker = 0
                     sprite.isDead = True
                   
                 print(player.hp)
@@ -126,6 +127,9 @@ class screen(TileProperties):
                     for element in player.bullets: 
                         if(element is temp2): 
                             player.bullets.remove(temp2)
+
+        if(checker): 
+            player.score = 0
         
 
 
@@ -192,7 +196,6 @@ class Map():
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
         self.player = player
-
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,self.TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
 
