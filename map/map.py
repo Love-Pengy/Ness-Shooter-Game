@@ -34,7 +34,7 @@ class screen(TileProperties):
         self.screen = []
         self.DISPLAY = DISPLAY
         self.enemies = pygame.sprite.Group()
-
+        self.all_entities = pygame.sprite.Group()
         for row in range(MAPHEIGHT + 1):
             r = [0] * MAPWIDTH
             self.screen.append(r)
@@ -84,7 +84,44 @@ class screen(TileProperties):
                     self.LoadEnemies(x,y,int(enemy))
                     #self.enemies[x][y] = int(enemy)
 
-    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE, DISPLAY):
+    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE, DISPLAY,player):
+
+        self.all_entities = self.enemies.copy()
+        self.all_entities.add(player)
+
+        for sprite in self.all_entities:
+            for enemy in self.enemies:
+                enemy.detectCollision(sprite,self.all_entities)
+
+       #Loop to update all enemies on screen
+        for enemy in self.enemies:
+            enemy.update(self.DISPLAY,player)
+
+        #Loop to check bullet on entity collision           
+        for enemy in self.enemies:
+
+            for sprite in self.all_entities:
+
+                #Despawn if hp hits 0
+                if(sprite.hp <= 0):
+                    self.enemies.remove(sprite)
+
+                temp = sprite.rect.collideobjects(enemy.bullets)
+                temp2 = sprite.rect.collideobjects(player.bullets)
+                if(temp is not None and sprite != enemy):
+                    sprite.damageCalc(temp)
+
+                    for element in enemy.bullets: 
+                        if(element is temp): 
+                            enemy.bullets.remove(temp)
+                elif(temp2 is not None and sprite is not player): 
+                    sprite.damageCalc(temp2)
+                    for element in player.bullets: 
+                        if(element is temp2): 
+                            player.bullets.remove(temp2)
+        
+
+
         self.DISPLAY = DISPLAY
         for row in range(MAPHEIGHT): #Rows
             for col in range(MAPWIDTH): #Columns
@@ -131,15 +168,8 @@ class Map():
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
-
-        #Sprite Groups for collision
-        self.enemy_group = pygame.sprite.Group()
-        self.all_entities = pygame.sprite.Group()
-
         self.player = player
 
-        #self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)
-        #self.enemy_group.add(self.enemy1,self.enemy2,self.enemy3)
 
         self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,self.TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
@@ -177,52 +207,12 @@ class Map():
         self.PlayerScreen = self.transition()
 
         #update display
-        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY)
+        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY,self.player)
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
-        #Sprite group for detecting entity on entity collision
-        for sprite in self.all_entities:
-            for enemy in self.enemy_group:
-                enemy.detectCollision(sprite,self.all_entities)
-
-       #Loop to update all enemies on screen
-        for enemy in self.enemy_group:
-            enemy.update(self.DISPLAY,self.player)
-
-        #Loop to check bullet on entity collision           
-        for enemy in self.enemy_group:
-
-            for sprite in self.all_entities:
-
-                #Despawn if hp hits 0
-                if(sprite.hp <= 0):
-                        self.enemy_group.remove(sprite)
-
-                temp = sprite.rect.collideobjects(enemy.bullets)
-                temp2 = sprite.rect.collideobjects(self.player.bullets)
-
-                '''
-                if(temp  is not None):
-                    self.all_entities.remove(temp)
-                    pygame.sprite.Sprite.remove(bullet)
-                '''
-                if(temp is not None and sprite != enemy):
-                    #self.all_entities.remove(enemy)
-
-                    sprite.damageCalc(temp)
-
-                    #pygame.sprite.Sprite.remove(temp)
-                elif(temp2 is not None and sprite is not self.player): 
-
-                    sprite.damageCalc(temp2)
-
-
-
-                    for element in self.player.bullets: 
-                        if(element is temp2): 
-                            self.player.bullets.remove(temp2)
+   
         #Detects if player is above pitfalls  
-        playerposx = int(self.player.rect.centerx / self.TILESIZE)
+        playerposx = int(self.player.rect.x / self.TILESIZE)
         playerposy = int(self.player.rect.bottom / self.TILESIZE)
         if playerposy > 24:
             playerposy = 24
@@ -236,25 +226,17 @@ class Map():
                     self.player.rect.x = 22 * self.TILESIZE
                     self.player.rect.y = 20 * self.TILESIZE
                 if self.LastTransition == 3:
-                    self.player.rect.x = 44 * self.TILESIZE
+                    self.player.rect.x = 42 * self.TILESIZE
                     self.player.rect.y = 12 * self.TILESIZE
                 if self.LastTransition == 4:
                     self.player.rect.x = 22 * self.TILESIZE
                     self.player.rect.y = 2 * self.TILESIZE
         self.player.update(self.DISPLAY,keys)
-
         for enemy in self.CurrentScreen.enemies:
             enemy.findPlayer(self.player)
             enemy.followPlayer(self.player)
             enemy.update(self.DISPLAY, self.player)
        
         #pygame.display.update()
-        
-        self.player.update(self.DISPLAY)
-
-FPS = 60
-TILESIZE = 40
-MAPWIDTH = 45
-MAPHEIGHT = 24
 
 FPS = 60
