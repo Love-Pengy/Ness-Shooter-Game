@@ -180,8 +180,6 @@ class CollisionLayer():
                                     player.rect.y -= player.vel_y
                                 else:
                                     player.rect.y += player.vel_y
-                                
-
 
 class Map():
     def __init__(self, player, DISPLAY):
