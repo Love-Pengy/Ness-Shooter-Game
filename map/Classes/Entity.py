@@ -78,7 +78,7 @@ class Entity(pygame.sprite.Sprite):
 
     def damageCalc(self, attacker):
        
-        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100))/100)
+        damage = math.floor((attacker.damage/self.defense)*(random.randint(85, 100))/100) + 1
         
         self.hp -= damage
         self.stats["HP"] = self.hp
