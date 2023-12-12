@@ -180,6 +180,18 @@ class CollisionLayer():
                                     player.rect.y -= player.vel_y
                                 else:
                                     player.rect.y += player.vel_y
+                        
+                        if(collideRect.colliderect(player.rect)): 
+                            if(not min(dl, dr) < min(dt, db)): 
+                                if(player.vel_x < 0): 
+                                    player.rect.x -= player.vel_x
+                                else: 
+                                    player.rect.x += player.vel_x
+
+                                if(player.vel_y < 0): 
+                                    player.rect.y -= player.vel_y
+                                else: 
+                                    player.rect.y += player.vel_y
 
 class Map():
     def __init__(self, player, DISPLAY):
