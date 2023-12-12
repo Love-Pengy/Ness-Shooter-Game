@@ -158,10 +158,26 @@ class CollisionLayer():
                         collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
                         collideRect.x = col * self.Tilesize
                         collideRect.y = row * self.Tilesize 
-                    if collideRect.colliderect(player.rect.x + player.vel_x, player.rect.y, player.rect.width, player.rect.height):
-                        player.vel_x = 0
-                    if collideRect.colliderect(player.rect.x, player.rect.y + player.vel_y, player.rect.width, player.rect.height):
-                        player.vel_y = 0
+
+                        dr = abs(player.rect.right - collideRect.left)
+                        dl = abs(player.rect.left - collideRect.right)
+                        db = abs(player.rect.bottom - collideRect.top)
+                        dt = abs(player.rect.top - collideRect.bottom)
+
+                        if(collideRect.colliderect(player.rect)):
+                            if min(dl, dr) < min(dt, db):
+
+                                if(dl < dr):
+                                    player.rect.x += player.vel_x
+                                else:
+                                    player.rect.x -= player.vel_x
+                            else:
+                                if(db < dt):
+                                    player.rect.y -= player.vel_y
+                                else:
+                                    player.rect.y += player.vel_y
+                                
+
 
 class Map():
     def __init__(self, player, DISPLAY):
