@@ -1,16 +1,16 @@
-Pitfall 0
-Wall 1
-Grass 0
-FGrass 0
-Mushroom 1
-Trees 1
-Sand 0
-Water 0
-Night 0
-Lava 0
-Carpet 0
-Crate 1
-Snow 0
-Ice 0
-Tree 1
-BombWall 1
+Pitfall 0 1
+Wall 1 0
+Grass 0 0
+FGrass 0 0
+Mushroom 1 0
+Trees 1 0
+Sand 0 0
+Water 0 1
+Night 0 1
+Lava 0 1
+Carpet 0 0
+Crate 1 0
+Snow 0 0
+Ice 0 0
+Tree 1 0
+BombWall 1 0

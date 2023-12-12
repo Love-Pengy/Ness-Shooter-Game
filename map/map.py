@@ -4,9 +4,10 @@ from map.Classes.Entity import *
 
 
 class TileProperties:
-    def __init__(self, TILETYPES):
+    def __init__(self, TILETYPES,TILESIZE):
         self.tile_list = []
         self.IsCollider = []
+        self.IsPitfall = []
         self.tile_names = []
         self.Data = open("map/tiles/TileData.txt")
         for x in range(TILETYPES):
@@ -22,26 +23,105 @@ class TileProperties:
         TileData = CurrentTileProperties.split()
         self.tile_names.append(TileData[0])
         self.IsCollider.append(int(TileData[1]))
+        self.IsPitfall.append(int(TileData[2]))
 
 class screen(TileProperties):
     def __init__(self, Tile, MAPWIDTH, MAPHEIGHT, DISPLAY):
         self.Tiles = Tile.tile_list
         self.IsCollider = Tile.IsCollider
+        self.IsPitfall = Tile.IsPitfall
+        self.TILESIZE = 40
         self.screen = []
         self.DISPLAY = DISPLAY
+        self.enemies = pygame.sprite.Group()
+        self.all_entities = pygame.sprite.Group()
         for row in range(MAPHEIGHT + 1):
             r = [0] * MAPWIDTH
             self.screen.append(r)
+
+    def LoadEnemies(self,x,y,enemy):
+        if enemy == 1:
+            enemy1 = SerpentEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 2:
+            enemy1 = GolemEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 3:
+            enemy1 = GoblinEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 4:
+            enemy1 = GhostEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 5:
+            enemy1 = DwarfEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 6:
+            enemy1 = MushroomEnemy(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 7:
+            enemy1 = TikiBoss1(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 8:
+            enemy1 = TikiBoss2(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+        if enemy == 9:
+            enemy1 = Boss3(x*self.TILESIZE,y*self.TILESIZE,50,50)
+            self.enemies.add(enemy1)
+
     def load(self,CurrentX,CurrentY):
         print("Now Loading...")
-        with open(f'map/Screens/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+        for enemy in self.enemies:
+            self.enemies.remove(enemy)
+        with open(f'map/Screens/TileMaps/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ',')
             for x, row in enumerate(reader):
                 for y, tile in enumerate(row):
                     self.screen[x][y] = int(tile)
-        print("Load Complete!")
+        with open(f'map/Screens/EnemyMaps/Screen{CurrentX}{CurrentY}.csv', newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter = ',')
+            for y, row in enumerate(reader):
+                for x, enemy in enumerate(row):
+                    self.LoadEnemies(x,y,int(enemy))
+                    #self.enemies[x][y] = int(enemy)
 
-    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE, DISPLAY):
+    def update(self,MAPHEIGHT, MAPWIDTH, TILESIZE, DISPLAY,player):
+
+        self.all_entities = self.enemies.copy()
+        self.all_entities.add(player)
+
+        for sprite in self.all_entities:
+            for enemy in self.enemies:
+                enemy.detectCollision(sprite,self.all_entities)
+
+       #Loop to update all enemies on screen
+        for enemy in self.enemies:
+            enemy.update(self.DISPLAY,player)
+
+        #Loop to check bullet on entity collision           
+        for enemy in self.enemies:
+
+            for sprite in self.all_entities:
+
+                #Despawn if hp hits 0
+                if(sprite.hp <= 0):
+                    self.enemies.remove(sprite)
+
+                temp = sprite.rect.collideobjects(enemy.bullets)
+                temp2 = sprite.rect.collideobjects(player.bullets)
+                if(temp is not None and sprite != enemy):
+                    sprite.damageCalc(temp)
+
+                    for element in enemy.bullets: 
+                        if(element is temp): 
+                            enemy.bullets.remove(temp)
+                elif(temp2 is not None and sprite is not player): 
+                    sprite.damageCalc(temp2)
+                    for element in player.bullets: 
+                        if(element is temp2): 
+                            player.bullets.remove(temp2)
+        
+
+
         self.DISPLAY = DISPLAY
         for row in range(MAPHEIGHT): #Rows
             for col in range(MAPWIDTH): #Columns
@@ -55,13 +135,13 @@ class CollisionLayer():
         self.height = height
         self.Tilesize = TILESIZE
     def DrawCollision(self):
-        collideRect = self.screen.Tiles[CurrentScreen.screen[0][0]].get_rect()
+        collideRect = self.screen.Tiles[self.screen.screen[0][0]].get_rect()
         for row in range(self.height): #Rows
             for col in range(self.width): #Columns
                 if self.screen.IsCollider[self.screen.screen[row][col]]:
-                    collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
-                    collideRect.x = col * TILESIZE
-                    collideRect.y = row * TILESIZE
+                    collideRect = self.screen.Tiles[self.screen.screen[row][col]].get_rect()
+                    collideRect.x = col * self.Tilesize
+                    collideRect.y = row * self.Tilesize
                     pygame.draw.rect(self.display, color.RED, collideRect,2)
     def update(self, player, CurrentScreen, keys):
         collideRect = self.screen.Tiles[self.screen.screen[0][0]].get_rect()
@@ -69,8 +149,8 @@ class CollisionLayer():
             for col in range(self.width):
                     if self.screen.IsCollider[self.screen.screen[row][col]]:
                         collideRect = CurrentScreen.Tiles[CurrentScreen.screen[row][col]].get_rect()
-                        collideRect.x = col * TILESIZE
-                        collideRect.y = row * TILESIZE 
+                        collideRect.x = col * self.Tilesize
+                        collideRect.y = row * self.Tilesize 
                     if collideRect.colliderect(player.rect.x + player.vel_x, player.rect.y, player.rect.width, player.rect.height):
                         player.vel_x = 0
                     if collideRect.colliderect(player.rect.x, player.rect.y + player.vel_y, player.rect.width, player.rect.height):
@@ -82,26 +162,17 @@ class Map():
         self.TILETYPES = 16
         self.MAPWIDTH = 45
         self.MAPHEIGHT = 24
-        self.tiles = TileProperties(self.TILETYPES)
+        self.LastTransition = 3
+        self.tiles = TileProperties(self.TILETYPES,self.TILESIZE)
         self.color = GraphicDesign.ColorList()
         self.CurrentScreen = screen(self.tiles, self.MAPWIDTH, self.MAPHEIGHT, DISPLAY)
         self.PlayerScreen = [1,5]
         self.DISPLAY = DISPLAY
-
-        #Sprite Groups for collision
-        self.enemy_group = pygame.sprite.Group()
-        self.all_entities = pygame.sprite.Group()
-
         self.player = player
 
-        self.enemy1 = SerpentEnemy(18*TILESIZE,12*TILESIZE,50,50)
-        self.enemy2 = SerpentEnemy(17*TILESIZE,15*TILESIZE,50,50)
-        self.enemy3 = SerpentEnemy(12*TILESIZE,6*TILESIZE,50,50)
+ 
 
-        self.all_entities.add(self.player,self.enemy1,self.enemy2,self.enemy3)
-        self.enemy_group.add(self.enemy1,self.enemy2,self.enemy3)
-
-        self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,TILESIZE)
+        self.collision = CollisionLayer(self.DISPLAY,self.CurrentScreen,self.MAPWIDTH,self.MAPHEIGHT,self.TILESIZE)
         self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])
 
     def transition(self):
@@ -109,19 +180,22 @@ class Map():
             self.PlayerScreen[0] = self.PlayerScreen[0] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Left
             self.player.rect.x = 44 * self.TILESIZE
+            self.LastTransition = 3
         elif self.player.rect.centerx > (self.MAPWIDTH * self.TILESIZE):
             self.PlayerScreen[0] = self.PlayerScreen[0] + 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Right
             self.player.rect.x = 1 * self.TILESIZE
+            self.LastTransition = 1
         if self.player.rect.centery < 0:
             self.PlayerScreen[1] = self.PlayerScreen[1] + 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Up
-            self.player.rect.y = 22 * self.TILESIZE
-        elif self.player.rect.centery > (self.MAPHEIGHT * self.TILESIZE):
+            self.player.rect.y = 21 * self.TILESIZE
+            self.LastTransition = 2
+        elif self.player.rect.bottom > (self.MAPHEIGHT * self.TILESIZE) - 1:
             self.PlayerScreen[1] = self.PlayerScreen[1] - 1
             self.CurrentScreen.load(self.PlayerScreen[0],self.PlayerScreen[1])#Transitions Down
             self.player.rect.y = 1 * self.TILESIZE
-
+            self.LastTransition = 4
         return self.PlayerScreen
 
     def update(self, DISPLAY):
@@ -134,58 +208,36 @@ class Map():
         self.PlayerScreen = self.transition()
 
         #update display
-        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY)
+        self.CurrentScreen.update(self.MAPHEIGHT,self.MAPWIDTH,self.TILESIZE, self.DISPLAY,self.player)
         pygame.draw.circle(DISPLAY,'red', mouse_pos, 10)
         self.collision.update(self.player,self.CurrentScreen, keys)
-        
-        #Sprite group for detecting entity on entity collision
-        for sprite in self.all_entities:
-            for enemy in self.enemy_group:
-                enemy.detectCollision(sprite,self.all_entities)
-
-       #Loop to update all enemies on screen
-        for enemy in self.enemy_group:
-            enemy.update(self.DISPLAY,self.player)
-
-        #Loop to check bullet on entity collision           
-        for enemy in self.enemy_group:
-
-            for sprite in self.all_entities:
-
-                #Despawn if hp hits 0
-                if(sprite.hp <= 0):
-                        self.enemy_group.remove(sprite)
-
-                temp = sprite.rect.collideobjects(enemy.bullets)
-                temp2 = sprite.rect.collideobjects(self.player.bullets)
-                if(temp is not None and sprite != enemy):
-                    #self.all_entities.remove(enemy)
-
-                    sprite.damageCalc(temp)
-                 
-                    #pygame.sprite.Sprite.remove(temp)
-                elif(temp2 is not None and sprite is not self.player): 
-
-                    sprite.damageCalc(temp2)
-                  
-
-                  
-                    for element in self.player.bullets: 
-                        if(element is temp2): 
-                            self.player.bullets.remove(temp2)
-        
-        '''
-        temp = self.player.rect.collideobjects(enemy.bullets)
-        sif(temp is not None): 
-            for element in enemy.bullets: 
-                if(element is temp): 
-                    enemy.bullets.remove(element)
-        ''' 
-
-        self.player.update(self.DISPLAY)
+   
+        #Detects if player is above pitfalls  
+        playerposx = int(self.player.rect.x / self.TILESIZE)
+        playerposy = int(self.player.rect.bottom / self.TILESIZE)
+        if playerposy > 24:
+            playerposy = 24
+        if playerposx > 45:
+            playerposx = 45
+        if self.CurrentScreen.IsPitfall[self.CurrentScreen.screen[playerposy][playerposx]] == 1:
+                if self.LastTransition == 1:
+                    self.player.rect.x = 1 * self.TILESIZE
+                    self.player.rect.y = 12 * self.TILESIZE
+                if self.LastTransition == 2:
+                    self.player.rect.x = 22 * self.TILESIZE
+                    self.player.rect.y = 20 * self.TILESIZE
+                if self.LastTransition == 3:
+                    self.player.rect.x = 42 * self.TILESIZE
+                    self.player.rect.y = 12 * self.TILESIZE
+                if self.LastTransition == 4:
+                    self.player.rect.x = 22 * self.TILESIZE
+                    self.player.rect.y = 2 * self.TILESIZE
+        self.player.update(self.DISPLAY,keys)
+        for enemy in self.CurrentScreen.enemies:
+            enemy.findPlayer(self.player)
+            enemy.followPlayer(self.player)
+            enemy.update(self.DISPLAY, self.player)
+       
+        #pygame.display.update()
 
 FPS = 60
-TILESIZE = 40
-MAPWIDTH = 45
-MAPHEIGHT = 24
-
