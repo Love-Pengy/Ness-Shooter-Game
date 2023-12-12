@@ -1,2 +1,3 @@
-# EGRE-347-Final-Project
-Final Project For EGRE 347 named {TBD}
+# Ness with a Nine
++ Exploration game where you must fight enemies to survive!
++ Project was done for EGRE 347 and isn't quite finish, but a good amount of features are written out but not implemented 
